@@ -1,0 +1,776 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/goods/css/main.css">
+    <link rel="stylesheet" href="/static/admin/js/layui/css/layui.css">
+    <script src="/static/admin/js/crm/jquery.min-2.1.4.js"></script>
+    <script src="/static/admin/js/layui/layui.js"></script>
+    <script src="/static/plugins/echarts/echarts.min.js"></script>
+ 
+</head>
+
+<body>
+    <div class="shopping">
+        <!-- <div class="shopping-title">
+            <span>{:lang('经营数据')}</span>
+        </div>
+        <div class="tab-title">
+            <ul class="tab-list">
+                <li class="active">{:lang('交易概况')}</li>
+                <li onclick="echartFun()">{:lang('下单未支付')}</li>
+            </ul>
+        </div> -->
+        <div class="content-wrap">
+            <!-- tab1 -->
+            <div class="tab-item">
+                <!-- 交易数据 -->
+               <!--  <div class="shopping-item-title">
+                    <div class="title-header">
+                        <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                            <div class="title-p"><span>{:lang('实时数据')}</span></div>
+                        </div>
+                        <div class="title-right">
+                            <div class="date-picker-group-wrap">
+                                <div class="date-picker-item  picker_item_goods_pre">
+                                    <div class="date-picker-item-inner">{:lang('今天')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_goods_pre">
+                                    <div class="date-picker-item-inner">{:lang('本周')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_goods_pre">
+                                    <div class="date-picker-item-inner">{:lang('本月')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_goods_pre">
+                                    <div class="date-picker-item-inner">{:lang('本季度')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_goods_pre active">
+                                    <div class="date-picker-item-inner">{:lang('本年')}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid_mmsGridBox__36z-d transactionData">
+                    <div class="grgridItem">
+                        <div><span class="gridItemAlias"
+                                style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('销售额')}</span>
+                        </div>
+                        <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                        </div>
+                    </div>
+                    <div class="grgridItem">
+                        <div><span class="gridItemAlias"
+                                style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('买家数')}</span>
+                        </div>
+                        <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                        </div>
+                    </div>
+                    <div class="grgridItem">
+                        <div><span class="gridItemAlias"
+                                style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('订单数')}</span>
+                        </div>
+                        <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                        </div>
+                    </div>
+                </div> -->
+             <!--    <div class="title-header-t">
+                    <div class="shopping-item-title">
+                        <div class="title-header">
+                            <div class="border-left-blue">
+                                <!~~ <i class="i" style="background: rgb(17, 153, 238);"></i> ~~>
+                                <div class="title-p"><span>{:lang('销售额')}</span></div>
+                            </div>
+                            <div class="title-right"></div>
+                        </div>
+                    </div>
+                    <!~~ 为ECharts准备一个具备大小（宽高）的Dom ~~>
+                    <div id="echart_main" style="width: 100%;height:400px;"></div>
+                </div> -->
+                <!-- 结束 -->
+                <!-- 数据总览标题 -->
+                <div class="shopping-item-title">
+                    <div class="title-header">
+                        <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                            <div class="title-p"><span>{:lang('数据总览')}</span></div>
+                        </div>
+                        <div class="title-right">
+                            <div class="date-picker-group-wrap">
+                                <div class="date-picker-item picker_item_stat">
+                                    <div class="date-picker-item-inner">{:lang('今天')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_stat">
+                                    <div class="date-picker-item-inner">{:lang('本周')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_stat">
+                                    <div class="date-picker-item-inner">{:lang('本月')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_stat">
+                                    <div class="date-picker-item-inner">{:lang('本季度')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_stat active">
+                                    <div class="date-picker-item-inner ">{:lang('本年')}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 统计数据内容 -->
+                <div class="list__wrapper relative">
+                    <div class="card-inner__wrapper">
+                        <div class="card-inner__wrapper-box">
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('销售额')}</span></div>
+                                <p><span class="value stageOverview">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('天')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('利润额')}</span></div>
+                                <p><span class="value stageOverview">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('天')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('订单数')}</span></div>
+                                <p><span class="value stageOverview">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('天')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('买家数')}</span></div>
+                                <p><span class="value stageOverview">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('天')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('转化率')}</span></div>
+                                <p><span class="value stageOverview">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('天')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('客单价')}</span></div>
+                                <p><span class="value stageOverview">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('天')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('复购占比')}</span></div>
+                                <p><span class="value stageOverview">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('天')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="echart-content">
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="main" style="width: 100%;height:400px;"></div>
+                </div>
+                <!-- 结束 -->
+            </div>
+            <!-- tab2 -->
+            <div class="tab-item">
+                <!-- 标题 -->
+                <div class="shopping-item-title">
+                    <div class="title-header">
+                        <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                            <div class="title-p"><span>{:lang('实时数据')}</span></div>
+                            <div class="title-date">（{:lang('统计时间')}：2020-11-11 15:46:10）</div>
+                        </div>
+                        <div class="title-right"></div>
+                    </div>
+                </div>
+                <!-- {:lang('数据')} -->
+                <div
+                    class="BeastStatisticPanel___statistic-panel-group___3FKJW BeastStatisticPanel___statistic-panel-group-default___2Bd6t">
+                    <div class="BeastStatisticPanel___statistic-panel-item___LXt4o" style="min-width: 25%;">
+                        <div class="BeastStatisticPanel___statistic-panel-default___3tyoO"
+                            style="border-right: 1px solid rgb(235, 235, 235);">
+                            <div class="BeastStatisticPanel___statistic-panel-label___2HmV3"><span
+                                    style="padding-bottom: 2px; border-bottom: 1px dotted rgb(153, 153, 153);">{:lang('下单未付款金额')}({:lang('元')})</span>
+                            </div>
+                            <div class="BeastStatisticPanel___statistic-panel-value-box___2DF_V"><span
+                                    class="BeastStatisticPanel___statistic-panel-value___xxaLn">0.00</span></div>
+                        </div>
+                    </div>
+                    <div class="BeastStatisticPanel___statistic-panel-item___LXt4o" style="min-width: 25%;">
+                        <div class="BeastStatisticPanel___statistic-panel-default___3tyoO"
+                            style="border-right: 1px solid rgb(235, 235, 235);">
+                            <div class="BeastStatisticPanel___statistic-panel-label___2HmV3"><span
+                                    style="padding-bottom: 2px; border-bottom: 1px dotted rgb(153, 153, 153);">{:lang('下单未付款订单数')}</span>
+                            </div>
+                            <div class="BeastStatisticPanel___statistic-panel-value-box___2DF_V"><span
+                                    class="BeastStatisticPanel___statistic-panel-value___xxaLn">0</span></div>
+                        </div>
+                    </div>
+                    <div class="BeastStatisticPanel___statistic-panel-item___LXt4o" style="min-width: 25%;"></div>
+                    <div class="BeastStatisticPanel___statistic-panel-item___LXt4o" style="min-width: 25%;"></div>
+                </div>
+                <!-- 催付数据 -->
+                <div class="shopping-item-title">
+                    <div class="title-header">
+                        <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                            <div class="title-p"><span>{:lang('催付数据')}</span></div>
+                            <div class="title-date">（{:lang('统计时间')}：2020-11-11 15:46:10）</div>
+                        </div>
+                        <div class="title-right"></div>
+                    </div>
+                </div>
+                <!-- 统计数据内容 -->
+                <div class="list__wrapper relative">
+                    <div class="card-inner__wrapper">
+                        <div class="card-inner__wrapper-box">
+                            <div class="selected item__wrapper item__wrapper_t">
+                                <div><span class="alias">{:lang('近')}30{:lang('天引导下单人数')}</span></div>
+                                <p><span class="value">-</span></p>
+                                <p class=" ratio__wrapper"><span class="ratio-text text-tip-xs">{:lang('较前')}1{:lang('天')}</span><span
+                                        class="ratio-value">0.00%</span><span class="text-tip-xs ml-5"></span><i
+                                        data-testid="beast-core-icon-arrow-_filled" class="outerWrapper_4  "
+                                        style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper item__wrapper_t">
+                                <div><span class="alias">{:lang('近')}30{:lang('天引导成交金额')}({:lang('元')})</span></div>
+                                <p><span class="value">-</span></p>
+                                <p class=" ratio__wrapper"><span class="ratio-text text-tip-xs">{:lang('较前')}1{:lang('天')}</span><span
+                                        class="ratio-value">0.00%</span><span class="text-tip-xs ml-5"></span><i
+                                        data-testid="beast-core-icon-arrow-_filled" class="outerWrapper_4  "
+                                        style="font-size: 14px;"></i></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="echart-content">
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="main3" style="width: 100%;height:400px;"></div>
+                </div>
+            </div>
+            <!-- tab2结束 -->
+            <!-- tab3开始 -->
+            <table class="layui-hide" id="test"></table>
+            <!-- tab3结束 -->
+        </div>
+    </div>
+    <input type='hidden' id="realTimeData" value="{$realTimeData}">
+    <input type='hidden' id="payData" value="{$payData}">
+</body>
+<script>
+
+function tableData(data){
+    console.log(data)
+    layui.use('table', function(){
+  var table = layui.table;
+  //展示已知数据
+  table.render({
+    elem: '#test'
+    ,cols: [[ //标题栏
+      {field: 'dateFormat', title: '时间', minWidth: 80,}
+      ,{field: 'browseCount', title: '销售额', minWidth: 80,}
+      ,{field: 'payProfitCount', title: '利润额', minWidth: 80}
+      ,{field: 'payOrderCount', title: '订单数', minWidth: 80}
+      ,{field: 'payUserNumCount', title: '买家数', minWidth: 80}
+      ,{field: 'payPercentCount', title: '转化率', minWidth: 80}
+      ,{field: 'payCustomPriceCount', title: '客单价', minWidth: 80}
+      ,{field: 'oldUserPercentCount', title: '复购占比', minWidth: 80}
+    ]]
+    ,data: data
+    //,skin: 'line' //表格风格
+    // ,even: true //是否隔行换色
+    //,page: true //是否显示分页
+    //,limits: [5, 7, 10]
+    ,limit: 999 //每页默认显示的数量
+  });
+});
+}
+
+    // tab切换
+    $('.tab-item').eq(0).show()
+    // $('.tab-list li').click(function () {
+    //     $(this).addClass('active').siblings().removeClass('active')
+    //     console.log($(this).index())
+    //     $('.tab-item').eq($(this).index()).show().siblings().hide()
+    // })
+
+
+    // 日历切换
+
+    $('.picker_item').click(function () {
+        $(this).addClass('active').siblings().removeClass('active')
+    })
+
+    //   实时数据切换日期接口 
+    var goodsPreArr = ['day', 'week', 'month', 'quarter', 'year'];
+
+    // 数据渲染
+        let realTimeData = JSON.parse($('#realTimeData').val())
+        // getPreData(realTimeData)
+        function getPreData(res){
+            $('.transactionData .gridItemVauleText').eq(0).html(res.result.payAmount)
+            $('.transactionData .gridItemVauleText').eq(1).html(res.result.payUserNum)
+            $('.transactionData .gridItemVauleText').eq(2).html(res.result.payOrderNum)
+            payAmountEchart(res.result.payAmountList)
+        }
+    function getPreDataFun(times) {
+        $.ajax({
+            url: "realTimeData",
+            type: "post",
+            data: { times },
+            success: function (res) {
+                // toast提醒
+                //     Stars.notify('哈哈哈哈','danger');
+                try {
+                    Stars.loading('hide');
+                } catch (e) {
+                    console.log(e.message);//sojson is undefined
+                }
+                res = JSON.parse(res)
+                // console.log(res)
+                getPreData(res)
+            },
+            error :function(){
+                Stars.loading('hide');
+            }
+        });
+    }
+    $('.picker_item_goods_pre').click(function () {
+        $(this).addClass('active').siblings().removeClass('active')
+        var times = goodsPreArr[$(this).index()]
+        Stars.loading();
+        getPreDataFun(times)
+    })
+    function payAmountEchart(data) {
+        var dateFormatList = []
+        var todayList = [];
+        var yesterday = [];
+        data.forEach((item, index) => {
+            dateFormatList.push(item.dateFormat)
+            todayList.push(item.todayCount)
+            yesterday.push(item.yesterdayCount)
+        })
+        // 基于准备好的dom，初始化echarts实例
+        var myChart2 = echarts.init(document.getElementById('echart_main'));
+
+        var colors2 = ['#d14a61', '#675bba'];
+
+        var option2 = {
+            color: colors2,
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['今日', '昨日'],
+                left: 10,
+                icon: 'rect', //设置方形
+                itemWidth: 10,  // 设置宽度
+                itemHeight: 10, // 设置高度
+                itemGap: 20 // 设置间距
+            },
+            grid: {
+                top: 70,
+                bottom: 50
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dateFormatList
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            type: 'dotted',
+                            color: '#EAEAEA'
+                        }
+                    },
+                    axisTick: { //y轴刻度线
+                        show: false
+                    },
+                    axisLine: {
+                        show: false
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '今日',
+                    type: 'line',
+                    symbol: "none",
+                    smooth: true,
+                    data: todayList
+                },
+                {
+                    name: '昨日',
+                    type: 'line',
+                    smooth: true,
+                    symbol: "none",
+                    data: yesterday
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart2.setOption(option2);
+    }
+
+    function echartFun() {
+        $('#main3').css('width', $('.tab-list').width())
+        // 基于准备好的dom，初始化echarts实例
+        var myChart3 = echarts.init(document.getElementById('main3'));
+
+        var colors3 = ['#5793f3', '#d14a61', '#675bba'];
+
+        var option3 = {
+            color: colors3,
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['商品访问数', '商品访问数均值', '商品访问数优秀值'],
+                left: 10
+            },
+            grid: {
+                top: 70,
+                bottom: 50
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['2015-10-11', '2015-10-12', '2015-10-13', '2015-10-14', '2015-10-15', '2015-10-16', '2015-10-17', '2015-10-18', '2015-10-19', '2015-10-20', '2015-10-21', '2015-10-22']
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            type: 'dotted',
+                            color: '#EAEAEA'
+                        }
+                    },
+                    axisTick: { //y轴刻度线
+                        show: false
+                    },
+                    axisLine: {
+                        show: false
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '商品访问数',
+                    type: 'line',
+                    symbol: "none",
+                    smooth: true,
+                    data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+                },
+                {
+                    name: '商品访问数均值',
+                    type: 'line',
+                    smooth: true,
+                    symbol: "none",
+                    data: [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 46.6, 55.4, 18.4, 10.3, 0.7]
+                },
+                {
+                    name: '商品访问数优秀值',
+                    type: 'line',
+                    smooth: true,
+                    symbol: "none",
+                    data: [4.9, 6.9, 12.1, 19.7, 49.3, 79.2, 231.6, 96.6, 45.4, 28.4, 20.3, 1.7]
+                }
+            ]
+        };
+
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart3.setOption(option3);
+    }
+
+    function payEchart(val, arr, str, average, excellent) {   //  // 参数依次为： 分项数据列表, 参数2 echart列表, 分项名称, 均值, 优秀值
+        // 基于准备好的dom，初始化echarts实例
+        var list = { browseCount: [], dateFormat: [] };
+        var averageList = { browseCount: [] };
+        var excellentList = { browseCount: [] };
+        val[arr].forEach((item, index) => {
+            // 数据
+            list.browseCount.push(item.browseCount)
+            list.dateFormat.push(item.dateFormat)
+            // 均值数据
+            averageList.browseCount.push(val[average])
+            // 优秀值数据
+            excellentList.browseCount.push(val[excellent])
+        })
+        
+        var myChart = echarts.init(document.getElementById('main'));
+        var colors = ['#5793f3', '#d14a61', '#675bba'];
+        var option = {
+            color: colors,
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: [str, str + '均值', str + '优秀值'],
+                left: 10,
+                icon: 'rect', //设置方形
+                itemWidth: 10,  // 设置宽度
+                itemHeight: 10, // 设置高度
+                itemGap: 20 // 设置间距
+            },
+            grid: {
+                top: 70,
+                bottom: 50
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: list.dateFormat,
+                    //设置轴线的属性
+                    axisLine: {
+                        lineStyle: {
+                            color: '#C7C3C3',
+                            width: .5,//这里是为了突出显示加上的
+                        },
+                    },
+                    axisLabel: {
+                        show: true,
+                        textStyle: {
+                            color: '#545454'
+                        }
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            type: 'dotted',
+                            color: '#EAEAEA'
+                        }
+                    },
+                    axisTick: { //y轴刻度线
+                        show: false
+                    },
+                    axisLine: {
+                        show: false
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: str,
+                    type: 'line',
+                    symbol: "none",
+                    smooth: true,
+                    data: list.browseCount,
+                    itemStyle: {
+                        normal: {
+                            lineStyle: {
+                                width: 0.8// 0.1的线条是非常细的了 
+                            }
+                        }
+                    },
+                },
+                {
+                    name: str + '均值',
+                    type: 'line',
+                    smooth: true,
+                    symbol: "none",
+                    data: averageList.browseCount,
+                    itemStyle: {
+                        normal: {
+                            lineStyle: {
+                                width: 1
+                            }
+                        }
+                    },
+                },
+                {
+                    name: str + '优秀值',
+                    type: 'line',
+                    smooth: true,
+                    symbol: "none",
+                    data: excellentList.browseCount,
+                    itemStyle: {
+                        normal: {
+                            lineStyle: {
+                                width: 1
+                            }
+                        }
+                    },
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+
+    // 数据总览切换日期接口 
+    var timeArr = ['较前1日', '较前1周', '较前1月', '较前1季度', '较前1年']
+    $('.picker_item_stat').click(function () {
+        // console.log($(this).index())
+        $(this).addClass('active').siblings().removeClass('active')
+        var times = goodsPreArr[$(this).index()]
+        $('.setTimeInfo').html(timeArr[$(this).index()])
+        var index = sessionStorage.getItem('getOverview_index')
+        if (!index) {
+            index = 0
+        }
+        getOverviewData(times, index)
+    })
+    $('.setTimeInfo').html(timeArr[timeArr.length - 1])
+    function getOverviewData(times, index) {
+        try {
+            Stars.loading();
+        } catch (e) {
+            console.log(e.message);//sojson is undefined
+        }
+        $.ajax({
+            url: "payData",
+            type: "post",
+            data: { times },
+            success: (res) => {
+                // console.log(res);
+                var data = JSON.parse(res)
+                console.log(data,'返回数据')
+                if (data.status == 2000) {
+                    // var index = sessionStorage.getItem('getGoodsDataList_c_index')
+                    // goodsDataListFun(data, index)
+                    // sessionStorage.setItem('getGoodsDataList_c', res)
+                sessionStorage.setItem('getOverviewDataList_c', res)
+                getOverview(data, index)
+                } else {
+                    Stars.notify(data.msg, 'danger');
+                }
+                // toast提醒
+                //     Stars.notify('哈哈哈哈','danger');
+                Stars.loading('hide');
+
+            }
+        });
+    }
+            // 默认是显示第几个数据
+            let tabRouterIndex = sessionStorage.getItem('getOverview_index')  || 0
+            $('.item__wrapper').eq(tabRouterIndex).addClass('selected').siblings().removeClass('selected')
+         var data = JSON.parse(sessionStorage.getItem('getOverviewDataList_c'))
+        getOverviewData(goodsPreArr[goodsPreArr.length - 1], tabRouterIndex)
+
+    // 统计tab切换
+    $('.item__wrapper').click(function () {
+        sessionStorage.setItem('getOverview_index', $(this).index())
+        $(this).addClass('selected').siblings().removeClass('selected')
+        var data = JSON.parse(sessionStorage.getItem('getOverviewDataList_c'))
+        getOverview(data, $(this).index())
+
+    })
+    // 处理数据
+    function getOverview(goodsDataList, typeInfo) {
+        // 销售额
+        var payAmountListData = goodsDataList.result.payAmountListData
+        $('.stageOverview').eq(0).html(payAmountListData.stageSalePrice)
+        $('.growthRatio').eq(0).html(payAmountListData.growthRatio + '%')
+        // 盈利额
+        var payProfitData = goodsDataList.result.payProfitData
+        $('.stageOverview').eq(1).html(payProfitData.stage_profit_price)
+        $('.growthRatio').eq(1).html(payProfitData.profit_price_growth_ratio + '%')
+         // 订单数
+         var payOrderListData = goodsDataList.result.payOrderListData
+        $('.stageOverview').eq(2).html(payOrderListData.stageOrderNumber)
+        $('.growthRatio').eq(2).html(payOrderListData.growthRatio + '%')
+        // 买家数
+        var payUserNumListData = goodsDataList.result.payUserNumListData
+        $('.stageOverview').eq(3).html(payUserNumListData.stageOrderPayUser)
+        $('.growthRatio').eq(3).html(payUserNumListData.growthRatio + '%')
+        // 转化率
+        var payPercentListData = goodsDataList.result.payPercentListData
+        $('.stageOverview').eq(4).html(payPercentListData.stagePayRate)
+        $('.growthRatio').eq(4).html(payPercentListData.growthRatio + '%')
+         // 支付客单数
+         var payCustomPriceListData = goodsDataList.result.payCustomPriceListData
+        $('.stageOverview').eq(5).html(payCustomPriceListData.stageNumber)
+        $('.growthRatio').eq(5).html(payCustomPriceListData.growthRatio + '%')
+        // 复购占比
+        var oldUserPercentData = goodsDataList.result.oldUserPercentData
+        $('.stageOverview').eq(6).html(oldUserPercentData.stageNumber)
+        $('.growthRatio').eq(6).html(oldUserPercentData.growthRatio + '%')
+        typeInfo = String(typeInfo)
+        // 渲染表格
+        let  tableDataList = []
+        payAmountListData.salePriceList.forEach((item,index)=>{
+                 // 盈利额
+            item.payProfitCount= payProfitData.ProfitList[index].browseCount
+               // 订单数
+            item.payOrderCount= payOrderListData.orderNumberList[index].browseCount
+                // 买家数
+            item.payUserNumCount= payUserNumListData.orderPayUserList[index].browseCount
+               // 转化率
+            item.payPercentCount= payPercentListData.paymentConversionRateList[index].browseCount
+                  // 支付客单数
+            item.payCustomPriceCount= payCustomPriceListData.payCustomPriceList[index].browseCount
+             // 复购占比
+            item.oldUserPercentCount= oldUserPercentData.oldUserPercent[index].browseCount
+            tableDataList.push(item)
+        })
+        this.tableData(tableDataList)
+        // 统计图表
+        switch (typeInfo) {
+            case '0':
+                payEchart(payAmountListData, 'salePriceList', '销售额', 'salePriceAverage', 'salePriceExcellent')
+                break;
+            case '1':
+                payEchart(payProfitData, 'ProfitList', '利润额', 'ProfitAverage', 'ProfitExcellent')
+                break;
+            case '3':
+                payEchart(payUserNumListData, 'orderPayUserList', '买家数', 'orderPayUserAverage', 'orderPayUserExcellent')
+                break;
+            case '5':
+                payEchart(payCustomPriceListData, 'payCustomPriceList', '客单价', 'average', 'excellent')
+                break;
+            case '4':
+                payEchart(payPercentListData, 'paymentConversionRateList', '转化率', 'paymentConversionRateAverage', 'paymentConversionRateMax')
+                break;
+            case '2':
+                payEchart(payOrderListData, 'orderNumberList', '订单数', 'orderNumberAverage', 'orderNumberExcellent')
+                break;
+            case '6':
+                payEchart(oldUserPercentData, 'oldUserPercent', '复购占比', 'average', 'excellent')
+                break;
+        }
+    }
+</script>
+
+</html>
+{/block}

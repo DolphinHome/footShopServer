@@ -1,0 +1,518 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/static/statistics/css/bill.css">
+    <!-- element -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <!-- vue -->
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <!-- 引入组件库 element -->
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <!-- jquery -->
+    <script src="/static/admin/js/crm/jquery.min-2.1.4.js"></script>
+    <script src="__PLUG__/jqueryToast/js/toast.js"></script>
+    <script src="__ADMIN_JS__/stars.js"></script>
+    <style>
+        
+
+    
+.target_content {
+    position: relative;
+    top:-20px;
+    width: 100%;
+}
+.target_box {
+    /*  display: flex;
+  flex-wrap:wrap;*/
+    /*margin:0 5;*/
+    /* grid-template-columns: repeat(5, 18%); */
+    /*grid-template-rows: 20% 20% 20%;*/
+    /*grid-row-gap: 20px;*/
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, calc(calc(100% - 100px) / 6));
+    grid-column-gap: 20px;
+}
+.item_box {
+    margin-top: 15px;
+    width: 100%;
+    /* border-radius: 10px; */
+    /*margin-right:1%;*/
+    /* border-right: 1px solid #cccccc; */
+    /* background-color: #f8faf9; */
+
+    border: 1px solid #eee;
+    border-radius: 1px;
+
+}
+.item_box_content {
+    padding: 15px 10px 15px 20px;
+    height: 100px;
+}
+.target_desc {
+    margin: 0;
+    width: 100%;
+    /* color: #909294; */
+    font-size: 17px;
+    text-align: left;
+    font-family: Roboto;
+    overflow: hidden;
+    color: #333;
+    font-weight: bold;
+}
+
+.target_num {
+    margin: 0;
+    width: 100%;
+    height: 26px;
+    line-height: 26px;
+    /* color: rgba(16, 16, 16, 100); */
+    font-size: 14px;
+    font-family: Roboto;
+    overflow: hidden;
+    color: #606266;
+}
+.flex{
+    display: flex;
+}
+.justify-content{
+   justify-content:space-between;
+}
+.cha_desc{
+   font-size: 11px !important; 
+   height: 26px;
+   line-height: 50px;
+   color: #909399;
+   letter-spacing: 2px;
+   transform: scale(0.8);
+}
+.cha_num{
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: right;
+    width: 100%;
+}
+
+    </style>
+</head>
+
+
+<body>
+<div id="el">
+    <!-- 查询条件 -->
+    <el-form :inline="true" class="">
+        <el-form-item label="支付方式">
+            <!-- multiple    collapse-tags  -->
+            <el-select v-model="searchForm.payType"   clearable placeholder="支付方式">
+                <el-option v-for="item in options" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="日期">
+            <el-date-picker
+                    v-model="timeRange"
+                    type="daterange"
+                    :picker-options="pickerOptions"
+                    value-format='yyyy-MM-dd'
+                    range-separator="至"
+                    start-placeholder="{:lang('开始日期')}"
+                    end-placeholder="{:lang('结束日期')}"
+                    align="right"
+                    @change='getDateTimerange'>
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item label="对账状态">
+            <!-- multiple    collapse-tags  -->
+            <el-select v-model="searchForm.check_status"   clearable placeholder="对账状态">
+                <el-option v-for="item in check_status" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-button size="small"   @click="getNewTable" type="primary" >查询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button size="small" @click="resetData" type="warning" >重置</el-button>
+        </el-form-item>
+    </el-form>
+
+
+
+
+
+
+    <div class="target_content"  style="margin-bottom: 5px;">
+        <div class="target_box">
+            <div class="item_box"   v-for="(item ,index) in  allDetail"  :key="index">
+
+                    <div class="item_box_content">
+                        <p class="target_desc"> {{item.name}} </p>
+                        <div class="flex justify-content">
+                            <div>
+                                <p class="target_num" style="margin-top: 5px;">应收：{{item.income}}</p>
+                                <p class="target_num">实收：{{item.check}}</p>
+
+                            </div>
+                            <div >
+                                <p  class="cha_desc" >差额  </p>
+                                <p  class="cha_num">  
+                                     <span style="color:red"  v-if="item.diff != 0" ><a href="/admin.php/statistics/finance/diff_bill">{{item.diff}}</a></span> 
+                                     <span style="color: #999999;"  v-if="item.diff == 0" >{{item.diff}}</span> 
+                                </p>
+                            </div>
+                            
+                        </div>
+
+                        
+                    </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- <div style="margin-bottom: 10px;"> -->
+        <!-- <el-card> -->
+        <!-- <el-row :gutter="20"  v-for="item in allDetail" style="margin-bottom: 5px;font-size: 14px;">
+            <el-col :span="3">{{item.name}}</el-col>
+            <el-col :span="3">应收：{{item.income}}</el-col>
+            <el-col :span="3">实收：{{item.check}}</el-col>
+            <el-col :span="15"></el-col>
+        </el-row> -->
+        <!-- </el-card> -->
+    <!-- </div> -->
+    <!-- <el-table   :data="tableData"  border   style="width: 100%">
+        <el-table-column   header-align="center" align="center"  prop="create_time"  label="日期"    width="150"></el-table-column>
+        <el-table-column  header-align="center" align="center"  prop="num"  label="订单数"  width="100">
+            <template slot-scope="scope">
+
+                <el-link  type="danger" :href="'/admin.php/statistics/finance/reconciliationcenter.html?startTime='+scope.row.create_time +'&payType='+searchForm.payType" > {{scope.row.num}}</el-link>
+            </template>
+        </el-table-column>
+        <el-table-column header-align="center"  width="120" align="center"  prop="order_money"  label="订单总额">  </el-table-column>
+        <el-table-column  header-align="center" width="120"  align="center"  prop="payable_money"  label="实收总额">  </el-table-column>
+        <el-table-column  header-align="center" width="100" align="center"  prop="state"  label="核对状态">
+            <template slot-scope="scope">
+                <span  v-if="scope.row.state == 1"   style="color:#409EFF;"> 已核对 </span>
+                <span  v-if="scope.row.state == 2"   style="color:#F56C6C;">核对异常</span>
+                <span  v-if="scope.row.state == 0"   style="color:#E6A23C;">未核对</span>
+            </template>
+        </el-table-column>
+        <el-table-column  header-align="center" align="center"  prop="state"  label="支付统计">
+            <template slot-scope="scope" >
+                <div v-if="scope.row.info.length>0">
+                    <span v-for="item in  scope.row.info"> <span style="padding-right:5px">{{item.name}}</span> 收款:{{item.income}} 核算：{{item.check}}  </span>
+                </div>
+                <span v-else >无支付内容</span>
+            </template>
+        </el-table-column>
+    </el-table> -->
+
+    <el-table :data="tableData" style="width: 100%" border  fit ref="tabled" id="tabled">
+        <el-table-column  width="250"   prop="" label="{:lang('交易单号')}" >
+            <template slot-scope="scope">
+                <div class="fu-table-item-order">
+                    <span>{{scope.row.transactionNo?scope.row.transactionNo:'无(余额支付无流水单号)' }}</span>
+                </div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="" label="{:lang('订单号')}" width="220">
+            <template slot-scope="scope">
+                <span>{{scope.row.orderSn}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop=""   width="120"  label="{:lang('下单人昵称')}">
+            <template slot-scope="scope">
+                <span>{{scope.row.user_nickname}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="" width="120"  label="{:lang('订单金额')}（元）" >
+            <template slot-scope="scope">
+                <span>{{scope.row.orderAmount}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="" width="120" label="{:lang('优惠金额')}" >
+            <template slot-scope="scope">
+                <span>{{scope.row.discount_money}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="" width="120" label="{:lang('应收')}" >
+            <template slot-scope="scope">
+                <span>{{scope.row.payable_money}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop=""   min-width="120"   label="{:lang('实收')}" >
+            <template slot-scope="scope">
+                <span>{{scope.row.realAmount}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column   prop="payType" label="{:lang('支付方式')}" >
+            <template slot-scope="scope">
+                <span>{{scope.row.payType?scope.row.payType:'未知'}}</span>
+            </template>
+        </el-table-column>
+        
+        <el-table-column prop="isFinish" width="160" align="center"  label="{:lang('是否完成对账')}" >
+            <template slot-scope="scope">
+
+                <span v-if="scope.row.check_status == '1'" style="color:#67C23A; font-weight: bold;font-size: 30px;">{{scope.row.isFinish}}</span>
+                <span v-if="scope.row.check_status == '2'" style="color:#F56C6C;font-weight: bold;font-size: 20px;">{{scope.row.isFinish}} </span>
+                <a  v-if="scope.row.check_status == '2'"   @click='chongzhi(scope.row.orderSn)' style="font-size: 13px;">重置</a>
+                <span v-if="scope.row.check_status == '3'" style="color:#F56C6C;font-weight: bold;font-size: 13px;">{{scope.row.isFinish}}</span>
+            </template>
+
+        </el-table-column>
+        <el-table-column prop="createTime"  width="170"  label="{:lang('交易时间')}" >
+        </el-table-column>
+    </el-table>
+
+    <div style="margin-top: 10px;text-align: right;">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                       :current-page="pageObj.page" :page-sizes="[10, 20, 30, 50,100]" :page-size="pageObj.limit"
+                       layout="total, sizes, prev, pager, next, jumper" :total="pageObj.total">
+        </el-pagination>
+    </div>
+</div>
+
+
+</body>
+<script>
+    new Vue({
+        el: '#el',
+        data() {
+            return {
+                payWay:'',//支付方式
+
+                timeRange: [],
+                searchForm: {
+                    startTime: '',
+                    endTime: '',
+                    payType: '',
+                },
+                pageObj: {
+                    page: 1,
+                    total: 0,
+                    limit: 10
+                },
+                allDetail:{
+
+                },
+                tableData: [],
+                options: [ {
+                    value: 'balance',
+                    label: "{:lang('余额支付')}"
+                },{
+                    value: 'minipay',
+                    label: "{:lang('微信小程序支付')}"
+                }],
+                check_status: [{
+                    value: '1',
+                    label: "已完成"
+                }, {
+                    value: '2',
+                    label: "对不上"
+                },{
+                    value: '3',
+                    label: "已修正"
+                }],
+                pickerOptions: {
+                    shortcuts: [{
+                        text: "{:lang('最近一天')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: "{:lang('最近一周')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: "{:lang('最近一个月')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: "{:lang('最近三个月')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
+            }
+        },
+        mounted(options) {
+            console.log(options,8888)
+            // 数据渲染
+            //  let response = JSON.parse(document.getElementById('getCheckCenterData').value)
+            // console.log(response)
+            // this.tableData = response.result.data
+            // this.pageObj.total = response.result.total
+            this.timeRange= []
+
+            var myDate = new Date();
+            let year =     myDate.getFullYear(); //获取完整的年份(4位,1970-????)
+            let month =    (myDate.getMonth() +1 ) > 9 ?  (myDate.getMonth() +1 ) :'0' + (myDate.getMonth() +1 ) ; //获取当前月份(0-11,0代表1月)
+            let data =    myDate.getDate() > 9 ?  myDate.getDate()  : '0' +  myDate.getDate() ; //获取当前日(1-31)
+            let time = year +'-' + month  +'-'+ data
+            this.timeRange= [time,time]
+            this.searchForm.startTime = time
+            this.searchForm.endTime = time
+
+            this.getTable()
+        },
+        onload(options){
+            console.log(options,8888)
+
+        },
+        methods: {
+            handleCheck(){
+                const that  =  this
+                this.$confirm( '你确定要重新核算该内容吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(async () => {
+
+
+                    $.ajax({
+                        url: "getCheckCenterData",
+                        type: "post",
+                        data: formData,
+                        success: (res) => {
+                            that.$message({
+                                message: '操作成功',
+                                type: 'success'
+                            });
+                            that.getTable()
+                        }
+                    });
+
+                }).catch(async () => {
+                })
+            },
+            Exp(){
+                document.getElementById("myForm").submit()
+            },
+            getNewTable(){
+                this.pageObj.limit =10
+                this.pageObj.page =0
+                this.getTable()
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageObj.limit =val
+                this.getTable()
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.pageObj.page =val
+                this.getTable()
+            },
+            resetData() {
+                this.searchForm.startTime = ''
+                this.searchForm.endTime = ''
+                this.searchForm.payType = ''
+                this.timeRange = ''
+            },
+            getDateTimerange() {
+                console.log('选择时间',this.timeRange)
+                if (this.timeRange) {
+                    this.searchForm.startTime = this.timeRange[0]
+                    this.searchForm.endTime = this.timeRange[1]
+                } else {
+                    this.searchForm.startTime = ''
+                    this.searchForm.endTime = ''
+                }
+            },
+            getTable() {
+                const that = this
+                this.searchForm.page =this.pageObj.page
+                this.searchForm.list_rows =this.pageObj.limit
+                console.log(this.searchForm)
+                var formData = this.searchForm
+
+               if( this.searchForm.startTime){
+                   if(this.searchForm.startTime.length < 12){
+                          this.searchForm.startTime =  this.searchForm.startTime + ' 00:00:00'
+                   }
+              
+                }
+                if( this.searchForm.endTime ){
+                  if(this.searchForm.endTime .length < 12){
+                          this.searchForm.endTime =  this.searchForm.endTime + ' 23:59:59'
+                   }
+             
+                }
+
+                Stars.loading();
+                $.ajax({
+                    url: "/admin.php/statistics/finance/verify_bill.html",
+                    type: "post",
+                    data: formData,
+                    success: (res) => {
+                        console.log(res,8888)
+                        // var data = JSON.parse(res)
+
+                        // console.log(data)
+                        this.tableData = res.data.list.data
+                        this.allDetail = res.data.data
+                        this.pageObj.total = res.data.list.total
+                        // toast提醒
+                        // Stars.notify('哈哈哈哈','danger');
+                        Stars.loading('hide');
+
+                        // that.$message({
+                        //     message: '操作成功',
+                        //     type: 'success'
+                        // });
+
+                    },error:(res) => {
+                        Stars.loading('hide');
+                        // that.$message({
+                        //     message: '操作失败，请联系后台管理员',
+                        //     type: 'error'
+                        // });
+
+
+                    }
+                });
+            },
+
+            chongzhi(options){
+                $.ajax({
+                    url: "/admin.php/statistics/finance/check_bill.html",
+                    type: "post",
+                    data: {order_sn:options},
+                    success: (res) => {
+                        Stars.notify('修改成功','danger');
+                    },error:(res) => {
+                    }
+                });
+                
+            }
+        },
+    })
+</script>
+
+
+</html>
+{/block}

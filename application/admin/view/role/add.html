@@ -1,0 +1,149 @@
+{extend name="layout" /}
+
+{block name="style"}
+<style type="text/css">
+div{overflow:hidden;}
+</style>
+<link rel="stylesheet" href="__PLUG__/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+{/block}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box nav-tabs-custom" style="border-top:0">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab1" data-toggle="tab">{:lang('角色信息')}</a>
+                    </li>
+                    <li>
+                        <a href="#tab2" data-toggle="tab">{:lang('访问授权')}</a>
+                    </li>
+                </ul>
+                <form class="form row" parent_reload="1" name="form" id="form" onkeydown="if(event.keyCode==13){findinput();return false;}" autocomplete="on" action="" method="post" data-validator-option="{timely:1, theme:'bootstrap'}">
+
+					<input type="hidden" name="status" value="1"/>
+					{:token()}
+                    <div class="box-body tab-content">
+                        <div class="tab-pane active" id="tab1">
+							<input type="hidden" name="menu_auth" id="menu_auth" value=""/>
+							<div class="form-group">
+                                <label class="col-xs-12" for="pid">{:lang('所属角色')}</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" id="pid" name="pid">
+                                        <option value="0">{:lang('请选择')}：</option>
+                                        {volist name="role_list" id="role"}
+                                        <option value="{$key}">{$role|raw}</option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12 label-title">{:lang('角色名称')}</div>
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="text" id="title" name="name" value="" data-rule="required;" data-msg-required="{:lang('请输入角色名称')}" placeholder="{:lang('请输入角色名称')}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12 label-title">{:lang('角色描述')}</div>
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" id="description" rows="7" name="description" placeholder="{:lang('请输入角色描述')}"></textarea>
+                                </div>
+                            </div>
+							<div class="form-group">
+                                <label class="col-xs-12" for="pid">{:lang('默认模块')}</label>
+                                <div class="col-sm-12">
+                                    <select class="form-control" id="default_module" name="default_module">
+                                        {volist name="module_list" id="module"}
+                                        <option value="{$key}">{$module}</option>
+                                        {/volist}
+                                    </select>
+                                    <div class="help-block">{:lang('该角色登录后，默认跳转的模块，该角色必须有该模块的访问权限')}。</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12 label-title">{:lang('排序')}</div>
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="text" id="sort" name="sort" value="100" placeholder="{:lang('请输入排序')}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab2">
+                            <ul id="ztree" class="push ztree"></ul>
+                        </div>
+                        <div class="col-xs-12">
+                            <button class="btn btn-primary submitBtn ajax-posts" type="submit"  > {:lang('提交')} </button>
+
+                            <button class="btn btn-default " type="button" onclick="javascript:history.back(-1);return false;">
+                                {:lang('返回')}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__PLUG__/zTree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="__PLUG__/zTree/js/jquery.ztree.excheck.js"></script>
+<script type="text/javascript" >
+
+    var setting = {
+        view: {
+            showIcon: false
+        },
+        check: {
+            enable: true
+        },
+        data: {
+            key: {
+                name:"title",
+                url:"url_value"
+            },
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pid",
+                rootPId: 0
+            }
+        }
+    };
+
+    var zNodes ={:json_encode($menus)};
+console.log(zNodes);
+    $(document).ready(function(){
+        var treeObj = $.fn.zTree.init($("#ztree"), setting, zNodes);
+        treeObj.expandAll(true);//默认展开
+
+        $(".ajax-posts").click(function(){
+            var nodes = treeObj.getCheckedNodes(true)
+            treedata=[];
+            for (var i = 0; i < nodes.length; i++) {
+                treedata[i] = nodes[i].id;
+            }
+			$('#menu_auth').val(treedata);
+			
+				var $data = $('#form').serialize();
+				Stars.loading();
+				$.post("{:url()}", $data, function (res) {
+					Stars.loading('hide');
+					if (res.code) {
+						Stars.notify(res.msg, 'success' ,'fa fa-check');
+
+						setTimeout(function () {
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+							parent.location.reload();
+						}, 1000);
+					} else {
+						Stars.notify(res.msg, 'danger','fa fa-bell-slash');
+					}
+				}).fail(function () {
+					Stars.loading('hide');
+					Stars.notify("{:lang('服务器错误')}", 'danger');
+				});
+        });
+    });
+</script>
+{/block}

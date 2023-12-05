@@ -1,0 +1,103 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<style>
+	input{
+		width: 15px;
+		height: 15px;
+		cursor: pointer;
+		position: relative;
+		top: 3px;
+	}
+</style>
+<div class="row">
+	<div class="col-md-12">
+		<div style="text-align: center;padding-bottom: 20px;">
+			{:lang('链接地址')}：<b class="urlB" style="color: #1E9FFF;"></b>
+		</div>
+		<div class="nav-tabs-custom">
+			<div class="box-body">
+				<table class="table table-builder table-hover table-bordered table-striped mb10">
+					<thead>
+						<th class="">{:lang('商品规格')}</th>
+					</thead>
+					<tbody>
+						<?php foreach($sku_info as $v):?>
+						<tr>
+							<td>
+								<label style="cursor: pointer;">
+									<input class="sku_idInput" name="sku_id" type="radio" value="{$v.sku_id}">
+									{$v.key_name} [{$v.sku_id}]
+								</label>
+							</td>
+						</tr>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+
+				<table class="table table-builder table-hover table-bordered table-striped mb10">
+					<thead>
+						<th class="">{:lang('商品活动')}</th>
+					</thead>
+					<tbody>
+						<?php foreach($activity_info as $v):?>
+						<tr>
+							<td>
+								<label style="cursor: pointer;">
+									<input class="activity_idInput" name="activity_id" type="radio" value="{$v.activity_id}" data-type="{$v.type}">
+									{$v.name} [{$v.activity_id}]
+								</label>
+							</td>
+						</tr>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+	var urlBase = '<?php echo $str_url;?>';
+	var url = '';
+	var sku_id = 0;
+	var activity_id = 0;
+	var activity_type = 0;
+	$('.sku_idInput').change(function() {
+		sku_id = $(this).val();
+
+		url = getUrl();
+		console.log(url)
+	})
+	$('.activity_idInput').change(function() {
+		activity_id = $(this).val();
+		activity_type = $(this).attr('data-type');
+
+		url = getUrl();
+		console.log(url)
+	})
+	$('.sku_idTd').click(function() {
+		// $('.sku_idInput').removeAttr('checked');
+
+		$(this).parent().find('input').attr('checked', 'checked');
+	})
+
+	function getUrl() {
+		var urlLs = urlBase;
+		if (sku_id) {
+			urlLs += '&sku_id=' + sku_id;
+		}
+		if (activity_id) {
+			urlLs += '&activity_id=' + activity_id;
+		}
+		if (activity_type) {
+			urlLs += '&activity_type=' + activity_type;
+		}
+
+		$('.urlB').html(urlLs);
+		return urlLs;
+	}
+	getUrl();
+</script>
+{/block}

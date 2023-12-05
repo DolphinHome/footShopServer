@@ -1,0 +1,156 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom">
+            <div class="box-body">
+                <div class="box-header with-border">
+                    <h5 class="box-title" style="font-size: 14px;">{:lang('订单基础信息')}</h5>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+
+                    <tr>
+                        <th>{:lang('订单号')}</th>
+                        <th>{:lang('订单金额')}</th>
+                        <th>{:lang('应付金额')}</th>
+                        <th>{:lang('实际支付金额')}</th>
+                        <th>{:lang('支付状态')}</th>
+                        <th>{:lang('订单状态')}</th>
+                        <th>{:lang('下单时间')}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr id="{$order_info.order_sn}">
+                        <td>{$order_info.order_sn}</td>
+                        <td>{$order_info.order_money}</td>
+                        <td>{$order_info.payable_money}</td>
+                        <td>{$order_info.real_money}</td>
+                        <td>{if condition="$order_info.pay_status eq '0'"}
+                            {:lang('未付款')}
+                            {elseif condition="$order_info.pay_status eq '1'"/}{:lang('已支付')}{/if}</td>
+                        <td>{$order_info.order_status}</td>
+                        <td>{$order_info.create_time}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="box-header">
+                    <h5 class="box-title" style="font-size: 14px;">{if condition="$detail['refund_type'] eq 1"}{:lang('订单退款信息')}{else /}{:lang('订单退货信息')}{/if}</h5>
+                </div>
+                <div style="display:block" class="row">
+                    <div class="col-lg-6">
+                        <table class="table table-builder table-hover table-bordered table-striped mb10">
+
+                            <tr>
+                                <td><b>{:lang('退货原因')}</b></td><td>{$detail.refund_reason}</td>
+                            </tr>
+                            <tr>
+                                <td><b>{:lang('退货说明')}</b></td>
+                                <td style="overflow: auto; text-overflow: clip; white-space: break-spaces;word-break: break-all">
+                                    {$detail.refund_content}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>{:lang('退货图片')}</b></td><td>
+								{foreach name="$detail.refund_picture" item="v"}
+								<img src="{$v}" alt="" style="width:25px;height:25px;" class="bigPic"/>
+								{/foreach}
+								</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-3">
+
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="box-header with-border">
+                    <h5 class="box-title" style="font-size: 14px;">{:lang('订单商品信息')}</h5>
+                </div>
+                <table class="table table-builder table-hover table-bordered table-striped mb10">
+                    <thead>
+                    <th class="">ID</th>
+                    <th class="">{:lang('商品名称')}</th>
+                    <th class="">{:lang('缩略图')}</th>
+                    <th class="">{:lang('本店价')}</th>
+                    <th class="">{:lang('数量')}</th>
+                    <th class="">{:lang('规格')}</th>
+                    </thead>
+                    <tbody>
+                    {volist name="$order_info.order_goods" id="g"}
+                    <tr>
+                        <td class=""> {$g.goods_id} </td>
+                        <td class=""> {$g.goods_name} </td>
+                        <td class=""><img data-original="{$g.goods_id}" src="{$g.goods_thumb|get_file_url}" alt="" style="width:25px;height:25px;" /></td>
+                        <td class=""> {$g.shop_price}</td>
+                        <td class=""> {$g.num}</td>
+                        <td class=""> {$g.sku_name} </td>
+                        {/volist}
+                    </tbody>
+                </table>
+                <div class="clearfix"></div>
+
+                <div class="box-header with-border">
+                    <h5 class="box-title" style="font-size: 14px;">{:lang('退货操作信息')}</h5>
+                </div>
+                        <table class="table table-builder table-hover table-bordered table-striped mb10">
+                        <thead>
+                            <th class="">ID</th>
+                            <th class="">{:lang('退货状态')}</th>
+                            <th class="">{:lang('驳回原因')}</th>
+                            </thead>
+                             <tbody>
+                                 <td> {$detail.id}</td>
+                        <td class=""> 
+                            {if condition="$detail.status eq 0"}
+                            {:lang('处理中')}
+                            {elseif condition="$detail.status neq 0"/} 
+                            {:lang('已处理')} 【
+                                                        {if condition="$detail.status eq 1"}
+                                                        <font color="#00FF00">{:lang('同意退')}</font>
+                                                        {elseif condition="$detail.status eq -1"/}
+                                                        <font color="#FF0000">{:lang('驳回退')}</font>
+                                                        {elseif condition="$detail.status eq 2"/}
+                                                        <font color="#0000FF">{:lang('已退回')}</font>
+                                                        {elseif condition="$detail.status eq 3"/}
+                                                        <font color="#666666">{:lang('已打款')}</font>
+                                                        {/if}
+                                                        】
+                     {elseif condition="$detail.status neq -2"/} 
+                             {:lang('已取消')}
+                     {/if}
+                        </td>
+                        <td class=""> {$detail.refuse_reason} </td>
+                    </tbody>
+                    </table>
+                    
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+<button type="button" onclick="javascript:history.back(-1);return false;" class="btn btn-primary "><i class="fa fa-mail-reply"></i> {:lang('返回')} </button>
+<script>
+    $(".bigPic").on('click', function () {
+        // console.log('xxxx')
+        var src = this.src;
+        layer.photos({
+            photos: {
+                data: [{
+                    "alt": "{:lang('大图模式')}",
+                    "src": src
+                }]
+            }
+            , shade: 0.5
+            , closeBtn: 2
+            , anim: 0
+            , resize: false
+            , success: function (layero, index) {
+
+            }
+        });
+    });
+</script>
+{/block}

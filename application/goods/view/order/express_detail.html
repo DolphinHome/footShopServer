@@ -1,0 +1,614 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/static/statistics/css/base.css">
+    <link rel="stylesheet" href="/static/statistics/css/orderDetail.css">
+    <!-- element -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <!-- vue -->
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <!-- 引入组件库 element -->
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <style>
+        .btn-list {
+            margin-bottom: 20px;
+        }
+
+        .el-button {
+            padding: 5px 10px;
+        }
+
+        .box-drawer {
+            padding: 25px;
+        }
+
+        .box-drawer-btn {
+            display: flex;
+            justify-content: center;
+            height: 80px;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="el">
+        <div class="fu-order-detail-tips">{:lang('发货单详情')}</div>
+        <!-- 订单基本信息 -->
+        <form action="/admin.php/goods/order/edit_express" method="post" id="form">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>{:lang('基本信息')}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <el-row :gutter="12">
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('订单号')}：</span>
+                            <span>{$order_info.order_sn}</span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('下单时间')}：</span>
+                            <span>{$order_info.create_time}</span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('发货时间')}：</span>
+                            <span>{$order_info.order_express.shipping_time|date="Y-m-d H:i:s"}</span>
+                        </el-col>
+
+                    </el-row>
+
+        </div>
+        <div style="margin-bottom: 10px;">
+            <el-row :gutter="12">
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('流水号')}：</span>
+                    <span>{$order_info.order_express.express_serial_number}</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('购物人')}：</span>
+                    <span>{$buy}</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('配送方式')}：</span>
+                    <span>{$order_info.order_express.express_company}</span>
+                </el-col>
+            </el-row>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <el-row :gutter="12">
+                <el-col :span="8">
+
+                    {if condition="$order_info.order_express.express_no!=''"}
+                    <span class="fu-el-col-tips">{:lang('发货单号')}：</span>
+                    <span>{$order_info.order_express.express_no}</span>
+                    {/if}
+                </el-col>
+            </el-row>
+        </div>
+        <!--<div style="margin-bottom: 10px;">
+            <el-row :gutter="12">
+                <el-col :span="8" style="display: flex;justify-content: flex-start;align-items: center;">
+                    <span class="fu-el-col-tips">{:lang('发货单号')}：</span>
+                    <span>
+
+                        <el-input type="text" v-model="express_no" :disabled="disabled"></el-input>
+
+                    </span>
+                </el-col>
+            </el-row>
+        </div>-->
+                <!--        <div style="margin-bottom: 10px;">
+            <el-row :gutter="12">
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('商品金额')}：</span>
+                    <span>￥{$order_info.order_money}</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('会员折扣')}：</span>
+                    <span>- ￥0.01</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('货币')}：</span>
+                    <span>CNY</span>
+                </el-col>
+            </el-row>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <el-row :gutter="12">
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('运费')}：</span>
+                    <span>￥{$order_info.express_price}</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('优惠券减免')}：</span>
+                    <span>- ￥{$order_info.coupon_money}</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('货币汇率')}：</span>
+                    <span>1</span>
+                </el-col>
+            </el-row>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <el-row :gutter="12">
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('优惠总金额')}：</span>
+                    <span style="display: flex;"><span>￥{$order_info.coupon_money}</span><span class="fu-el-col-tips-js">({:lang('包含优惠券')}，{:lang('满折')}，{:lang('满减等优惠金额')})</span></span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('积分抵扣')}：</span>
+                    <span>-￥0.00</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('下单时间')}：</span>
+                    <span>{$order_info.create_time}
+                        </span>
+                </el-col>
+            </el-row>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <el-row :gutter="12">
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('应付总金额')}：</span>
+                    <span>￥{$order_info.order_money}</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('实付总金额')}：</span>
+                    <span>￥{$order_info.payable_money}</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('更新时间')}：</span>
+                    <span>{$order_info.update_time}
+                        </span>
+                </el-col>
+            </el-row>
+        </div>-->
+            </el-card>
+            <!-- {:lang('优惠明细')} -->
+            <!--        <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>{:lang('优惠明细')}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <el-row :gutter="12">
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('会员价')}：</span>
+                            <span>{:lang('优惠')}￥0.01</span>
+                        </el-col>
+
+                    </el-row>
+                </div>
+            </el-card>-->
+            <!-- 支付信息 -->
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>{:lang('收货人信息')}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <el-row :gutter="12">
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('收货人')}：</span>
+                            <span>{$order_info.receiver_name}</span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('手机号码')}：</span>
+                            <span>{$order_info.receiver_mobile}</span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('送货时间')}：</span>
+                            <span>{$order_info.order_express.shipping_time|date="Y-m-d H:i:s"}</span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('收货地址')}：</span>
+                            <span>
+                                [{$order_info.province}
+                                {$order_info.city}
+                                {$order_info.district}]
+                                {$order_info.receiver_address}
+                            </span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('买家留言')}：</span>
+                            <span></span>
+                        </el-col>
+                    </el-row>
+                </div>
+                <!--        <div style="margin-bottom: 10px;">
+            <el-row :gutter="12">
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('实付金额')}(RMB)：</span>
+                    <span>{$order_info.payable_money}</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('支付积分')}：</span>
+                    <span>0.00</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('支付类型')}：</span>
+                    <span>{$order_info.pay_type}</span>
+                </el-col>
+            </el-row>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <el-row :gutter="12">
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('交易时间')}：</span>
+                    <span>{$order_info.pay_time|date="Y-m-d H:i:s"}</span>
+                </el-col>
+                <el-col :span="8">
+                    <span class="fu-el-col-tips">{:lang('交易结束时间')}：</span>
+                    <span>{$order_info.pay_time|date="Y-m-d H:i:s"}</span>
+                </el-col>
+            </el-row>
+        </div>-->
+
+            </el-card>
+            <!-- 商品清单 -->
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>{:lang('商品清单')}</span>
+                </div>
+
+
+                <el-table :data="tableData" style="width: 100%">
+                    <el-table-column prop="date" label="{:lang('商品图片')}">
+                        <template slot-scope="scope">
+                            <img :src="scope.row.goods_thumb" alt="" class="fu-table-img">
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="goods_name" show-overflow-tooltip label="{:lang('商品名称')}">
+                    </el-table-column>
+                    <el-table-column prop="goods_sn" label="{:lang('货号')}">
+                    </el-table-column>
+                    <el-table-column prop="sku_name" label="{:lang('规格')}">
+                    </el-table-column>
+                    <el-table-column prop="shop_price" label="{:lang('单价')}">
+                    </el-table-column>
+                    <el-table-column prop="num" label="{:lang('数量')}">
+                    </el-table-column>
+
+                    <el-table-column prop="goods_money" label="{:lang('总支付价')}(元)">
+                    </el-table-column>
+                    <el-table-column align="right" label="{:lang('操作')}">
+                        <template slot-scope="scope">
+                            <span @click="out_of_stock(scope.row)" style="color: #0e72e3;cursor: pointer;">{:lang('缺货登记')}</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-card>
+
+            <!-- 发票信息 -->
+            {notempty name="orderInvoice"}
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>{:lang('发票信息')}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <el-row :gutter="12">
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('发票类型')}：</span>
+                            <span>{:lang('普通发票')}</span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('个人')}/{:lang('公司')}：</span>
+                            <span>{$orderInvoice.invoice_type_name}</span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('发票抬头')}：</span>
+                            <span>{$orderInvoice.invoice_title}</span>
+                        </el-col>
+
+                    </el-row>
+                </div>
+                {if condition="$orderInvoice.invoice_type == 2"}
+                <div style="margin-bottom: 10px;">
+                    <el-row :gutter="12">
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('纳税人识别号')}：</span>
+                            <span>{$orderInvoice.invoice_company_duty_paragraph}</span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('开户行')}：</span>
+                            <span>{$orderInvoice.invoice_company_bank}</span>
+                        </el-col>
+
+                    </el-row>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <el-row :gutter="12">
+                        {notempty name="orderInvoice.invoice_company_bank_num"}
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('银行卡账号')}：</span>
+                            <span>{$orderInvoice.invoice_company_bank_num}</span>
+                        </el-col>
+                        {/notempty}
+                        {notempty name="orderInvoice.invoice_company_phone"}
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('公司电话')}：</span>
+                            <span>{$orderInvoice.invoice_company_phone}</span>
+                        </el-col>
+                        {/notempty}
+                        {notempty name="orderInvoice.invoice_company_address"}
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('注册地址')}：</span>
+                            <span>{$orderInvoice.invoice_company_address}</span>
+                        </el-col>
+                        {/notempty}
+                    </el-row>
+                </div>
+                {/if}
+                <div style="margin-bottom: 10px;">
+                    <el-row :gutter="12">
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('发票状态')}：</span>
+                            <span>{$orderInvoice.invoice_status}</span>
+                        </el-col>
+                        <el-col :span="8">
+                            <span class="fu-el-col-tips">{:lang('申请时间')}：</span>
+                            <span>{$orderInvoice.invoice_add_time}</span>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-card>
+            {/notempty}
+
+            <input type="hidden" id="order_goods" name="order_goods" value="{$order_info.order_goods}">
+            <input type="hidden" id="express_company" name="express_company" value="{$express_company}">
+            <input type="hidden" id="order_sn" name="order_sn" value="{$order_sn}">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>{:lang('发货操作信息')}</span>
+                </div>
+                <div style="margin-bottom: 10px;display: flex;justify-content: flex-start;padding-left: 186px;width: 800px">
+                    <div style="width: 114px;text-align: right;">{:lang('操作者')}：</div>
+                    <div style="width: 100px;">admin</div>
+                </div>
+                <div
+                    style="margin-bottom: 10px;display: flex;justify-content: flex-start;padding-left: 200px;width: 800px">
+                    <div style="width: 120px;text-align: right;">{:lang('快递公司')}：</div>
+                    <div style="width: 600px;">
+                        <el-input type="text" v-model="express_company" :disabled="disabled"></el-input>
+                    </div>
+                </div>
+                <div
+                    style="margin-bottom: 10px;display: flex;justify-content: flex-start;padding-left: 200px;width: 800px">
+                    <div style="width: 120px;text-align: right;">{:lang('发货单号')}：</div>
+                    <div style="width: 600px;">
+                        <el-input type="text"   @input="handleChange"    v-model="express_no" :disabled="disabled"></el-input>
+                    </div>
+                </div>
+                {notempty name="orderInvoice"}
+                {if condition="$order_info['order_express']['express_status'] neq 1"}
+<!--                <div-->
+<!--                    style="margin-bottom: 10px;display: flex;justify-content: flex-start;padding-left: 200px;width: 800px;display: flex;">-->
+<!--                    <div style="width: 120px;text-align: right;">{:lang('发票邮寄选择')}：</div>-->
+<!--                    <div style="width: 600px;">-->
+<!--                        <el-radio v-model="radio" :label="1">{:lang('同商品一起邮寄')}</el-radio>-->
+<!--                        <el-radio v-model="radio" :label="2">{:lang('单独邮寄')}</el-radio>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div style="margin-bottom: 10px;display: flex;justify-content: flex-start;padding-left: 186px;width: 800px">
+                    <div style="width: 114px;text-align: right;">{:lang('上传发票')}：</div>
+                    <div>
+                            <div class="col-xs-12 js-upload-image">
+                                <div id="file_list_thumb" class="uploader-list" style="float:left"></div>
+                                <input type="hidden" name="thumb" data-multiple="false" data-watermark='' data-thumb='' data-size="0" data-ext='' id="thumb" value="">
+                                <div style="float:left" id="picker_thumb">载入中...</div>
+                                <div class="clearfix"></div>
+                            </div>
+                    </div>
+                </div>
+<!--                <div id="invoiceSn"-->
+<!--                    style="margin-bottom: 10px;justify-content: flex-start;padding-left: 200px;width: 800px; display: flex;"-->
+<!--                    v-if="radio == 2">-->
+<!--                    <div style="width: 120px;text-align: right;">{:lang('发票发货单号')}：</div>-->
+<!--                    <div style="width: 600px;">-->
+<!--                        <el-input type="text" v-model="invoice_express_no" :disabled="disabled"></el-input>-->
+<!--                    </div>-->
+<!--                </div>-->
+                {/if}
+                {/notempty}
+                <div
+                    style="margin-bottom: 10px;display: flex;justify-content: flex-start;padding-left: 200px;width: 800px">
+                    <div style="width: 120px;text-align: right;">{:lang('操作备注')}：</div>
+                    <div style="width: 600px;">
+                        <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8 }" placeholder="{:lang('请输入内容')}"
+                            v-model="textarea">
+                        </el-input>
+                    </div>
+                </div>
+                <input type="hidden" :value="express_no" name="express_no">
+                <input type="hidden" value="{$express_id}" name="express_id">
+                <input type="hidden" :value="textarea" name="remark">
+                <input type="hidden" :value="invoice_express_no" name="invoice_express_no">
+                <input type="hidden" :value="radio" name="radio">
+                <div
+                    style="margin-bottom: 10px;display: flex;justify-content: space-between;padding-left: 420px;width: 800px;margin-bottom: 20px;">
+                    <div>
+                        {if condition="$order_info['order_express']['express_status'] eq 1"}
+                        <input type="hidden" value="cancel" name="type">
+                        <!--                    <button type="submit">{:lang('取消发货')}</button>-->
+                        {if condition="$order_info['status'] < 3"}
+
+                        <el-button type="primary" onclick="fahuo()">{:lang('取消发货')}</el-button>
+                       {/if}
+                        {else/}
+
+                        <input type="hidden" value="confirm" name="type">
+                        <!--                    <button type="submit">{:lang('发货')}</button>-->
+                        <el-button type="primary" onclick="fahuo()">{:lang('发货')}</el-button>
+                        {/if}
+                        <!--<el-button>{:lang('取消')}</el-button>-->
+                        <el-button native-type="submit" type="primary" style="opacity: 0" id="submitId"></el-button>
+
+                    </div>
+
+                </div>
+
+                <el-table :data="tableList" style="width: 100%">
+                    <el-table-column prop="username" label="{:lang('操作者')}" width="180">
+                    </el-table-column>
+                    <el-table-column prop="create_time" label="{:lang('操作时间')}" width="180">
+                    </el-table-column>
+                    <el-table-column prop="order_status" label="{:lang('订单状态')}">
+                        <template slot-scope="scope">
+                            <el-column v-if="scope.row.order_status==1" size="small">{:lang('已付款')}</el-column>
+                            <el-column v-if="scope.row.order_status==2" size="small">{:lang('已发货')}</el-column>
+                            <el-column v-if="scope.row.order_status==3" size="small">{:lang('已完成')}</el-column>
+                            <el-column v-if="scope.row.order_status==4" size="small">{:lang('已评价')}</el-column>
+                        </template>
+                    </el-table-column>
+                    <!--                <el-table-column
+                                prop="address"
+                                label="{:lang('付款状态')}">
+                        </el-table-column>
+                        <el-table-column
+                                prop="address"
+                                label="{:lang('发货状态')}">
+                        </el-table-column>-->
+                    <el-table-column prop="order_status_text" label="{:lang('操作记录')}">
+                    </el-table-column>
+                    <el-table-column prop="remark" label="{:lang('备注')}">
+                    </el-table-column>
+                </el-table>
+            </el-card>
+        </form>
+        <input type="hidden" id="order_action" name="order_action" value="{$order_action}">
+    </div>
+</body>
+<script type="text/javascript">
+    var lwwan = {
+        'file_upload_url': '/admin.php/admin/upload/save/dir/files/module/admin.html',
+        'image_upload_url': '/admin.php/admin/upload/save/dir/images/module/admin.html',
+        'WebUploader_swf': '/static/plugins/webuploader/Uploader.swf',
+        'upload_check_url': '/admin.php/admin/upload/check.html',
+    }
+</script>
+<script src="__STATIC__/plugins/webuploader/webuploader.min.js?v=20180725"></script>
+
+
+<script>
+    var express_no = "{$order_info.order_express.express_no}";
+    var express_company = "{$order_info.order_express.express_company}";
+    let order_goods = JSON.parse($('#order_goods').val());
+    let orderInvoice = "{$orderInvoice}";
+
+    let order_action = [];
+    let order_action_val = $('#order_action').val();
+    if (order_action_val != undefined) {
+        order_action = JSON.parse(order_action_val);
+    }
+    console.log(order_goods)
+    console.log(order_action,1111111111111)
+    new Vue({
+        el: '#el',
+        data() {
+            return {
+                tableData: order_goods || [],
+                drawer: false,
+                direction: 'rtl',
+                textarea2: '',
+                textarea: '',
+                type: 1,
+                tableList: order_action || [],
+                express_no: express_no,
+                express_company: express_company,
+                disabled: false,
+                value: '',
+                invoice_express_no: '',
+                radio: 1
+            }
+        },
+        mounted() {
+            if (this.express_no) {
+                this.disabled = true;
+            }
+        },
+        methods: {
+            handleChange(item){
+                this.express_no=this.express_no.replace(/[\u4e00-\u9fa5]/ig,'')
+            },
+
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => { });
+            },
+            cancel() {
+                this.drawer = false;
+            },
+            openDrawer(type) {
+                this.drawer = true;
+                this.type = type;
+            },
+            out_of_stock(row) {
+                layer.open({
+                    title: "{:lang('确认')}"
+                    , content: "{:lang('确定要缺货登记吗')}"+'？',
+                    btn: ["{:lang('确认')}", "{:lang('取消')}"]
+                    , yes: function (index, layero) {
+                        var pass_data = {
+                            goods_id: row.goods_id,
+                            sku_id: row.sku_id,
+                            num: row.num,
+                        }
+                        $.ajax({
+                            url: '/admin.php/goods/order/goods_outofstock_add',
+                            type: 'post',
+                            data: pass_data,
+                            success(res) {
+                                if (res.code == 1) {
+                                    Stars.notify(res.msg, 'success');
+                                    setTimeout(function () {
+                                        location.href = res.url;
+                                    }, 1500);
+                                } else {
+                                    Stars.notify(res.msg, 'danger');
+                                    console.log(res.msg);
+                                }
+                            }
+                        })
+                    }
+                });
+
+            }
+        },
+    })
+</script>
+
+<script type="text/javascript">
+    function fahuo() {
+        let express_no = $("input[name='express_no']").val();
+        let express_id = $("input[name='express_id']").val();
+        let remark = $("input[name='remark']").val();
+        let invoice_express_no = $("input[name='invoice_express_no']").val();
+        let radio = $("input[name='radio']").val();
+        console.log(express_no, express_id, remark, invoice_express_no, radio)
+        if (!express_no.trim()) {
+            alert("{:lang('请输入发货单号')}")
+            return;
+        }
+        if (!orderInvoice) {
+            if (radio == 2) {
+                if (!invoice_express_no.trim()) {
+                    alert("{:lang('请输入发票发货单号')}")
+                    return;
+                }
+            }
+            $("input[name='radio']").val(0)
+        }
+        $('#form').submit();
+    }
+</script>>
+
+</html>
+{/block}

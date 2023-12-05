@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{:lang('开票')}</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/static/statistics/css/base.css">
+    <link rel="stylesheet" href="/static/statistics/css/orderDetail.css">
+    <!-- element -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <!-- vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <!-- 引入组件库 element -->
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/layer/3.1.1/layer.js"></script>
+    <style>
+        .btn-list{
+            margin-bottom: 20px;
+        }
+        .el-button{
+            padding: 8px 15px;
+        }
+        .box-drawer{
+            padding: 25px;
+        }
+        .box-drawer-btn{
+            display: flex;
+            justify-content: center;
+            height: 80px;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+<div id="el">
+    <div style="margin-bottom: 10px;display: flex;justify-content: flex-start;display: flex;">
+        <div style="width: 120px;text-align: right;">{:lang('发票邮寄选择')}：</div>
+        <div style="width: 480px;">
+            <el-radio   v-if="order_status < 2" v-model="radio" :label="1">{:lang('同商品一起邮寄')}</el-radio>
+            <el-radio v-model="radio" :label="2">{:lang('单独邮寄')}</el-radio>
+        </div>
+    </div>
+    <div style="justify-content: flex-start; display: flex;margin-top: 10px;" v-if="radio == 2">
+        <div style="width: 120px;text-align: right;">{:lang('选择快递公司')}：</div>
+        <div style="width: 480px;">
+            <el-select v-model="expressValue"  style="width: 200px;"  placeholder="{:lang('请选择')}">
+                <el-option
+                        v-for="item in express_company"
+                        :key="item.aid"
+                        :label="item.name"
+                        :value="item.aid">
+                </el-option>
+            </el-select>
+        </div>
+    </div>
+    <div id="invoiceSn" style="justify-content: flex-start; display: flex;margin-top: 10px;" v-if="radio == 2">
+        <div style="width: 120px;text-align: right;">{:lang('发票发货单号')}：</div>
+        <div style="width: 480px;">
+            <el-input type="text" v-model="invoice_express_no"  ></el-input>
+        </div>
+    </div>
+   
+
+    <div style="display: flex;justify-content: center;margin-top: 20px;">
+        <el-button type="primary" @click="fahuo()"  v-if="radio == 2">{:lang('发货')}</el-button>
+    </div>
+
+
+</div>
+</body>
+<script type="text/javascript">
+    var id = "{$id}";
+    var order_sn = "{$order_sn}";
+    // var order_status = "{$order_status}";
+
+    new Vue({
+        el: '#el',
+        data() {
+            return {
+                invoice_express_no:'',
+                radio:2,
+                order_status:"{$order_status}",
+                express_company: [],
+                expressValue:'',
+             
+            }
+        },
+        watch:{
+            radio(newVal,oldVal){
+                if(newVal == 1){
+                    parent.layer.closeAll();
+                    /*parent.location.href = 'express_detail/id/' + id + '/order_sn/' + order_sn;*/
+                    parent.location.href = 'create_invoice/id/' + id + '/order_sn/' + order_sn;
+                }
+            }
+        },
+        mounted () {
+            this.getDeliveryCompany()
+          
+        },
+        methods: {
+            getDeliveryCompany(){
+                let _this = this;
+                // 发货请求
+                $.post('get_express_company', {}, function(result){
+                    if(result.length > 0){
+                        result =  JSON.parse(result)  
+                    }
+                    if(result.ret == 1 ){
+                        _this.express_company =  result.data
+
+                    }
+                });
+
+            },
+            fahuo(){
+                if(this.radio == 2 && !this.expressValue){
+                    this.$message.error("{:lang('请选择快递公司')}");
+                    return;
+                }
+                if(this.radio == 2 && !this.invoice_express_no.trim()){
+                    this.$message.error("{:lang('请输入发票发货单号')}");
+                    return;
+                }
+                let _this = this;
+                // 发货请求
+                $.post('invoiceUpdate', {'express_company_id':_this.expressValue, 'order_sn':order_sn, 'invoice_express_no':_this.invoice_express_no.trim()}, function(result){
+                    console.log(result);
+                    if(result.status == 2000){
+                        _this.$message.success(result.msg);
+                        setTimeout(function(){
+                            parent.location.reload();
+                        }, 1500);
+                    }else{
+                        _this.$message.error(result.msg);
+                    }
+                });
+            }
+        },
+    })
+</script>
+</html>

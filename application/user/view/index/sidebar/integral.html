@@ -1,0 +1,56 @@
+<div>
+    <table class="table table-builder table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>{:lang('变动前积分')}</th>
+            <th>{:lang('操作积分')}</th>
+            <th>{:lang('变动后积分')}</th>
+            <th>{:lang('备注')}</th>
+            <th class="column-right_button text-center">{:lang('变动时间')}</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {notempty name="integral"}
+        {volist name="integral" id="module"}
+        <tr>
+            <td>{$module.before_score}</td>
+            <td>{$module.change_score}</td>
+            <td>{$module.after_score}</td>
+            <td>{$module.remark}</td>
+
+            <td class="text-center"><?php echo date("Y-m-d H:i:s",$module['create_time']); ?></td>
+        </tr>
+        {/volist}
+        {else /}
+        <tr class="table-empty">
+            <td class="text-center empty-info" colspan="6"><i class="fa fa-database"></i> {:lang('暂无数据')} <br></td>
+        </tr>
+        {/notempty}
+        </tbody>
+
+    </table>
+    <div class="data-table-toolbar">
+        <div class="row">
+            <div class="col-sm-12"> {// 分页 }
+                {notempty name="integral_pages"}
+                {$integral_pages|raw}
+                {/notempty}
+                {notempty name="integral"}
+
+                <div class="pagination-info pull-right">
+                    <div>
+                        <input type="text" class="form-control input-sm go-page" id="go-page" name="page"
+                               value="{:input('param.page', '1')}">
+                        <input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows"
+                               value="{php}echo input('param.list_rows', '') == '' ? $integral->listRows() : input('param.list_rows');{/php}">
+                        / <strong>{$integral->lastPage()|raw}</strong> 页，共 <strong>{$integral->total()|raw}</strong>
+                        {:lang('条数据')}，{:lang('每页显示数量')}
+                    </div>
+                </div>
+                {/notempty}
+            </div>
+        </div>
+    </div>
+
+</div>

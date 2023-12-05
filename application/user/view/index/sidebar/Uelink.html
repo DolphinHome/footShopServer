@@ -1,0 +1,19 @@
+<form id="lFromFromData" method="POST" action="{:url('Project/saveFieldUelink',['project_id'=>$data['aid']])}">
+
+
+	<div class="layui-form-item">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<textarea name="value" placeholder="{:lang('请输入原型图地址')}" class="layui-textarea" id="DataContent" style="min-height: 200px;">{$data['uelink']}</textarea>
+		</div>
+		<input type="hidden" name="id" value="{$data['aid']}" >
+		<input type="hidden" name="db" value="uelink" >
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<button class="layui-btn lLayui-btn" v-on:click="ajaxAdd" data-id="lFromFromData"  type="button">{:lang('提交')}</button>
+		</div>
+	</div>
+
+
+</form>
+

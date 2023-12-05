@@ -1,0 +1,291 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/static/statistics/css/base.css">
+    <link rel="stylesheet" href="/static/statistics/css/reconciliation.css">
+    <!-- element -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <!-- vue -->
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <!-- 引入组件库 element -->
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <!-- jquery -->
+    <script src="/static/admin/js/crm/jquery.min-2.1.4.js"></script>
+    <script src="__PLUG__/jqueryToast/js/toast.js"></script>
+    <script src="__ADMIN_JS__/stars.js"></script>
+</head>
+
+<body>
+    <div id="el">
+        <!-- <h1 class="fu-h1">对账中心</h1> -->
+        <div class="fu-balance-withdraw-list-new">
+            <form action="" id="myForm" method="get">
+                <input type="hidden" name="isExport" value='1'>
+                <input type="hidden" name="payType" :value='searchForm.payType'>
+                <div style="display: flex;flex-wrap: wrap;">
+                    <div class="fu-form-item">
+                        <div class="fu-form-item-title">{:lang('订单号')}</div>
+                        <div class="fu-form-item-data">
+                            <el-input placeholder="{:lang('请输入订单号')}" v-model="searchForm.orderSn" class="input-with-select" name='orderSn' :value='searchForm.orderSn'>
+                            </el-input>
+                        </div>
+                    </div>
+                    <div class="fu-form-item">
+                        <div class="fu-form-item-title" style="margin-left: 10px;">{:lang('支付方式')}</div>
+                        <div class="fu-form-item-data">
+                            <el-select v-model="searchForm.payType" placeholder="{:lang('请选择')}">
+                                </el-option>
+                                <el-option label="{:lang('全部')}"
+                                    value="-1">
+                                </el-option>
+                                <el-option v-for="item in options" :key="item.value" :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </div>
+                    </div>
+                    <!-- <div class="fu-form-item">
+                        <div class="fu-form-item-title">{:lang('日期')}</div>
+                        <div class="fu-form-item-data">
+                            <el-date-picker v-model="timeRange" type="datetimerange" :picker-options="pickerOptions"
+                                value-format='yyyy-MM-dd HH:mm:ss' range-separator="至" start-placeholder="{:lang('开始日期')}"
+                                end-placeholder="{:lang('结束日期')}" align="right" @change='getDateTimerange'>
+                            </el-date-picker>
+                            <input type="hidden" name="startTime" :value='searchForm.startTime'>
+                            <input type="hidden" name="endTime" :value='searchForm.endTime'>
+                        </div>
+                    </div> -->
+                    <div style="margin-left: 10px;">
+                        <el-button type="primary" class="fu-form-item-data-btn" @click="getNewTable">{:lang('查询')}</el-button>
+                        <el-button class="fu-form-item-data-btn" @click='resetData'>{:lang('重置')}</el-button>
+                        <el-button class="fu-form-item-data-btn"   @click='Exp'>{:lang('导出')}</el-button>
+                    </div>
+                </div>
+        </form>
+        </div>
+        <div class="fu-balance-withdraw-list-new">
+            <!-- <div class="fu-balance-withdraw-list-new-title">
+                <div style="display: flex;justify-content: flex-start;">
+                    <span class="fu-balance-withdraw-list-new-title-line"></span>
+                {:lang('提现记录')}
+                </div>
+                <a class="fu-balance-withdraw-list-new-title-tip-text">{:lang('提现到账时间说明')}</a>
+            </div> -->
+            <el-table :data="tableData" style="width: 100%" border  fit ref="tabled" id="tabled">
+                <el-table-column  min-width="240"   prop="" label="{:lang('交易单号')}" >
+                    <template slot-scope="scope">
+                        <div class="fu-table-item-order">
+                            <span>{{scope.row.transactionNo?scope.row.transactionNo:'无' }}</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="" label="{:lang('订单号')}" width="220">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.orderSn}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop=""   width="120"  label="{:lang('下单人昵称')}">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.user_nickname}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="" width="120"  label="{:lang('订单金额')}（元）" >
+                    <template slot-scope="scope">
+                        <span>{{scope.row.orderAmount}}</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column prop=""   min-width="120"   label="{:lang('实付总金额')}" >
+                    <template slot-scope="scope">
+                        <span>{{scope.row.realAmount}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="" width="120" label="{:lang('优惠金额')}" >
+                    <template slot-scope="scope">
+                        <span>{{scope.row.discount_money}}</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column   prop="payType" label="{:lang('支付方式')}" >
+                    <template slot-scope="scope">
+                        <span>{{scope.row.payType?scope.row.payType:'未知'}}</span>
+                    </template>
+                </el-table-column>
+                
+                <el-table-column prop="isFinish" width="160"   label="{:lang('是否完成对账')}" >
+                </el-table-column>
+                <el-table-column prop="createTime"  width="170"  label="{:lang('交易时间')}" >
+                </el-table-column>
+            </el-table>
+            <div style="margin-top: 10px;text-align: right;">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                    :current-page="pageObj.page" :page-sizes="[10, 20, 30, 50,100]" :page-size="pageObj.limit"
+                    layout="total, sizes, prev, pager, next, jumper" :total="pageObj.total">
+                </el-pagination>
+            </div>
+        </div>
+
+    </div>
+
+    <input type='hidden' id="getCheckCenterData" value="{$getCheckCenterData}">
+</body>
+<script>
+    new Vue({
+        el: '#el',
+        data() {
+            return {
+                timeRange: '',
+                searchForm: {
+                    orderSn: '',
+                    startTime: '',
+                    endTime: '',
+                    payType: '-1',
+                },
+                pageObj: {
+                    page: 1,
+                    total: 0,
+                    limit: 10
+                },
+                tableData: [],
+                options: [{
+                    value: 'wxpay',
+                    label: "{:lang('微信')}"
+                }, {
+                    value: 'alipay',
+                    label: "{:lang('支付宝')}"
+                }, {
+                    value: 'appleiap',
+                    label: "{:lang('苹果内购')}"
+                }, {
+                    value: 'balance',
+                    label: "{:lang('余额支付')}"
+                }],
+                pickerOptions: {
+                    shortcuts: [{
+                        text: "{:lang('最近一天')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: "{:lang('最近一周')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: "{:lang('最近一个月')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: "{:lang('最近三个月')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
+            }
+        },
+        mounted() {
+             // 数据渲染
+            let response = JSON.parse(document.getElementById('getCheckCenterData').value)
+            console.log(response)
+            this.tableData = response.result.data
+            this.pageObj.total = response.result.total
+
+            var url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                for(var i = 0; i < strs.length; i ++) {
+                    theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+                }
+            }
+            this.searchForm.payType = theRequest.payType
+            this.searchForm.startTime = theRequest.startTime
+        
+
+        },
+        methods: {
+            Exp(){
+                document.getElementById("myForm").submit()
+            },
+            getNewTable(){
+                this.pageObj.limit =10
+                this.pageObj.page =0
+                this.getTable()
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageObj.limit =val
+                this.getTable()
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.pageObj.page =val
+                this.getTable()
+            },
+            resetData() {
+                this.searchForm.orderSn = ''
+                this.searchForm.startTime = ''
+                this.searchForm.endTime = ''
+                this.searchForm.payType = '-1'
+                this.timeRange = ''
+            },
+            getDateTimerange() {
+                console.log(this.timeRange)
+                if (this.timeRange) {
+                    this.searchForm.startTime = this.timeRange[0]
+                    this.searchForm.endTime = this.timeRange[1]
+                } else {
+                    this.searchForm.startTime = ''
+                    this.searchForm.endTime = ''
+                }
+            },
+            getTable() {
+                this.searchForm.page =this.pageObj.page
+                this.searchForm.list_rows =this.pageObj.limit
+                console.log(this.searchForm)
+                var formData = this.searchForm
+                Stars.loading();
+                $.ajax({
+                    url: "getCheckCenterData",
+                    type: "post",
+                    data: formData,
+                    success: (res) => {
+                        var data = JSON.parse(res)
+                        console.log(data)
+                        this.tableData = data.result.data
+                        this.pageObj.total = data.result.total
+                        // toast提醒
+                        //     Stars.notify('哈哈哈哈','danger');
+                        Stars.loading('hide');
+
+                    }
+                });
+            }
+        },
+    })
+</script>
+
+</html>
+{/block}

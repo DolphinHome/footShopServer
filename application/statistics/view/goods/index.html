@@ -1,0 +1,1005 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- main css -->
+    <link rel="stylesheet" href="/static/goods/css/main.css">
+    <!-- layui css -->
+    <link rel="stylesheet" href="/static/admin/js/layui/css/layui.css">
+    <!-- jquery -->
+    <script src="/static/admin/js/crm/jquery.min-2.1.4.js"></script>
+    <!-- layui js -->
+    <script src="/static/admin/js/layui/layui.js"></script>
+    <!-- 引入echarts -->
+    <script src="/static/plugins/echarts/echarts.min.js"></script>
+    <script src="__PLUG__/jqueryToast/js/toast.js"></script>
+    <script src="__ADMIN_JS__/stars.js"></script>
+    <!-- 引入vue -->
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <style>
+       .shopping .layui-table-page{
+            text-align: end;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="shopping">
+        <!-- <div class="shopping-title">
+            <span>商品数据</span>
+        </div> -->
+        <div class="tab-title">
+            <ul class="tab-list">
+                <li>{:lang('商品概况')}</li>
+                <li>{:lang('商品明细')}</li>
+                <!-- <li>{:lang('商品榜单')}</li> -->
+            </ul>
+        </div>
+        <div class="content-wrap">
+            <!-- tab1 -->
+            <div class="tab-item">
+                <!-- 实时数据标题 -->
+                <!-- <div class="shopping-item-title">
+                    <div class="title-header">
+                        <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                            <div class="title-p"><span>{:lang('实时数据')}</span></div>
+                        </div>
+                        <div class="title-right">
+                            <div class="date-picker-group-wrap">
+                                <div class="date-picker-item  picker_item_goods_pre">
+                                    <div class="date-picker-item-inner">{:lang('今天')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_goods_pre">
+                                    <div class="date-picker-item-inner">{:lang('本周')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_goods_pre">
+                                    <div class="date-picker-item-inner">{:lang('本月')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_goods_pre">
+                                    <div class="date-picker-item-inner">{:lang('本季度')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_goods_pre active">
+                                    <div class="date-picker-item-inner">{:lang('本年')}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid_mmsGridBox__36z-d">
+                    <div class="grgridItem">
+                        <div><span class="gridItemAlias"
+                                style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('商品访客数')}</span>
+                        </div>
+                        <div class="gridItemVaule"><span
+                                class="gridItemVauleText getGoodsVisitors">0</span><span></span>
+                        </div>
+                    </div>
+                    <div class="grgridItem">
+                        <div><span class="gridItemAlias"
+                                style="border-bottom: 1px dashed  rgb(232, 232, 232); padding-bottom: 3px;">{:lang('商品浏览数')}</span>
+                        </div>
+                        <div class="gridItemVaule"><span class="gridItemVauleText getGoodsViews">0</span><span></span>
+                        </div>
+                    </div>
+                    <div class="grgridItem">
+                        <div><span class="gridItemAlias"
+                                style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('支付订单数')}</span>
+                        </div>
+                        <div class="gridItemVaule"><span class="gridItemVauleText getOrderNumber">0</span><span></span>
+                        </div>
+                    </div>
+                    <div class="grgridItem">
+                        <div><span class="gridItemAlias"
+                                style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('支付金额')}</span>
+                        </div>
+                        <div class="gridItemVaule"><span class="gridItemVauleText getSalePrice">0.00</span><span></span>
+                        </div>
+                    </div>
+                    <div class="grgridItem">
+                        <div><span class="gridItemAlias"
+                                style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('支付转化率')}</span>
+                        </div>
+                        <div class="gridItemVaule"><span
+                                class="gridItemVauleText getPaymentConversionRate">-</span><span></span>
+                        </div>
+                    </div>
+                    <div class="grgridItem">
+                        <div><span class="gridItemAlias"
+                                style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('被访问商品数')}</span>
+                        </div>
+                        <div class="gridItemVaule"><span
+                                class="gridItemVauleText getGoodsVisitNumber">0</span><span></span>
+                        </div>
+                    </div>
+                </div> -->
+                <!-- 统计数据标题 -->
+                <div class="shopping-item-title">
+                    <div class="title-header">
+                        <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                            <div class="title-p"><span>{:lang('统计数据')}</span></div>
+                        </div>
+                        <div class="title-right">
+                            <div class="date-picker-group-wrap">
+                                <div class="date-picker-item  picker_item_stat">
+                                    <div class="date-picker-item-inner">{:lang('今天')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_stat">
+                                    <div class="date-picker-item-inner">{:lang('本周')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_stat">
+                                    <div class="date-picker-item-inner">{:lang('本月')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_stat">
+                                    <div class="date-picker-item-inner">{:lang('本季度')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_stat active">
+                                    <div class="date-picker-item-inner">{:lang('本年')}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 统计数据内容 -->
+                <div class="list__wrapper relative">
+                    <div class="card-inner__wrapper">
+                        <div class="card-inner__wrapper-box">
+                            <div class="selected item__wrapper">
+                                <div><span class="alias">{:lang('商品访客数')}</span></div>
+                                <p><span class="value getGoodsVisitors">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('年')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('商品浏览量')}</span></div>
+                                <p><span class="value getGoodsViews">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('年')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('支付买家数')}</span></div>
+                                <p><span class="value orderPayUser">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('年')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('支付订单数')}</span></div>
+                                <p><span class="value getOrderNumber">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('年')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('支付转化率')}</span></div>
+                                <p><span class="value getPaymentConversionRate">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('年')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('支付金额')}</span></div>
+                                <p><span class="value getSalePrice">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('年')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('商品收藏用户数')}</span></div>
+                                <p><span class="value goodCollectUser">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('年')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                            <div class="item__wrapper">
+                                <div><span class="alias">{:lang('被访问商品数')}</span></div>
+                                <p><span class="value getGoodsVisitNumber">-</span></p>
+                                <p class=" ratio__wrapper"><span
+                                        class="ratio-text text-tip-xs setTimeInfo">{:lang('较前')}1{:lang('年')}</span><span
+                                        class="ratio-value growthRatio">0.00%</span><span
+                                        class="text-tip-xs ml-5"></span><i data-testid="beast-core-icon-arrow-_filled"
+                                        class="outerWrapper_4  " style="font-size: 14px;"></i></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="echart-content">
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="main" style="width: 100%;height:400px;"></div>
+                </div>
+            </div>
+            <!-- tab2 -->
+            <div class="tab-item">
+                <!-- 商品明细标题 -->
+                <div class="shopping-item-title">
+                    <div class="title-header">
+                        <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                            <div class="title-p"><span>{:lang('商品明细')}</span></div>
+                            <div class="title-date"></div>
+                        </div>
+                        <div class="title-right">
+                        </div>
+                    </div>
+                </div>
+                <div class="product-detail_filterBox__Rq7fI">
+                    <div class="search-flex">
+                        <div class="product-detail_filterLabel">{:lang('商品分类')}</div>
+                        <div class="layui-input-inline" style="width:260px"  id="app">
+                            <!-- <select name="cid" id="category" class="form-control select2 custom-css">
+                                {volist name="category" id="cate"}
+                                <option value="{$key}" {if strval($key)===strval($map['cid'])}selected{/if}>{neq
+                                    name="key" value="0"}{$cate|raw}{else /}{:lang('全部分类')}{/neq}</option>
+                                {/volist}
+                            </select> -->
+                            <input type="hidden" name="cid" v-model='goods_cid' id="category">
+                            <el-cascader
+                            size='small'
+                            style="width:260px"
+                            :options="goodsOptions"
+                            v-model='goods_cid_list'
+                            :props="{ checkStrictly: true,
+                            value:'id',
+                            label:'name',
+                            children:'children'}"
+                            clearable
+                            @change='goodsOptionsChange'
+                            ref="cascaderHandle" 
+                            :show-all-levels="false" 
+                            filterable></el-cascader>
+                        </div>
+                        <div class="product-detail_filterLabel">{:lang('商品名称')}</div>
+                        <input placeholder="{:lang('请输入商品名称')}" type="text" class="IPT_input_4" value="" style="width: 240px;">
+                        <div class="product-detail_filterLabel">{:lang('选择时间')}</div>
+                        <div class="layui-input-inline" style="width:260px">
+                            <input type="text" class="layui-input" id="test10" placeholder="{:lang('请选择时间')}">
+                        </div>
+
+                        <div class="product-detail_filterLine">
+                            <!-- <div class="product-detail_filterArea__3n-s0"> -->
+                                <button class="btn-search searchSub" ><span>{:lang('查询')}</span></button>
+                                <button  class="btn-search downloadSub"  style="border: 1px solid #E6A23C; background-color: #E6A23C;margin-left: 10px;"> <span>{:lang('导出')}</span></button>
+                            <!-- </div> -->
+                        </div>
+
+                    </div>
+                  
+                </div>
+                <table class="layui-hide" id="test"></table>
+            </div>
+            <!-- tab3 -->
+            <div class="tab-item">
+                <!-- 商品榜单标题 -->
+                <div class="shopping-item-title">
+                    <div class="title-header">
+                        <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                            <div class="title-p"><span>{:lang('商品榜单')}</span></div>
+                            <!-- <div class="title-date lastTime"></div> -->
+                        </div>
+                        <div class="title-right">
+                            <div class="date-picker-group-wrap">
+                                <div class="date-picker-item picker_item_Top">
+                                    <div class="date-picker-item-inner">{:lang('今天')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_Top">
+                                    <div class="date-picker-item-inner">{:lang('本周')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_Top">
+                                    <div class="date-picker-item-inner">{:lang('本月')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_Top">
+                                    <div class="date-picker-item-inner">{:lang('本季度')}</div>
+                                </div>
+                                <div class="date-picker-item picker_item_Top active">
+                                    <div class="date-picker-item-inner">{:lang('本年')}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 排行榜 -->
+                <div class="flex">
+                    <div style="width: 50%;margin: 10px;">
+                        <div class="visitor-item">
+                            <div style="width: 50%;">{:lang('访客榜')}Top10</div>
+                            <div style="width: 50%;">
+                            </div>
+                        </div>
+
+                        <table class="layui-table visitor-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="300">
+                                <col width="150">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>{:lang('排名')}</th>
+                                    <th>{:lang('商品')}</th>
+                                    <th>{:lang('访客数')}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="viewTop">
+                                <!-- <tr style="text-align: center;">
+                                    <td colspan='3'>暂无数据</td>
+                                </tr> -->
+                                <!-- <tr>
+                                    <td>贤心</td>
+                                    <td>2016-11-29</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>许闲心</td>
+                                    <td>2016-11-28</td>
+                                    <td>2016-11-28</td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="width: 50%;margin: 10px;">
+                        <div class="visitor-item">
+                            <div style="width: 50%;">{:lang('支付榜')}Top10</div>
+                            <div style="width: 50%;">
+                            </div>
+                        </div>
+
+                        <table class="layui-table visitor-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="300">
+                                <col width="150">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>{:lang('排名')}</th>
+                                    <th>{:lang('商品')}</th>
+                                    <th>{:lang('支付数')}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="payTop">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- 结束 -->
+        </div>
+    </div>
+    <input type='hidden' id="goodsData" value="{$goodsData}">
+    <input type='hidden' id="goodsDataList" value="{$goodsDataList}">
+    <input type='hidden' id="getGoodsList" value="{$getGoodsList}">
+    <input type='hidden' id="goodsTop" value="{$goodsTop}">
+</body>
+
+<!-- <script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+  	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script> -->
+<script>
+    // 向url追加参数
+    function queryUrl(obj) {
+        var newurl = updateQueryStringParameter(window.location.href, obj.key, obj.value);
+        //向当前url添加参数，没有历史记录
+        window.history.replaceState({
+            path: newurl
+        }, '', newurl);
+
+        function updateQueryStringParameter(uri, key, value) {
+            if (!String(value)) {
+                return uri;
+            }
+            var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+            var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+            if (uri.match(re)) {
+                return uri.replace(re, '$1' + key + "=" + value + '$2');
+            }
+            else {
+                return uri + separator + key + "=" + value;
+            }
+        }
+    }
+    function getQueryVariable(variable) {
+        // var a = document.createElement("a")
+        // a.href = 'http://www.runoob.com/index.php?id=1&image=awesome.jpg';
+        //得到一个url路径
+        var query = window.location.search.substring(1)//截取掉第一个字符？
+        //获取当前页面是window.location.search.substring(1)
+        var vars = query.split("&");//以&为区分将字符串转化为数组
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");//以=为区分将数组的=前后转化为数组的值
+            if (pair[0] == variable) {
+                return pair[1];
+            }
+        }
+        return (false);
+    }
+    // tab切换
+    $('.tab-item').eq(getQueryVariable('tabIndex')).show()
+    $('.tab-list li').eq(getQueryVariable('tabIndex')).addClass('active').siblings().removeClass('active')
+    $('.tab-list li').click(function () {
+        $(this).addClass('active').siblings().removeClass('active')
+        $('.tab-item').eq($(this).index()).show().siblings().hide()
+        queryUrl({ key: 'tabIndex', value: $(this).index() })
+    })
+
+    // 日历切换
+
+    $('.picker_item').click(function () {
+        $(this).addClass('active').siblings().removeClass('active')
+    })
+
+var timeRange =''
+    layui.use(['layer', 'form', 'laydate'], function () {
+        var layer = layui.layer
+            , form = layui.form;
+        var laydate = layui.laydate;
+        //日期时间范围
+        laydate.render({
+            elem: '#test10'
+            , type: 'datetime'
+            , range: true,
+            done: function(value, date, endDate){
+                timeRange = value
+	        console.log(value); //得到日期生成的值，如：2017-08-18
+	      }
+        });
+        form.render('select', 'myDiv');
+    });
+$('.searchSub').click(function(){
+        var data ={
+            goodsTypeId:$('#category').val(),
+            goodsName:$('.IPT_input_4').val(),
+            startTime:timeRange.slice(0,19),
+            endTime:timeRange.slice(22,41),
+        }
+        console.log(data)
+
+
+    tableData(data)
+})
+
+let that = this
+$('.downloadSub').click(function(){
+        var data ={
+            goodsTypeId:$('#category').val(),
+            goodsName:$('.IPT_input_4').val(),
+            startTime:timeRange.slice(0,19),
+            endTime:timeRange.slice(22,41),
+            is_import:true,
+        }
+        console.log(data)
+        // tableData(data)
+    let reqUrl = that.serialize(data)
+    window.location.href = 'getGoodsList?' + reqUrl
+})
+
+function serialize(data) {
+    let str = '';
+    Object.keys(data).forEach(key => {
+        str += key + '=' + data[key] + '&'
+    })
+    str = str.substr(0, str.length - 1);
+    return str;
+}
+
+
+tableData()
+function tableData(data){
+
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#test',
+            method: 'POST',
+            where: data,
+            url: 'getGoodsList',
+            cols: [[
+                { field: 'name', title: '商品名称' }
+                , { field: 'sn', title: '商品货号', sort: true }
+
+                , { field: 'goodsView', title: '商品浏览量', sort: true }
+                , { field: 'goodsPayNum', title: '支付件数', sort: true }
+                , { field: 'goodsPayUserNum', title: '支付买家数', sort: true }
+                , { field: 'goodsPaytAmount', title: '支付金额', sort: true }
+                , { field: 'goodsPayPercent', title: '支付转化率', sort: true }
+                , { field: 'goodsCollectUserNum', title: '商品收藏用户数', sort: true }
+                // , { field: 'goodsFlowLoss', title: '流量损失指数', sort: true }
+            ]],
+            response: {
+            countName: 'count' //规定数据总数的字段名称，默认：count
+        } ,
+            parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                res = JSON.parse(res)
+                console.log(res)
+                return {
+                    "code": res.status == 2000 ? 0:res.status, //返回状态码
+                    "msg": res.msg, //解析提示信息
+                    "count": res.result.total, //后台返回的数据总条数，用于自定义分页使用
+                    "data": res.result.data //解析数据列表
+                };
+            },
+            done: function(res, curr, count){
+                console.log(res,curr,count);
+            },
+            request: {
+                 pageName: 'page', // page
+                 limitName: 'list_rows' // limit
+             },
+            page: true
+        });
+    });
+}
+    
+
+    // 基于准备好的dom，初始化echarts实例
+    function echartFun(val, arr, str, average, excellent) { // 参数依次为： 数据列表, 参数2 echart列表, 分项名称, 均值, 优秀值
+        var list = { browseCount: [], dateFormat: [] };
+        var averageList = { browseCount: [] };
+        var excellentList = { browseCount: [] };
+        val[arr].forEach((item, index) => {
+            // 数据
+            list.browseCount.push(item.browseCount)
+            list.dateFormat.push(item.dateFormat)
+            // 均值数据
+            averageList.browseCount.push(val[average])
+            // 优秀值数据
+            excellentList.browseCount.push(val[excellent])
+        })
+        var myChart = echarts.init(document.getElementById('main'));
+        var colors = ['#5793f3', '#d14a61', '#675bba'];
+        var option = {
+            color: colors,
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: [str, str + '均值', str + '优秀值'],
+                left: 10,
+                icon: 'rect', //设置方形
+                itemWidth: 10,  // 设置宽度
+                itemHeight: 10, // 设置高度
+                itemGap: 20 // 设置间距
+            },
+            grid: {
+                top: 70,
+                bottom: 50
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: list.dateFormat,
+                    //设置轴线的属性
+                    axisLine: {
+                        lineStyle: {
+                            color: '#C7C3C3',
+                            width: .5,//这里是为了突出显示加上的
+                        },
+                    },
+                    axisLabel: {
+                        show: true,
+                        textStyle: {
+                            color: '#545454'
+                        }
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            type: 'dotted',
+                            color: '#EAEAEA'
+                        }
+                    },
+                    axisTick: { //y轴刻度线
+                        show: false
+                    },
+                    axisLine: {
+                        show: false
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: str,
+                    type: 'line',
+                    symbol: "none",
+                    smooth: true,
+                    data: list.browseCount,
+                    itemStyle: {
+                        normal: {
+                            lineStyle: {
+                                width: 0.8// 0.1的线条是非常细的了 
+                            }
+                        }
+                    },
+                },
+                {
+                    name: str + '均值',
+                    type: 'line',
+                    smooth: true,
+                    symbol: "none",
+                    data: averageList.browseCount,
+                    itemStyle: {
+                        normal: {
+                            lineStyle: {
+                                width: 1
+                            }
+                        }
+                    },
+                },
+                {
+                    name: str + '优秀值',
+                    type: 'line',
+                    smooth: true,
+                    symbol: "none",
+                    data: excellentList.browseCount,
+                    itemStyle: {
+                        normal: {
+                            lineStyle: {
+                                width: 1
+                            }
+                        }
+                    },
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+    // 数据渲染
+    let queryData = JSON.parse($('#goodsData').val())
+    queryDataFun(queryData)
+    function queryDataFun(queryData) {
+        $('.getGoodsVisitors').html(queryData.result.goodsVisitors)
+        $('.getGoodsViews').html(queryData.result.goodsViews)
+        $('.getOrderNumber').html(queryData.result.orderNumber)
+        $('.getSalePrice').html(queryData.result.salePrice)
+        $('.getPaymentConversionRate').html(queryData.result.paymentConversionRate + '%')
+        $('.getGoodsVisitNumber').html(queryData.result.goodsVisitNumber)
+        $('.orderPayUser').html(queryData.result.orderPayUser)
+        $('.goodCollectUser').html(queryData.result.goodCollectUser)
+    }
+
+    let goodsDataList = JSON.parse($('#goodsDataList').val())
+    sessionStorage.setItem('getGoodsDataList_c', $('#goodsDataList').val())
+    goodsDataListFun(goodsDataList, 0)
+    function goodsDataListFun(goodsDataList, typeInfo) {
+
+        // 商品访客数
+        var getGoodsVisitorsData = goodsDataList.result.getGoodsVisitorsData
+        $('.stageGoodsVisitors').eq(0).html(getGoodsVisitorsData.stageGoodsVisitors)
+        $('.growthRatio').eq(0).html(getGoodsVisitorsData.growthRatio + '%')
+        // 商品浏览量
+        var getGoodsViewsData = goodsDataList.result.getGoodsViewsData
+        $('.stageGoodsVisitors').eq(1).html(getGoodsViewsData.stageGoodsViews)
+        $('.growthRatio').eq(1).html(getGoodsViewsData.growthRatio + '%')
+        // 支付买家数
+        var getOrderPayUserData = goodsDataList.result.getOrderPayUserData
+        $('.stageGoodsVisitors').eq(2).html(getOrderPayUserData.stageOrderPayUser)
+        $('.growthRatio').eq(2).html(getOrderPayUserData.growthRatio + '%')
+        // 支付订单数
+        var getOrderNumberData = goodsDataList.result.getOrderNumberData
+        $('.stageGoodsVisitors').eq(3).html(getOrderNumberData.stageOrderNumber)
+        $('.growthRatio').eq(3).html(getOrderNumberData.growthRatio + '%')
+        // 支付转化率
+        var getPaymentConversionRateData = goodsDataList.result.getPaymentConversionRateData
+        $('.stageGoodsVisitors').eq(4).html(getPaymentConversionRateData.stagePayRate)
+        $('.growthRatio').eq(4).html(getPaymentConversionRateData.growthRatio + '%')
+        // 支付金额
+        var getSalePriceData = goodsDataList.result.getSalePriceData
+        $('.stageGoodsVisitors').eq(5).html(getSalePriceData.stageSalePrice)
+        $('.growthRatio').eq(5).html(getSalePriceData.growthRatio + '%')
+        // 商品收藏用户数
+        var getGoodsCollectionData = goodsDataList.result.getGoodsCollectionData
+        $('.stageGoodsVisitors').eq(6).html(getGoodsCollectionData.stageGoodsCollection)
+        $('.growthRatio').eq(6).html(getGoodsCollectionData.growthRatio + '%')
+        // 商品收藏用户数
+        var getGoodsVisitNumberData = goodsDataList.result.getGoodsVisitNumberData
+        $('.stageGoodsVisitors').eq(7).html(getGoodsVisitNumberData.stageGoodsVisitNumber)
+        $('.growthRatio').eq(7).html(getGoodsVisitNumberData.growthRatio + '%')
+        typeInfo = String(typeInfo)
+        switch (typeInfo) {
+            case '0':
+                echartFun(getGoodsVisitorsData, 'goodsVisitorsList', '商品访客数', 'goodsVisitorsAverage', 'goodsVisitorsExcellent')
+                break;
+            case '1':
+                echartFun(getGoodsViewsData, 'goodsViewsList', '商品浏览量', 'goodsViewsAverage', 'goodsViewsExcellent')
+                break;
+            case '2':
+                echartFun(getOrderPayUserData, 'orderPayUserList', '支付买家数', 'orderPayUserAverage', 'orderPayUserExcellent')
+                break;
+            case '3':
+                echartFun(getOrderNumberData, 'orderNumberList', '支付订单数', 'orderNumberAverage', 'orderNumberExcellent')
+                break;
+            case '4':
+                echartFun(getPaymentConversionRateData, 'paymentConversionRateList', '支付转化率', 'paymentConversionRateAverage', 'paymentConversionRateMax')
+                break;
+            case '5':
+                echartFun(getSalePriceData, 'salePriceList', '支付金额', 'salePriceAverage', 'salePriceExcellent')
+                break;
+            case '6':
+                echartFun(getGoodsCollectionData, 'goodsCollectionList', '商品收藏用户数', 'goodsCollectionAverage', 'goodsCollectionExcellent')
+                break;
+            case '7':
+                echartFun(getGoodsVisitNumberData, 'goodsVisitNumberList', '被访问商品数', 'goodsVisitNumberAverage', 'goodsVisitNumberExcellent')
+                break;
+        }
+    }
+
+    //   实时数据切换日期接口 
+    var goodsPreArr = ['day', 'week', 'month', 'quarter', 'year'];
+    var timeArr = ['较前1年', '较前1周', '较前1月', '较前1季度', '较前1年']
+
+    $('.picker_item_stat').click(function () {
+        $(this).addClass('active').siblings().removeClass('active')
+        var times = goodsPreArr[$(this).index()]
+        Stars.loading();
+        $.ajax({
+            url: "getGoodsData",
+            type: "post",
+            data: { times },
+            success: function (res) {
+                queryDataFun(JSON.parse(res))
+                // toast提醒
+                //     Stars.notify('哈哈哈哈','danger');
+                Stars.loading('hide');
+
+            }
+        });
+    })
+    // 统计数据切换日期接口 
+    $('.picker_item_stat').click(function () {
+        // console.log($(this).index())
+        $(this).addClass('active').siblings().removeClass('active')
+        var times = goodsPreArr[$(this).index()]
+        $('.setTimeInfo').html(timeArr[$(this).index()])
+        Stars.loading();
+        $.ajax({
+            url: " getGoodsDataList",
+            type: "post",
+            data: { times },
+            success: (res) => {
+                var data = JSON.parse(res)
+                if (data.status == 2000) {
+                    var index = sessionStorage.getItem('getGoodsDataList_c_index')
+                    if(!index){
+                        index =0
+                    }
+                    goodsDataListFun(data, index)
+                    console.log(data,index)
+                    sessionStorage.setItem('getGoodsDataList_c', res)
+                } else {
+                    Stars.notify(data.msg, 'danger');
+                }
+                // toast提醒
+                //     Stars.notify('哈哈哈哈','danger');
+                Stars.loading('hide');
+
+            }
+        });
+    })
+    // 统计tab切换
+    $('.item__wrapper').click(function () {
+        var data = JSON.parse(sessionStorage.getItem('getGoodsDataList_c'))
+        sessionStorage.setItem('getGoodsDataList_c_index', $(this).index())
+        goodsDataListFun(data, $(this).index())
+        $(this).addClass('selected').siblings().removeClass('selected')
+    })
+
+    function clearinput() {
+        $(".marBtm").find('input').val('');
+        $(".marBtm").find(".select2").val(0).trigger('change');
+    }
+
+    // 榜单数据渲染
+    // 
+      // 数据渲染
+      let goodsTopData = JSON.parse($('#goodsTop').val())
+          // 访客榜
+          renderTableData(goodsTopData.result.viewTopList, '.viewTop', 'viewNum')
+                // 支付榜
+                renderTableData(goodsTopData.result.payTopList, '.payTop', 'payNum')
+
+    function getTopListDataFun(times) {
+        $.ajax({
+            url: "goodsTop",
+            type: "post",
+            data: { times },
+            success: function (res) {
+                // toast提醒
+                //     Stars.notify('哈哈哈哈','danger');
+                Stars.loading('hide');
+                res = JSON.parse(res)
+                console.log(res)
+                // $('.lastTime').html('（统计时间：' + res.result.lastStatTime + '）')
+                // 访客榜
+                renderTableData(res.result.viewTopList, '.viewTop', 'viewNum')
+                // 支付榜
+                renderTableData(res.result.payTopList, '.payTop', 'payNum')
+            }
+        });
+    }
+    // 榜单逻辑处理
+    function renderTableData(list, el, num) {
+        var TopHtml = ''
+        var emptyTopHtml = ` <tr style="text-align: center;">
+                                    <td colspan='3'>暂无数据</td>
+                                </tr>`
+        list.forEach((item, index) => {
+            TopHtml += `
+                    <tr>
+                        <td>${item.ranking}</td>
+                        <td>${item.goodsName}</td>
+                        <td>${item[num]}</td>
+                    </tr>
+                    `
+        })
+        // 判断表格为空
+        if (list.length == 0) {
+            TopHtml = emptyTopHtml
+        }
+        $(el).html(TopHtml)
+    }
+    $('.picker_item_Top').click(function () {
+        $(this).addClass('active').siblings().removeClass('active')
+        var times = goodsPreArr[$(this).index()]
+        Stars.loading();
+        getTopListDataFun(times)
+    })
+
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {
+			goods_cid_list:[], // 商品分类id的多级信息
+			goods_cid:'',  //商品分类id
+            goodsOptions:[], // 商品分类
+            timer:null, // 定时器
+        }
+    },
+    mounted() {
+        this.getGoodsOptions()
+		  let cid =this.getQueryVariable('cid')
+		  console.log(cid)
+		  if(cid){
+			this.goods_cid =cid
+          }
+          	  // 点击文字即选中
+		this.timer =  setInterval(function() {
+　　　　　　document.querySelectorAll(".el-cascader-node__label").forEach(el => {
+　　　　　　　　el.onclick = function() {
+　　　　　　　　　　if (this.previousElementSibling) this.previousElementSibling.click();
+　　　　　　　　};
+　　　　　　});
+　　　　}, 1000);
+    },
+    destroyed(){
+		clearInterval(this.timer)
+	  },
+    methods: {
+    
+		  	// 处理cid在三级联动的位置,
+			  getCidList(val,id){
+						let cid_list =[]
+						val.forEach((item,index)=>{
+							if(item.id ==id){
+								cid_list = [item.id]
+								return false
+							}else{
+								if(item.children){
+									let newCid_list =[item.id]
+									let list = nodefun(item.children,id,newCid_list)
+									if(list) {
+										cid_list =list
+									}
+								}
+							}
+						})
+						// 递归函数
+						function nodefun(newVal,newId,newCid_list){
+							let flag =false
+							newVal.forEach(j=>{
+								// console.log(j)
+								if(j.id == newId){
+									newCid_list.push(j.id)
+									flag =true
+								}else{
+									if(j.children){
+										let	cid_list = JSON.parse(JSON.stringify(newCid_list))
+										cid_list.push(j.id)
+										let list =  nodefun(j.children,newId,cid_list)
+										if(list){
+											newCid_list =list 
+											flag =true
+										}
+									}
+
+								}
+							})
+							if(flag){
+								return	newCid_list						
+							}
+						}
+						return	cid_list
+			},
+		 getQueryVariable(variable){
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i=0;i<vars.length;i++) {
+					var pair = vars[i].split("=");
+					if(pair[0] == variable){return pair[1];}
+				}
+				return(false);
+			},
+
+		  // 获取分类接口数据
+		getGoodsOptions(){
+			let that =this
+			$.get("/admin.php/goods/category/getcategorylist",function(data,status){
+			   if(data.code == 1){
+				console.log('获取商品分类',data.data)
+				that.goodsOptions =data.data
+				// 递归获取cid的位置
+				if(that.goods_cid){
+					that.goods_cid_list = 	that.getCidList(that.goodsOptions,that.goods_cid)
+				}
+			   }else{
+				  that.$message({
+						message: data.msg,
+						type: 'warning'
+					});
+			   }
+			
+			})
+		},
+		// 商品分类选择改变时
+		goodsOptionsChange(e){
+			if(this.goods_cid_list.length>0){
+				this.goods_cid = this.goods_cid_list[this.goods_cid_list.length-1]
+			}else{
+				this.goods_cid =''
+			}
+            // this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+            // 监听是否为最后一级，如果为最后一级，面板收起
+			var children = this.$refs.cascaderHandle.getCheckedNodes();
+          if(children[0].children.length < 1){   //判断有没有下级
+            this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+		  }
+			console.log(e,this.goods_cid)
+        },
+    }
+})
+
+</script>
+
+</html>
+{/block}

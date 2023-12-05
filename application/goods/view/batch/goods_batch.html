@@ -1,0 +1,496 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/main.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/iconfont.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/order-new.css?v=2">
+{/block}
+
+{block name="content"}
+  <!-- 引入vue -->
+  <script src="/static/plugins/vue/vue.min.js"></script>
+  <script src="/static/plugins/element-ui/element-ui.js"></script>
+  <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+<style type="text/css">
+    .select-list {
+        width:150px;
+        height:150px;
+        /*overflow: hidden;*/
+        overflow:scroll;
+    }
+    .select-container {
+        display: none;
+    }
+    .select2 {
+        width: 140px !important;
+    }
+</style>
+<div class="warpper">
+    <div class="title">{:lang('商品')} - {:lang('商品批量修改')}</div>
+    <div class="content">
+        <div class="tabs_info">
+            <ul>
+
+                <li class="curr"><a href="goods_batch">{:lang('商品批量修改')}</a></li>
+<!--                <li><a href="/admin.php/goods/index/goodsimport">{:lang('商品批量上传')}</a></li>-->
+                <li><a href="goods_derive_all">{:lang('商品批量导出')}</a></li>
+                <li><a href="goods_auto_grounding">{:lang('批量自动上下架')}</a></li>
+                <li><a href="goods_stock_export">{:lang('商品库存导出')}</a></li>
+                <li><a href="goods_stock_import">{:lang('商品进货库存导入')}</a></li>
+            </ul>
+        </div>
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{:lang('操作提示')}</h4><span id="explanationZoom" title="{:lang('收起提示')}"></span></div>
+            <ul>
+                <li>{:lang('根据分类')}、{:lang('品牌或者货号搜索商品')}，{:lang('在选择的商品列表中选中需要批量编辑的商品')}。</li>
+                <li>{:lang('编辑可在选中商品编辑列表进行编辑')}，{:lang('如修改市场价格')}、{:lang('本地价格')}、{:lang('赠送积分')}、{:lang('库存等信息')}。</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="common-content">
+                <!-- <form name="theForm" method="post" action="goods_batch.php?act=edit" onsubmit="return getGoodsIDs()"> -->
+                    <div class="step" ectype="filter" data-filter="goods">
+                        <div class="step_content">
+                            <!-- <div class="batch_tab">
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="select_method" id="sm_cat" class="ui-radio-16x16" value="cat" checked="">
+                                        <label for="sm_cat" class="ui-radio-label-16x16">{:lang('根据商品分类')}、{:lang('品牌')}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="select_method" id="sm_sn" value="sn" class="ui-radio-16x16">
+                                        <label for="sm_sn" class="ui-radio-label-16x16">{:lang('根据商品货号')}</label>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div id="category_brand_screen">
+                                <form action="goods_batch" method="get" id="search_form" class="marBtm" style="padding:10px;">
+                                <div class="goods_search_div" >
+                                    <div class="goods_search_div">
+                                        <div class=" " style="display: flex;align-items: center">
+                                            <span class="txt"  style="width: 100px;">{:lang('所属分类')}：</span>
+                                            <!-- <select name="cid" id="category" class="form-control select2 custom-css" style="width: 200px;" >
+                                            {volist name="category" id="cate"}
+                                                <option value="{$key}" {if $key== $cid}selected{/if}>{neq name="key" value="0"}{$cate}{else /}{:lang('全部分类')}{/neq}</option>
+                                            {/volist}
+                                            </select> -->
+                                            <div id="app" style="margin-right: 10px;">
+                                            <input type="hidden" name="cid" v-model='goods_cid' id="category">
+                                            <el-cascader
+                                            size='small'
+                                            style="width:260px"
+                                            :options="goodsOptions"
+                                            v-model='goods_cid_list'
+                                            :props="{ checkStrictly: true,
+                                            value:'id',
+                                            label:'name',
+                                            children:'children'}"
+                                            clearable
+                                            @change='goodsOptionsChange'
+                                            ref="cascaderHandle" 
+                                            :show-all-levels="false" 
+                                            filterable></el-cascader>
+                                        </div>
+                                            <a href="javascript:void(0);" class="btn btn35" ectype="search" id="serach_button"><i class="icon icon-search"></i>{:lang('搜索')}</a>
+                                        </div>
+<!--                                         <div class="search_select">
+                                            <div class="categorySelect">
+                                                <div class="selection">
+                                                    <input type="text" name="category_name" id="category_name" class="text w250 valid" value="{:lang('选择商品分类')}" autocomplete="off" readonly="" data-filter="cat_name">
+                                                    <input type="hidden" name="cid" id="cid" value="0" data-filter="cat_id">
+                                                </div>
+                                                <div class="select-container" id ="category_div" style="">
+                                                    <div class="select-top">
+                                                        <a href="javascript:;" class="categoryTop" data-cid="0" data-cname="" data-diff="0" data-show="0" data-seller="0" data-table="category">{:lang('重选')}</a>
+                                                        &gt; <span>{:lang('选择商品分类')}</span>
+                                                    </div>
+                                                    <div class="select-list" style="overflow:scroll;">
+                                                        <ul>
+                                                            {volist name="category" id="cate"}
+                                                            <li data-cid="1" data-cname="{:lang('图书')}、{:lang('音像')}、{:lang('电子书')}" data-diff="0" data-url="category.php?id=1" data-show="0" data-seller="0" data-table="category">
+                                                                <em>Ⅰ</em>
+                                                                {neq name="key" value="0"}{$cate|raw}{else /}{:lang('全部分类')}{/neq}		</li>
+                                                            {/volist}
+
+                                                        </ul>
+                                                    </div>												
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <!-- 品牌搜索 -->
+                                        <!-- <div class="search_select">
+                                            <div class="brandSelect">
+                                                <div class="selection">
+                                                    <input type="text" name="brand_name" id="brand_name" class="text w120 valid" value="{:lang('请选择品牌')}" autocomplete="off" readonly="" data-filter="brand_name">
+                                                    <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id">
+                                                </div>
+
+                                                <div class="brand-select-container" style="display:none;">
+                                                    <div class="brand-top">
+                                                        <div class="letter">
+                                                            <ul>
+                                                                <li><a href="javascript:void(0);" data-letter="">{:lang('全部品牌')}</a></li>
+
+                                                            </ul>
+                                                        </div>
+                                                        <div class="b_search">
+                                                            <input name="search_brand_keyword" id="search_brand_keyword" type="text" class="b_text" placeholder="{:lang('品牌名称关键字查找')}" autocomplete="off">
+                                                            <a href="javascript:void(0);" class="btn-mini"><i class="icon icon-search"></i></a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="brand-list">
+                                                        <ul>
+                                                            <li data-id="0" data-name="{:lang('请选择品牌')}" class="blue">{:lang('取消选择')}</li>
+
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <!-- <input type="text" name="keyword" class="text w150" value="" placeholder="{:lang('请输入关键字')}" data-filter="keyword" autocomplete="off"> -->
+                                        
+                                    </div>
+                                    <!-- <div class="col-md-2 col-xs-6" style="display: flex;align-items: center">
+                                        <span class="txt" style="display:block">&nbsp;</span>
+                                        <button class="btn btn-primary btn-flat" type="submit" style="margin-right: 10px;">{:lang('搜索')}</button> <button class="btn btn-default btn-flat" type="button" onclick="clearinput()">{:lang('重置')}</button>
+                                    </div> -->
+                                </div>
+                                </form>
+                                <!-- 主题 -->
+                                <div class="move_div">
+                                    <form action="goods_batch_edit" method="post" class="marBtm" style="" id="goods_batch_edit">
+                                    <div class="move_left">
+                                        <h4>{:lang('待选列表')}</h4>
+                                        <div class="move_info" style="width: 1325.453125px !important;">
+                                            <div class="move_list ps-container ps-active-y" style="overflow:scroll;" id="left_check">
+                                                <ul >
+
+                                                    {volist name="data_list" id="g"}
+                                                    <li  data-value="" data-text="" class="current" style="display: flex;justify-content: flex-start; align-items: center;">
+                                                        <input type="checkbox" value="{$g.id}" name="category[]" style="margin-right: 8px;">
+                                                        <a href="javascript:void(0);">{$g.name}<em>¥</em>{$g.shop_price}<em>      {:lang('货号')}:</em>{$g.goods_sn}</a></li>
+                                                    {/volist}
+                                                    
+                                                </ul>                                        
+                                            </div
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="btn btn35 moveAll" ectype="moveAll" id="check_all_left">{:lang('全选')}</a>
+                                            <!-- <a href="javascript:void(0);" class="btn btn25 red_btn" ectype="sub" data-operation="add_edit_goods"
+                                            onclick="leftSure()">{:lang('确定')}</a> -->
+                                            <a class="btn btn35 " href="javascript:void(0);" ectype="sub" onclick="goods_batch()" style="background:#409EFF;color:#ffffff;">{:lang('进入编辑')}</a>
+                                        </div>
+                                    </div>
+                                    </form>
+                                    <div class="move_middle">
+                                        <div class="move_point" data-operation="add_edit_goods"></div>
+                                    </div>
+
+                                    <!-- <form action="goods_batch_edit" method="post" class="marBtm" style="" id="goods_batch_edit">
+                                    <div class="move_right"  id="right_check">
+                                        <h4>{:lang('已选列表')}</h4>
+                                        <div class="move_info" style="overflow:scroll;" >
+                                            <div class="move_list" style="overflow:scroll;">
+                                                <ul id="right_div">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll" id="check_all_right">{:lang('全选')}</a>
+                                            <a href="javascript:void(0);" class="btn btn25 btn_red" ectype="sub" data-operation="drop_edit_goods" onclick="rightSure()" >{:lang('移除')}</a>
+                                        </div>
+                                    </div>
+                                    </form> -->
+                                </div>
+                            </div>
+                            
+
+
+
+
+                            <div class="move_buttom_div pt30 tc">
+                                <!-- <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="edit_method" id="edit_oneby" class="ui-radio" checked="" value="each">
+                                        <label for="edit_oneby" class="ui-radio-label">{:lang('逐个编辑')}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="edit_method" id="edit_unified" class="ui-radio" value="all">
+                                        <label for="edit_unified" class="ui-radio-label">{:lang('统一编辑')}</label>
+                                    </div>
+                                </div> -->
+                                <!-- <a class="btn btn35 red_btn mt30" href="javascript:void(0);" onclick="goods_batch()">{:lang('进入编辑')}</a> -->
+                                <input type="hidden" name="goods_ids" value="">
+                            </div>
+                        </div>
+                    </div>
+                <!-- </form> -->
+            </div>
+        </div>
+    </div>
+</div>
+    
+  <script type="text/javascript">
+
+    function leftSure(){
+        // console.log($("input[name='category']:checked").html())
+        var arr=[]; 
+        // console.log(aa);
+        var cb_checked = $("#left_check input[name='category[]']:checked");
+        var str = '';
+        $.each(cb_checked,function(){
+            str += `<li data-value="" data-text="" class="current" style="display: flex;justify-content: flex-start;" >${$(this).parent().html()}</li>`
+            var id_tag = ($(this).parent().html());
+            // console.log(id_tag);
+        });
+        // $("input[name='category']:checked").each(function(){ 
+        //     arr.push($(this).next().html()); 
+        // }) 
+        // 
+        // console.log(str);
+        if(str.length > 0){
+            $("#right_div").html(str)
+        }
+        
+    }
+
+    function rightSure(){
+        $("#right_check input[name='category[]']:checked ").each(function(index, el) {
+                $(el).parent().remove();
+            });
+    }
+        
+    $('#check_all_left').on("click",function(){
+        var checked = $(this).text();
+        if(checked == '全选'){
+            $("#left_check input[name='category[]']").each(function(index, el) {
+                $(el).prop("checked",true);
+            });
+            $(this).html('全不选');
+        }else{
+            $("#left_check input[name='category[]']").each(function(index, el) {
+                $(el).prop("checked",false);
+            });
+            $(this).html('全选');
+        }    
+
+    });
+
+    $('#check_all_right').on("click",function(){
+        var checked = $(this).text();
+        if(checked == '全选'){
+            $("#right_check input[name='category[]']").each(function(index, el) {
+                $(el).prop("checked",true);
+            });
+            $(this).html('全不选');
+        }else{
+            $("#right_check input[name='category[]']").each(function(index, el) {
+                $(el).prop("checked",false);
+            });
+            $(this).html('全选');
+        }    
+
+    });
+
+    $('#serach_button').on("click",function(){
+        $("#search_form").submit();
+    });
+    
+    function goods_batch(){
+        $checked = $("#goods_batch_edit input[name='category[]']:checked ");
+        if($checked.length >0){
+            $("#goods_batch_edit").submit();
+        }else{
+            layer.msg("请先选择数据！！！");
+        }
+        
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+    //批量修改方式切换
+    $(".batch_tab").find("input[type='radio']").on("click",function(){
+        var value = $(this).val();
+        if(value == "cat"){
+            $("#category_brand_screen").show();
+            $("#sn_screen").hide();
+        }else{
+            $("#category_brand_screen").hide();
+            $("#sn_screen").show();
+        }
+    });
+
+    //取得选择的商品id，赋值给隐藏变量。同时检查是否选择或输入了商品
+    function getGoodsIDs()
+    {
+        if (document.getElementById('sm_cat').checked)
+        {
+            var idArr = new Array();
+            //获取商品id
+            $(".step[ectype=filter] .move_right .move_list ul li.current").each(function(){
+                idArr.push($(this).data("value"));
+            });
+
+            if (idArr.length <= 0)
+            {
+                alert(please_select_goods);
+                return false;
+            }
+            else
+            {
+                document.forms['theForm'].elements['goods_ids'].value = idArr.join(',');
+                return true;
+            }
+        }
+        else
+        {
+            if (document.forms['theForm'].elements['sn_list'].value == '')
+            {
+                alert(please_input_sn);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+    
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {
+			goods_cid_list:[], // 商品分类id的多级信息
+			goods_cid:'',  //商品分类id
+            goodsOptions:[], // 商品分类
+            timer:null, // 定时器
+        }
+    },
+    mounted() {
+        this.getGoodsOptions()
+		  let cid =this.getQueryVariable('cid')
+		  console.log(cid)
+		  if(cid){
+			this.goods_cid =cid
+          }
+          	  // 点击文字即选中
+		this.timer =  setInterval(function() {
+　　　　　　document.querySelectorAll(".el-cascader-node__label").forEach(el => {
+　　　　　　　　el.onclick = function() {
+　　　　　　　　　　if (this.previousElementSibling) this.previousElementSibling.click();
+　　　　　　　　};
+　　　　　　});
+　　　　}, 1000);
+    },
+    destroyed(){
+		clearInterval(this.timer)
+	  },
+    methods: {
+    
+		  	// 处理cid在三级联动的位置,
+			  getCidList(val,id){
+						let cid_list =[]
+						val.forEach((item,index)=>{
+							if(item.id ==id){
+								cid_list = [item.id]
+								return false
+							}else{
+								if(item.children){
+									let newCid_list =[item.id]
+									let list = nodefun(item.children,id,newCid_list)
+									if(list) {
+										cid_list =list
+									}
+								}
+							}
+						})
+						// 递归函数
+						function nodefun(newVal,newId,newCid_list){
+							let flag =false
+							newVal.forEach(j=>{
+								// console.log(j)
+								if(j.id == newId){
+									newCid_list.push(j.id)
+									flag =true
+								}else{
+									if(j.children){
+										let	cid_list = JSON.parse(JSON.stringify(newCid_list))
+										cid_list.push(j.id)
+										let list =  nodefun(j.children,newId,cid_list)
+										if(list){
+											newCid_list =list 
+											flag =true
+										}
+									}
+
+								}
+							})
+							if(flag){
+								return	newCid_list						
+							}
+						}
+						return	cid_list
+			},
+		 getQueryVariable(variable){
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i=0;i<vars.length;i++) {
+					var pair = vars[i].split("=");
+					if(pair[0] == variable){return pair[1];}
+				}
+				return(false);
+			},
+
+		  // 获取分类接口数据
+		getGoodsOptions(){
+			let that =this
+			$.get("/admin.php/goods/category/getcategorylist",function(data,status){
+			   if(data.code == 1){
+				console.log('获取商品分类',data.data)
+				that.goodsOptions =data.data
+				// 递归获取cid的位置
+				if(that.goods_cid){
+					that.goods_cid_list = 	that.getCidList(that.goodsOptions,that.goods_cid)
+				}
+			   }else{
+				  that.$message({
+						message: data.msg,
+						type: 'warning'
+					});
+			   }
+			
+			})
+		},
+		// 商品分类选择改变时
+		goodsOptionsChange(e){
+			if(this.goods_cid_list.length>0){
+				this.goods_cid = this.goods_cid_list[this.goods_cid_list.length-1]
+			}else{
+				this.goods_cid =''
+			}
+            // this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+            // 监听是否为最后一级，如果为最后一级，面板收起
+			var children = this.$refs.cascaderHandle.getCheckedNodes();
+            if(children[0].children.length < 1){   //判断有没有下级
+                this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+            }
+			console.log(e,this.goods_cid)
+        },
+    }
+})
+
+</script>
+
+
+{/block}

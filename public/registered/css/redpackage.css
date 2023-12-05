@@ -1,0 +1,175 @@
+
+.download{
+	margin:1rem auto;
+}
+
+
+
+
+body{
+	padding: 0;
+	margin: 0;
+}
+.plr15{
+	padding:0 1rem;
+}
+.bg{
+	display: block;
+	width: 100%;
+}
+.flex{
+	display: flex;
+}
+.align-center{
+	align-items: center;
+}
+.justify-between{
+	justify-content: space-between;
+}
+.justify-center{
+	justify-content: center;
+}
+.topItem{
+	position: absolute;
+	top:1rem;
+	left: 0;
+	right: 0;
+	z-index: 1;
+	color: #FFFFFF;
+}
+.dialog-box,.reg-info{
+	position: absolute;
+	top:15.7rem;
+	left: 0;
+	right: 0;
+	z-index: 1;
+	margin: 0 1rem;
+	background-color: #FFFFFF;
+	border-radius: .8rem;
+	padding: 1rem 1rem;
+}
+.mt20{
+	margin-top: 1rem;
+}
+.dialog-box .ipt-box{
+	width: 100%;
+	margin: 0 auto 0.5rem auto;
+	overflow:hidden;
+}
+.dialog-box .ipt-row{
+	background: #ffffff;
+	/*width: 80%;*/
+	border-radius: 1rem;
+	display: flex;
+	display: -webkit-box;
+	align-items: center;
+	-webkit-box-align:center;
+	height:2.425rem;
+	
+}
+.dialog-box .ipt-row.msgcode{
+	width: 55%;
+	float: left;
+}
+.dialog-box .ipt-row img{
+	display: block;
+	width: 0.85rem;
+	height: 0.85rem;
+}
+.dialog-box .ipt-row .input{
+	flex: 1;
+	-webkit-box-flex:1;
+}
+.brb_e{
+	border-bottom: .05rem solid #EEEEEE;
+}
+.dialog-box .ipt-row .input input{
+	outline: none;
+	border: none;
+	line-height: 1.225rem;
+	padding: 0.6rem 0;
+	margin: 0;
+	display: block;
+	width: 80%;
+	text-indent: 0.6rem;
+}
+.dialog-box .ipt-box .getcode{
+	color: #FF8651;
+	float: right;
+	width: 40%;
+	line-height: 2.425rem;
+	text-align: center;
+	font-size: 0.7rem;
+	border-radius: 1rem;
+}
+.dialog-box .ipt-box .imgcode{
+	float:right;
+	width: 40%;
+	height: 2.245rem;
+	border-radius: 1rem;
+}
+.dialog-box .ipt-box .imgcode img{
+	display: block;
+	width: 100%;
+	border-radius: 1rem;
+}
+.dialog-box .ipt-box .getcode.disabled{
+	color: #FF8651;
+}
+.reg{
+	line-height: 2.25rem;
+	height: 2.25rem;
+	text-align: center;
+	background: #FF8651;
+	background-size:contain;
+	width: 90%;
+	color: #FFFFFF;
+	margin: 1rem auto 0;
+	font-size: .8rem;
+	border-radius: 3rem;
+}
+
+
+.reg-info{
+	color: #999;
+	text-align: center;
+	display: none;
+}
+
+.reg-info .info1{
+	font-size: 0.8rem;
+	margin-bottom: 0.25rem;
+}
+.reg-info .info2{
+	font-size: 1rem;
+	font-weight: bold;
+}
+.reg-info .down{
+	width: 50%;
+	margin: 0.5rem auto;
+	background: url(../img/new-down.png) no-repeat;
+	-webkit-background-size: contain;
+	background-size: contain;
+	line-height: 2.05rem;
+	height: 2.45rem;
+	color: #c54a00;
+	font-weight: bold;
+	font-size: 1rem;
+}
+
+.reg-info .uinfo{
+	font-size: 0.75rem;
+}
+.reg-info .uinfo div{
+	margin-bottom: 0.25rem;
+}
+
+.reg-info .uinfo div:last-child{
+	font-size: 0.6rem;
+}
+
+
+
+
+
+

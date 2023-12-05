@@ -1,0 +1,650 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <!-- import JavaScript -->
+    <script src="/static/plugins/echarts/echarts.min.js"></script>
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <!-- 引入echarts -->
+    <script src="/static/plugins/echarts/echarts.min.js"></script>
+    <!-- ajax请求 -->
+    <script src="/static/admin/js/crm/jquery.min-2.1.4.js"></script>
+    <script src="__PLUG__/jqueryToast/js/toast.js"></script>
+    <script src="__ADMIN_JS__/stars.js"></script>
+</head>
+<style>
+    .el-input--mini .el-input__icon {
+        line-height: 32px;
+    }
+
+    .blue {
+        color: #5D9AF2;
+        cursor: pointer;
+    }
+
+    #app {
+        padding: 30px;
+        background: #ffffff;
+    }
+
+    /*数据统计*/
+    .data_all {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .wait-deal {
+        width: calc(100%/6);
+        border-left: 1px solid #e8e8e8;
+        text-align: left;
+    }
+
+    .deal-left {
+        /* padding-left: 30px; */
+        line-height: 40px;
+        text-align: center;
+    }
+
+    .deal-right {
+        /* padding-left: 20px; */
+        line-height: 20px;
+        text-align: left;
+        text-align: center;
+    }
+    .el-row {
+        margin-bottom: 0px !important;
+        padding-bottom: 12px !important;
+    }
+    .el_row_left{
+        padding-left:0 !important;
+    }
+    .el_row_right{
+        padding-right:0 !important;
+    }
+</style>
+
+<body>
+    <div id="app" style="display: none;">
+        <div style="margin: 20px 0;">
+            <div style="margin: 10px 0;">{:lang('商品数据统计')}</div>
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <el-form-item label="{:lang('日期')}">
+                    <el-select v-model="formInline.default_time" @change="serachTime" class="order-select"
+                        placeholder="{:lang('请选择')}" size='mini'>
+                        <el-option v-for="item in tradingOptions" :key="item" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="{:lang('一级分类')}" v-if='formInline.c_type == 2'>
+                    <el-select v-model="formInline.cid" placeholder="{:lang('请输入一级分类')}" size='mini' filterable>
+                        <el-option v-for="item in typeListData" :key="item.id" :label="item.name" :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="{:lang('二级分类')}" v-if='formInline.c_type == 3'>
+                    <el-select v-model="formInline.cid" placeholder="{:lang('请输入二级分类')}" size='mini' filterable>
+                        <el-option v-for="item in typeListData" :key="item.id" :label="item.name" :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="{:lang('三级分类')}" v-if='formInline.c_type == 4'>
+                    <el-select v-model="formInline.cid" placeholder="{:lang('请输入三级分类')}" size='mini' filterable>
+                        <el-option v-for="item in typeListData" :key="item.id" :label="item.name" :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="{:lang('商品名称')}" v-if='formInline.c_type == 4'>
+                    <el-input v-model="formInline.name" placeholder="{:lang('请输入商品名称')}" size='mini'></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" style="border-radius: 0;font-weight: 400;" @click="onSubmit" size='mini'>{:lang('查询')}</el-button>
+                </el-form-item>
+            </el-form>
+            <!-- <i class="el-icon-refresh refresh-point" @click="handleRefresh"></i> -->
+        </div>
+        <!-- 小统计 -->
+        <el-row :gutter="24" class="panel-group" style="padding: 0;margin: 0;">
+            <el-col :span="24">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>{:lang('数据总览')}</span>
+                    </div>
+                    <!-- 内容 -->
+                    <div class="data_all">
+                        <div class="wait-deal" v-for="item in dataArray" :key="item.desc">
+                            <div class="deal-left">{{item.number}}</div>
+                            <div class="deal-right">{{item.desc}}</div>
+                        </div>
+                    </div>
+
+                </el-card>
+            </el-col>
+        </el-row>
+
+        <div >
+            <el-row :gutter="24" style="padding: 0;margin: 0;">
+                <el-col :span="12" class="el_row_right">
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <span>{:lang('交易数据')}</span>
+                        </div>
+                        <!-- 内容 -->
+                        <div id="myChart" :style="{width: '100%', height: '300px'}"></div>
+                    </el-card>
+                </el-col>
+                <el-col :span="12">
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <span> {:lang('商品概览')}</span>
+                        </div>
+                        <!-- 内容 -->
+                        <div id="myChart02" :style="{width: '100%', height: '300px'}"></div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
+        <div id="vip_table" style="padding: 0 10px;">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>{:lang('表格')}</span>
+                </div>
+                <el-table :data="tableList" border style="width: 100%">
+                    <el-table-column prop="c_name" label="{:lang('一级分类')}" width="180" v-if='formInline.c_type==1'>
+                        <template scope="scope">
+                            <div>
+                                <span class="blue" @click='goErType(scope.row.cid,2,0)'>{{scope.row.c_name}}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="c_name" label="{:lang('二级分类')}" width="180" v-if='formInline.c_type==2'>
+                        <template scope="scope">
+                            <div>
+                                <span class="blue" @click='goErType(scope.row.cid,3)'>{{scope.row.c_name}}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="c_name" label="{:lang('三级分类')}" width="180" v-if='formInline.c_type==3'>
+                        <template scope="scope">
+                            <div>
+                                <span class="blue" @click='goErType(scope.row.cid,4)'>{{scope.row.c_name}}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="c_pname" label="{:lang('商品名称')}" width="180" v-if='formInline.c_type ==4'>
+                        <template scope="scope">
+                            <div>
+                                <span class="blue">{{scope.row.c_pname}}</span>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="goods_count" label="{:lang('商品数量')}" width="">
+                    </el-table-column>
+                    <!-- <el-table-column prop="num" label="{:lang('商品访客数')}" width="">
+                </el-table-column> -->
+                    <el-table-column prop="goods_views" label="{:lang('商品浏览量')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="goods_transactions" label="{:lang('商品成交件数')}" width="">
+                    </el-table-column>
+                    <!-- <el-table-column prop="num" label="{:lang('被访问商品数')}" width="">
+                </el-table-column> -->
+                    <el-table-column prop="goods_collection" label="{:lang('商品收藏总数')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="goods_paymoney" label="{:lang('支付金额')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="goods_payusers" label="{:lang('支付买家数')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="goods_payorders" label="{:lang('支付订单数')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="goods_payment_conversion_rate" label="{:lang('支付转化率')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="goods_pay_customer_price" label="{:lang('支付客单价')}" width="">
+                    </el-table-column>
+                </el-table>
+            </el-card>
+        </div>
+    </div>
+</body>
+<script>
+    const APP = new Vue({
+        el: '#app',
+        data() {
+            return {
+                typeListData: [], // 分类
+                dataArray: [{
+                    number: 0,
+                    desc: "商品数量"
+                },
+                {
+                    number: 0,
+                    desc: "商品访客数"
+                },
+                {
+                    number: 0,
+                    desc: "商品浏览量"
+                }, {
+                    number: 0,
+                    desc: "商品成交件数"
+                },
+                // {
+                //     number: 0,
+                //     desc: "被访问商品数"
+                // },
+                {
+                    number: 0,
+                    desc: "商品收藏总数"
+                },
+                {
+                    number: 0,
+                    desc: "支付金额"
+                }, {
+                    number: 0,
+                    desc: "支付买家数"
+                }, {
+                    number: 0,
+                    desc: "支付订单数"
+                },
+                {
+                    number: 0,
+                    desc: "支付转化率"
+                }, {
+                    number: 0,
+                    desc: "支付客单价"
+                }],
+                formInline: {
+                    default_time: 'year',
+                    name: '',
+                    c_type: '',
+                    cid: '',
+                    typeCid: '0',
+                    searchCid: ''
+                },
+                tableList: [],
+                tradingOptions: [
+                    {
+                        label: "{:lang('今日')}",
+                        value: 'day'
+                    }, {
+                        label: "{:lang('本周')}",
+                        value: 'week'
+                    }, {
+                        label: "{:lang('本月')}",
+                        value: 'month'
+                    }, {
+                        value: 'quarter',
+                        label: "{:lang('本季度')}"
+                    }, {
+                        value: 'year',
+                        label: "{:lang('本年')}"
+                    }
+                ],
+            }
+        },
+        mounted() {
+            document.getElementById('app').style.display = 'block'
+            this.formInline.c_type = this.getQueryVariable('type')
+            if (!this.formInline.c_type) {
+                this.formInline.c_type = 1
+            }
+            console.log(this.formInline.c_type)
+            this.formInline.cid = Number(this.getQueryVariable('cid'))
+            this.formInline.typeCid = Number(this.getQueryVariable('typeCid'))
+            this.getData();
+        },
+        methods: {
+            // 获取url参数
+            getQueryVariable(variable) {
+                //得到一个url路径
+                var query = window.location.search.substring(1);//截取掉第一个字符？
+                var vars = query.split("&");//以&为区分将字符串转化为数组
+                for (var i = 0; i < vars.length; i++) {
+                    var pair = vars[i].split("=");//以=为区分将数组的=前后转化为数组的值
+                    if (pair[0] == variable) {
+                        return pair[1];
+                    }
+                }
+                return (false);
+            },
+            goErType(cid, type, typeCid) {
+                var url = window.location.href;
+                console.log(1111)
+                if (typeCid != 0) {
+                    if (this.formInline.searchCid) {
+                        typeCid = this.formInline.searchCid
+                    } else {
+                        typeCid = this.getQueryVariable('cid')
+                    }
+                } else {
+                    typeCid = 0
+                }
+                window.location.href = location.origin + location.pathname + '?type=' + type + '&cid=' + cid + '&typeCid=' + typeCid
+            },
+            onSubmit() {
+                // 重置typeCid
+                this.formInline.searchCid = this.formInline.cid
+                this.getData()
+            },
+            // 获取数据
+            getData() {
+                var formData = {
+                    times: this.formInline.default_time,
+                }
+                if (this.formInline.c_type > 1) {
+                    formData.cid = this.formInline.cid
+                }
+                if (this.formInline.c_type == 4) {
+                    formData.goods_name = this.formInline.name
+                }
+                // Stars.loading();
+               let  _this =this
+                async function functionSync() {
+                     await  _this.getTypeData()
+                     await  _this.getTotalData(formData)
+                     await  _this.getLineData(formData)
+                     await  _this.getDataTable(formData)
+                    // Stars.loading('hide');
+                }
+                functionSync()
+            },
+            getTotalData(formData) {
+                // 获取数据
+                // 获取总览接口
+                return new Promise((resolve) => {
+                    $.ajax({
+                    url: "getGoodsDataList",
+                    type: "post",
+                    data: formData,
+                    success: (res) => {
+                        var data = JSON.parse(res)
+                        console.log(data)
+                        // toast提醒
+                        //     Stars.notify('哈哈哈哈','danger');
+                        // 商品数量
+                        this.dataArray[0].number = data.result.getGoodsNumberData.stageGoodsNumber
+                        // 商品访客数
+                        this.dataArray[1].number = data.result.getGoodsVisitorsData.stageGoodsVisitors
+                        // 商品浏览量
+                        this.dataArray[2].number = data.result.getGoodsViewsData.stageGoodsViews
+                        // 商品成交件数
+                        this.dataArray[3].number = data.result.getGoodsDealNumberData.stageGoodsDealNumber
+                        // 商品收藏数
+                        this.dataArray[4].number = data.result.getGoodsCollectionData.stageGoodsCollection
+                        // 支付金额
+                        this.dataArray[5].number = data.result.getSalePriceData.stageSalePrice
+                        // 支付订单人数（支付买家数）
+                        this.dataArray[6].number = data.result.getOrderPayUserData.stageOrderPayUser
+                        // 支付订单数
+                        this.dataArray[7].number = data.result.getOrderNumberData.stageOrderNumber
+                        // 支付转化率
+                        this.dataArray[8].number = data.result.getPaymentConversionRateData.stagePayRate
+                        // 支付客单价
+                        this.dataArray[9].number = data.result.getPaymentUnitPriceData.stagePaymentUnitPrice
+                        resolve()
+                        }
+                    });
+                })
+            },
+            getLineData(formData) {
+                // 获取折线图接口
+                // Stars.loading();
+                return new Promise((resolve) => {
+                $.ajax({
+                    url: "getTransactionData",
+                    type: "post",
+                    data: formData,
+                    success: (res) => {
+                        var data = JSON.parse(res)
+                        console.log(data)
+                        // toast提醒
+                        //     Stars.notify('哈哈哈哈','danger');
+                        this.pageInit(data)
+                        this.pageInitOverview(data)
+                        // Stars.loading('hide');
+                        resolve()
+                    }
+                });
+                });
+            },
+            getDataTable(formData) {
+                // 获取表格
+                // Stars.loading();
+                return new Promise((resolve) => {
+                $.ajax({
+                    url: "getGoodsListData",
+                    type: "post",
+                    data: formData,
+                    success: (res) => {
+                        var data = JSON.parse(res)
+                        console.log(data)
+                        this.tableList = data.result
+                        // toast提醒
+                        //     Stars.notify('哈哈哈哈','danger');
+                        // Stars.loading('hide');
+                        resolve()
+                    }
+                });
+            
+                console.log(this.formInline.c_type, 1233)
+            });
+            },
+            getTypeData() {
+                if (this.formInline.c_type == 1) {
+                    return false
+                }
+                return new Promise((resolve) => {
+                // 获取商品分类
+                var seachData = {
+                    cid: this.formInline.typeCid
+                }
+                console.log(seachData.cid, 123344)
+                // Stars.loading();
+                $.ajax({
+                    url: "getGoodsCaregory",
+                    type: "post",
+                    data: seachData,
+                    success: (res) => {
+                        var data = JSON.parse(res)
+                        console.log(data)
+                        this.typeListData = data.result
+                        // toast提醒
+                        //     Stars.notify('哈哈哈哈','danger');
+                        // Stars.loading('hide');
+                        resolve()
+                    }
+                });
+                });
+            },
+            // 选择时间
+            serachTime() {
+            },
+            // 页面初始化
+            pageInit(data) {
+                var dateFormat = [];
+                var getSalePriceList = [];
+                //支付金额
+                data.result.getSalePriceList.forEach((item, index) => {
+                    dateFormat.push(item.dateFormat)
+                    getSalePriceList.push(item.browseCount)
+                })
+                var getOrderPayUserList = [];
+
+                // 支付订单人数(买家数)
+                data.result.getOrderPayUserList.forEach((item, index) => {
+                    getOrderPayUserList.push(item.browseCount)
+                })
+                var getOrderNumberList = [];
+                // 支付订单数
+                data.result.getOrderNumberList.forEach((item, index) => {
+                    getOrderNumberList.push(item.browseCount)
+                })
+
+               
+                console.log('支付金额：getSalePriceList',getSalePriceList )
+                console.log('支付订单人数：getOrderPayUserList',getOrderPayUserList )
+                console.log('支付金额：getOrderNumberList',getOrderNumberList )
+                // 基于准备好的dom，初始化echarts实例
+                let myChart = echarts.init(document.getElementById('myChart'))
+                // 绘制图表
+                myChart.setOption({
+                    title: {
+                        // text: '销售情况'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ["{:lang('支付金额')}", "{:lang('支付买家数')}", "{:lang('支付订单数')}"]
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: dateFormat
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                type: 'dotted',
+                                color: '#EAEAEA'
+                            }
+                        },
+                        axisTick: { //y轴刻度线
+                            show: false
+                        },
+                        axisLine: {
+                            show: false
+                        }
+                    },
+                    series: [
+                        {
+                            name: "{:lang('支付金额')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}",  //放开即为 堆叠效果
+                            data: getSalePriceList
+                        },
+                        {
+                            name: "{:lang('支付买家数')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}",
+                            data: getOrderPayUserList
+                        },
+                        {
+                            name: "{:lang('支付订单数')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}",
+                            data: getOrderNumberList
+                        }
+                    ]
+
+                });
+
+             
+
+            },
+            pageInitOverview(data) {
+                var dateFormat = [];
+                var getGoodsDealNumber = [];
+                //商品成交件数
+                data.result.getGoodsDealNumber.forEach((item, index) => {
+                    dateFormat.push(item.dateFormat)
+                    getGoodsDealNumber.push(item.browseCount)
+                })
+
+                var getGoodsCollectionList = [];
+
+                // 商品收藏数
+                data.result.getGoodsCollectionList.forEach((item, index) => {
+                    getGoodsCollectionList.push(item.browseCount)
+                })
+                var getGoodsViewsList = [];
+                // 商品浏览量
+                data.result.getGoodsViewsList.forEach((item, index) => {
+                    getGoodsViewsList.push(item.browseCount)
+                })
+
+                // 基于准备好的dom，初始化echarts实例
+                let myChart = echarts.init(document.getElementById('myChart02'))
+                // 绘制图表
+                myChart.setOption({
+                    title: {
+                        // text: '销售情况'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ["{:lang('商品成交件数')}", "{:lang('商品收藏数')}", "{:lang('商品浏览量')}"]
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: dateFormat
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                type: 'dotted',
+                                color: '#EAEAEA'
+                            }
+                        },
+                        axisTick: { //y轴刻度线
+                            show: false
+                        },
+                        axisLine: {
+                            show: false
+                        }
+                    },
+                    series: [
+                        {
+                            name: "{:lang('商品成交件数')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}",
+                            data: getGoodsDealNumber
+                        },
+                        {
+                            name: "{:lang('商品收藏数')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}",
+                            data: getGoodsCollectionList
+                        },
+                        {
+                            name: "{:lang('商品浏览量')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}",
+                            data: getGoodsViewsList
+                        }
+                    ]
+
+                });
+            },
+        },
+    })
+</script>
+
+</html>
+{/block}

@@ -1,0 +1,190 @@
+<?php $powerModuleTask = in_array($admin_role,[20,21,22]) && $admin_dept == $data['deptid'] ? 1 : 1;?>
+
+<?php if(count($data['project_moduleArr']) < 1 && $powerModuleTask):?>
+<form v-if="itemsTask.length < 1" id="lFromFromModule" method="POST" action="{:url('Project/saveProject_module')}">
+	<table class="layui-table layui-form lTableTree" data-level='3'>
+		<thead>
+			<tr>
+				<th class="lTdCheckbox">
+					<input type="checkbox" name="" lay-skin="primary" class="lCheckboxAll" lay-filter="lCheckboxAll" value="">
+				</th>
+				<th>功能模块</th>
+				<th class="lTextCenter lTdSave3">前/后端</th>
+				<th class="lTextCenter lTdSave3">建议时长（分钟）</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($moduleList as $v):?>
+			<tr data-id="{$v['id']}" data-pid="0" data-level="1">
+				<td class="lTdCheckbox">
+					<?php if(in_array($v['id'],$data['project_moduleArr'])):?>
+					<input type="checkbox" name="project_module[]" lay-filter="module" value="{$v['id']}" lay-skin="primary" class="lCheckboxOne"
+					 checked="checked">
+					<?php else:?>
+					<input type="checkbox" name="project_module[]" lay-filter="module" value="{$v['id']}" lay-skin="primary" class="lCheckboxOne">
+					<?php endif;?>
+				</td>
+				<td class="lTableTreeClick" data-id="{$v['id']}">{$v['name']}</td>
+				<td class="lTextCenter">{$v['type']}</td>
+				<td class="lTextCenter">{$v['advice_time']}</td>
+			</tr>
+			<?php foreach($v['child'] as $v2):?>
+			<tr data-id="{$v2['id']}" data-pid="{$v2['pid']}" data-level="2">
+				<td class="lTdCheckbox">
+					<?php if(in_array($v2['id'],$data['project_moduleArr'])):?>
+					<input type="checkbox" name="project_module[]" lay-filter="module" value="{$v2['id']}" lay-skin="primary" class="lCheckboxOne checkboxChange{$v['id']}"
+					 checked="checked">
+					<?php else:?>
+					<input type="checkbox" name="project_module[]" lay-filter="module" value="{$v2['id']}" lay-skin="primary" class="lCheckboxOne checkboxChange{$v['id']}">
+					<?php endif;?>
+				</td>
+				<td class="lTableTreeClick" data-id="{$v2['id']}">&nbsp;&nbsp;&nbsp;&nbsp;|-- {$v2['name']}</td>
+				<td class="lTextCenter">{$v2['type']}</td>
+				<td class="lTextCenter">{$v2['advice_time']}</td>
+			</tr>
+			<?php foreach($v2['child'] as $v3):?>
+			<tr data-id="{$v3['id']}" data-pid="{$v3['pid']}" data-level="3">
+				<td class="lTdCheckbox">
+					<?php if(in_array($v3['id'],$data['project_moduleArr'])):?>
+					<input type="checkbox" name="project_module[]" lay-filter="module" value="{$v3['id']}" lay-skin="primary" class="lCheckboxOne checkboxChange{$v['id']} checkboxChange{$v2['id']}"
+					 checked="checked">
+					<?php else:?>
+					<input type="checkbox" name="project_module[]" lay-filter="module" value="{$v3['id']}" lay-skin="primary" class="lCheckboxOne checkboxChange{$v['id']} checkboxChange{$v2['id']}">
+					<?php endif;?>
+				</td>
+				<td class="lTableTreeClick" data-id="{$v3['id']}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-- {$v3['name']}</td>
+				<td class="lTextCenter">{$v3['type'] == 1 ? '前端' : '后端'}</td>
+				<td class="lTextCenter">{$v3['advice_time']}</td>
+			</tr>
+			<?php endforeach;?>
+			<?php endforeach;?>
+			<?php endforeach;?>
+		</tbody>
+	</table>
+	<div class="layui-form-item lMarginT">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<input type="hidden" name="aid" value="{$data['aid']}" />
+			<button class="layui-btn lLayui-btn" v-on:click="moduleSubmit" type="button">提交</button>
+		</div>
+	</div>
+</form>
+<?php endif;?>
+
+<?php if($powerModuleTask):?>
+<div v-if="itemsTask.length > 0" class="layui-form">
+	<input type="text" name="title" placeholder="快速增加一级模块(Enter键提交)" class="layui-input" id="taskAddEnter" v-on:keyup.13="taskAddEnter"
+	 data-url="{:url('ProjectTask/add',['project_id'=>$data['aid']])}">
+</div>
+<?php endif;?>
+
+<table v-if="itemsTask.length > 0" class="layui-table layui-form">
+	<thead>
+		<tr>
+			<th>功能模块</th>
+			<th class="">负责人</th>
+			<th class="">前/后端</th>
+			<th class="">建议时长（分钟）</th>
+			<th class="">状态</th>
+			<?php if($powerModuleTask):?>
+			<th class="">操作</th>
+			<?php endif;?>
+		</tr>
+	</thead>
+	<tbody>
+		<template v-for="(item, index) in itemsTask">
+			<tr>
+				<td class="" style="cursor: pointer;" v-on:click="taskChildSH" :data-index="index" data-index2="-1">{{item.name}}</td>
+				<td class="">{{item.staff_name}}</td>
+				<td class=""></td>
+				<td class="">
+					<template v-if="item.advice_time > 0">
+						{{item.advice_time}}
+					</template>
+				</td>
+				<td class="" :style="{'color':item.stateColor}">{{item.stateName}}</td>
+				<?php if($powerModuleTask):?>
+				<td class="">
+					<button class="layui-btn layui-btn-xs lLayui-btn" type="button" v-on:click="taskAdd" data-url="{:url('ProjectTask/add',['project_id'=>$data['aid']])}"
+					 :data-pid="item.aid">新增</button>
+					<button class="layui-btn layui-btn-xs lLayui-btn-warm" type="button" v-on:click="taskDel" data-url="{:url('ProjectTask/del')}"
+					 :data-aid="item.aid">删除</button>
+				</td>
+				<?php endif;?>
+			</tr>
+			<template v-for="(item2, index2) in item.child">
+				<tr v-if="item.childHide != 1">
+					<td class="" style="cursor: pointer;" v-on:click="taskChildSH" :data-index="index" :data-index2="index2">
+						&nbsp;&nbsp;&nbsp;&nbsp;|-- {{item2.name}}
+					</td>
+					<td class="">{{item2.staff_name}}</td>
+					<td class=""></td>
+					<td class="">
+						<template v-if="item2.advice_time > 0">
+							{{item2.advice_time}}
+						</template>
+					</td>
+					<td class="" :style="{'color':item2.stateColor}">{{item2.stateName}}</td>
+					<?php if($powerModuleTask):?>
+					<td class="">
+						<button class="layui-btn layui-btn-xs lLayui-btn" type="button" v-on:click="taskAddAlert" :data-pid="item2.aid"  :data-name="item2.name">新增</button>
+						<button class="layui-btn layui-btn-xs lLayui-btn-warm" type="button" v-on:click="taskDel" data-url="{:url('ProjectTask/del')}"
+						 :data-aid="item2.aid">删除</button>
+					</td>
+					<?php endif;?>
+				</tr>
+				<template v-for="(item3, index3) in item2.child">
+					<tr v-if="item.childHide != 1 && item2.childHide != 1">
+						<td class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-- {{item3.name}}</td>
+						<td class="">{{item3.staff_name}}</td>
+						<td class="">{{item3.module_typeName}}</td>
+						<td class="">
+							<template v-if="item3.advice_time > 0">
+								{{item3.advice_time}}
+							</template>
+						</td>
+						<td class="" :style="{'color':item3.stateColor}">{{item3.stateName}}</td>
+						<?php if($powerModuleTask):?>
+						<td class="">
+							<button v-if="item3.state < 3" class="layui-btn layui-btn-xs lLayui-btn-warm" type="button" v-on:click="taskDel"
+							 data-url="{:url('ProjectTask/del')}" :data-aid="item3.aid">删除</button>
+						</td>
+						<?php endif;?>
+					</tr>
+				</template>
+			</template>
+		</template>
+	</tbody>
+</table>
+
+<div class="lFixedDiv" id="lFixedDivTaskAdd">
+	<div class="bg lFixedDivHide"></div>
+	<div class="contentC50">
+		<div class="lPadding">
+			<blockquote class="layui-elem-quote lLayui-elem-quote site-text">新增任务</blockquote>
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="margin-left: 0;">
+					<input type="text" style="background-color: #F5F5F5;" readonly="readonly" value="所属任务: " class="layui-input" id="lFixedDivTaskAddTitle">
+					<input type="hidden" name="pid" id="lFixedDivTaskAddPid" value="" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="margin-left: 0;">
+					<select id="lFixedDivTaskAddType">
+						<option value="1">前端</option>
+						<option value="2">后端</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="margin-left: 0;">
+					<textarea name="name" placeholder="请输入任务名称" class="layui-textarea" id="lFixedDivTaskAddName"></textarea>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="margin-left: 0;">
+					<button type="button" class="layui-btn lLayui-btn" v-on:click="taskAddSubmit" data-url="{:url('ProjectTask/add',['project_id'=>$data['aid']])}">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

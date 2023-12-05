@@ -1,0 +1,200 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- element -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <!-- vue -->
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <!-- 引入组件库 element -->
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <style>
+        #el{
+            padding: 20px;
+        }
+        .upload-wrap{
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 80px;
+            background:#ffffff;
+            margin-bottom:20px;
+            padding:20px;
+        }
+        .picker{
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 80px;
+            margin-right: 10px
+        }
+        .width-80{
+            width:80px;
+        }
+        .width-40{
+            width:40px;
+        }
+        input[type=file]{
+            display: none;
+        }
+        .el-button{
+            padding: 0 15px;
+            margin:0 10px;
+            height: 32px;
+            line-height: 32px;
+        }
+        .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner{
+            width:280px;
+        }
+        .el-input__inner{
+            height:34px;
+        }
+        .el-input__icon{
+            line-height: 34px;
+        }
+        .el-date-editor .el-range__icon{
+            line-height: 28px;
+        }
+        .el-date-editor .el-range-separator{
+            width:8%;
+            line-height: 28px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="el">
+        <div class="upload-wrap">
+            <div class="picker">
+                <div class="width-80">{:lang('操作人')}：</div>
+                <el-input v-model="operator" placeholder="{:lang('请输入操作人')}"></el-input>
+            </div>
+            <div class="picker">
+                <div class="width-40">{:lang('时间')}：</div>
+                <div >
+                    <el-date-picker
+                            v-model="dataTime"
+                            type="daterange"
+                            format='yyyy-MM-dd'
+                            value-format="yyyy-MM-dd"
+                            @change="change"
+                            range-separator="至"
+                            start-placeholder="{:lang('开始日期')}"
+                            end-placeholder="{:lang('结束日期')}">
+                    </el-date-picker>
+                </div>
+            </div>
+            <form action="">
+                <input type="hidden" id="operator" name="admin_name" :value="operator" />
+                <input type="hidden" id="time" name="time" :value="time" />
+                <button type="submit" class="btn btn-primary btn-flat" style="display: flex;justify-content: center;align-items: center;color:#ffffff;margin-right:10px;">
+                    {:lang('筛选')}
+                </button>
+            </form>
+
+            <button type="button" class="btn btn-default btn-flat" style="height:33px;" @click="clear">
+                {:lang('重置')}
+            </button>
+            <el-upload
+                class="upload-demo"
+                :action="url"
+                :before-upload="beforeUpload"
+                name="excel"
+                :show-file-list="false"
+                :on-success="onSuccess">
+                <el-button size="small" type="primary">{:lang('点击上传')}</el-button>
+                <!-- <div slot="tip" class="el-upload__tip">{:lang('只能上传')}jpg/png{:lang('文件')}，{:lang('且不超过')}500kb</div> -->
+            </el-upload>
+
+            <el-button type="primary" style="display: flex;justify-content: center;align-items: center;">
+                <a href="download_model" style="color:#ffffff;font-size: 12px;margin-top: -2px">{:lang('下载模板')}</a>
+            </el-button>
+        </div>
+        <el-table :data="tableData" style="width: 100%" border>
+            <el-table-column prop="file_name" label="{:lang('上传文件')}">
+            </el-table-column>
+            <el-table-column prop="upload_time" label="{:lang('上传时间')}" width="160">
+            </el-table-column>
+            <el-table-column prop="file_size" label="{:lang('文件大小')}(KB)" align="center">
+            </el-table-column>
+            <el-table-column prop="admin_name" label="{:lang('操作人')}" align="center">
+            </el-table-column>
+            <el-table-column prop="status" label="{:lang('处理状态')}" align="center">
+            </el-table-column>
+            <el-table-column prop="update_time" label="{:lang('处理完成时间')}" align="center">
+            </el-table-column>
+            <el-table-column prop="success_line" label="{:lang('处理成功条数')}" align="center">
+            </el-table-column>
+            <el-table-column prop="fail_line" label="{:lang('处理失败条数')}" align="center">
+            </el-table-column>
+            <el-table-column  label="{:lang('操作')}" align="center">
+                <template slot-scope="scope" >
+                    <a download :href="scope.row.file_url" style="color:#409EFF;">{:lang('下载')}</a> 
+                    <a :href="scope.row.del_url" style="padding-left:1rem;color: rgb(243, 11, 11);">{:lang('删除')}</a>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+    <input type="hidden" id="data_list" name="data_list" value="{$data_list}">
+    <input type="hidden" id="map" name="map" value="{$map}">
+
+</body>
+
+</html>
+{/block}
+{block name="script"}
+<script>
+    let data_list = JSON.parse($('#data_list').val());
+    let map = JSON.parse($('#map').val());
+    console.log(data_list);
+    new Vue({
+        el: '#el',
+        data() {
+            return {
+                input3: '',
+                value1: '',
+                tableData: data_list.data|| [],
+                url:'import',
+                operator:'',
+                dataTime: '',
+                time:map.time || ''
+            }
+        },
+        mounted() {
+
+        },
+        methods: {
+            change(){
+                this.time = `${this.dataTime[0]} - ${this.dataTime[1]}`
+                    // console.log(this.time)
+            },
+            clear(){
+                this.operator = '';
+                this.time = '';
+                window.location.href = '/admin.php/goods/index/goodsimport.html';
+            },
+            beforeUpload(res){
+
+            },
+            onSuccess(res){
+                // console.log(res)
+                if(res.code == 1){
+                    this.$message.success(res.msg);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 800)
+                }else{
+                    this.$message.error(res.msg);
+                }
+            }
+        },
+    })
+</script>
+{/block}

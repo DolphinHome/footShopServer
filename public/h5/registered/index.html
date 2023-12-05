@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html style="font-size: 20px;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta name="format-detection" content="telephone=no">
+		<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport">
+		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+		<link rel="stylesheet" type="text/css" href="./css/yzqcommon.css">
+		<link rel="stylesheet" type="text/css" href="./css/redpackage.css">
+		<title>邀请好友</title>
+        <link rel="stylesheet" href="./css/layer.css" id="layui_layer_skinlayercss" style=""></head>
+     <body style="font-size: 20px;">
+	<div id="main">
+		<img src="./img/new-bg.jpg" alt="" class="bg">
+		<div class="dialog-box">
+			<div class="ipt-box">
+				<div class="ipt-row">
+					<img src="./img/new-phone.png" alt="">
+					<div class="input">
+						<input type="tel" placeholder="请输入手机号码" id="tel">
+					</div>
+				</div>
+			</div>
+			<div class="ipt-box">
+				<div class="ipt-row msgcode">
+					<img src="./img/new-msg.png" alt="">
+					<div class="input">
+						<input type="tel" placeholder="请输入验证码" id="msgcode">
+					</div>
+				</div>
+				<div class="getcode">获取验证码</div>
+			</div>
+			<div class="ipt-box">
+				<div class="ipt-row">
+					<img src="./img/new-pwd.png" alt="">
+					<div class="input">
+						<input type="password" placeholder="请输入字母加数字(6-12位)密码" id="pwd">
+					</div>
+				</div>
+			</div>
+			<div class="ipt-box">
+				<div class="reg">立即注册</div>
+				
+			</div>
+		</div>
+		<div class="reg-info">
+			<div class="info1">奖励已发送至您的帐号</div>
+			<div class="info2">下载FAST-UI APP查看吧</div>
+			<div class="down">点击下载</div>
+			<div class="uinfo">
+				<div>您的FAST-UI帐户为</div>
+				<div id="regphone"></div>
+				<div>直接用该手机登陆哦！</div>
+				<div>(使用其他登陆方式无效)</div>
+			</div>
+		</div>
+
+		<input type="hidden" value="5b5bdc44796e8" id="getcode">
+		<input type="hidden" value="5b5bdc44796e8" id="getcode">
+		<input type="hidden" value="5c78dca45ebc1" id="verifycode">
+		<input type="hidden" value="5cad9f63e4f94" id="reg">
+	</div>
+
+<script>
+	//location.href="";
+</script>
+<script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="./js/layer.js"></script>
+<script type="text/javascript" src="./js/mobileUtil.js"></script>
+<script>
+	var type = '1';
+	var host = 'http://'+window.location.host+'/api/v1/' //host
+	var download_url = ''; //下载地址
+	var invite_code='' //邀请码
+
+	$.post(host+'/5fe59aaeaf920',function(res){
+	    if(res.code == 1){
+			host=res.data.host
+			download_url=res.data.down_url
+		} else {
+			layer.msg('下载地址获取失败');
+		}
+
+	})
+
+	var width = $(window).width();
+	$("html,body").css('font-size',(width/18.75)+'px');
+	$(window).resize(function(){
+	var width = $(window).width();
+		$("html,body").css('font-size',(width/18.75)+'px');
+	})
+    var getList = GetRequest();
+    if(getList.id){
+    	invite_code=getList.id
+    }
+
+    //获取url后面的参数
+	function GetRequest() {
+	   const url = location.search; //获取url中"?"符后的字串
+	   let theRequest = new Object();
+	   if (url.indexOf("?") != -1) {
+	      let str = url.substr(1);
+	      strs = str.split("&");
+	      for(let i = 0; i < strs.length; i ++) {
+	         theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+	      }
+	   }
+	   return theRequest;
+	}
+
+	var send_phone = null;
+	$(".getred").click(function(){
+		$(".step1").hide();
+		$(".step2").show();
+	})
+	$(".next").click(function(){
+		var phone = $("#tel").val();
+		var code = $("#msgcode").val();
+		var pwd = $("#pwd").val();
+		if(phone==''||phone.length!=11){
+			layer.msg('请输入正确的手机号');
+		}else if(code==''){
+			layer.msg('请输入验证码');
+		}else{
+			$.post(host+$("#verifycode").val(),{vercode:code},function(ret){
+				if(ret.isError==false){
+					send_phone = phone;
+					$('.phone').text(phone);
+					$(".setpwd").show();
+					$(".reg").hide();
+				}else{
+					layer.msg(ret.errorMessage);
+				}
+			})
+		}
+		
+	})
+	// 注册
+	$(".reg").click(function(){
+		var phone = $("#tel").val();
+		if(!phone){
+		 layer.msg('请输入手机号');
+		 return;
+		}
+		var msgcode = $("#msgcode").val();
+		if(!msgcode){
+		 layer.msg('请输入验证码');
+		 return;
+		}
+		var pwd = $("#pwd").val();
+		var patt = / /ig;
+		if(patt.test(pwd)){
+			layer.msg('不能包含空格');
+			$(".pwd").val('');
+		}else{
+			if(!(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9a-zA-Z]{6,12}$/.test(pwd))){
+				layer.msg('请输入字母加数字(6-12位)密码');
+			}else{
+				$.post(host+$("#reg").val(),{
+					type:1,
+					mobile:phone,
+					password:pwd,
+					code:msgcode,
+					invite_code:invite_code
+				},function(res){
+					if(res.code==1){
+						layer.msg('注册成功');
+						oldUser();
+					}else{
+						layer.msg(res.msg);
+					}
+				})
+			}
+		}
+		
+	})
+	
+	function oldUser(){
+		$(".dialog-box").hide();
+		$(".reg-info").show();
+	}
+	// 获取验证码
+	$(".getcode").click(function(){
+		var phone = $("#tel").val();
+		var self =$(this);
+		if(!$(this).hasClass('disabled')){
+			if(phone==''||phone.length!=11){
+				layer.msg('请输入正确的手机号');
+			}else{
+					$.post(host+$("#getcode").val(),{
+						is_test:1,
+						mobile:phone,
+						type:1,
+					},function(res){
+						if(res.code ==1){
+							layer.msg('验证码为:'+res.data.code);
+						    timer();
+							self.addClass('disabled');
+
+						}else{
+							console.log(res,8888)
+							layer.msg(res.msg);
+						}
+					})
+			}
+		}
+		
+	})
+
+	function timer(){
+		var t = 60;
+		var handle = setInterval(function(){
+			if(t>0){
+				t--;
+				$(".getcode").text(t+'s后获取');
+			}else{
+				$(".getcode").text('验证码').removeClass('disabled');
+				clearInterval(handle);
+			}
+		},1000)
+	}
+	$(".down").click(function(){
+			location.href = download_url;
+	})
+
+</script>
+</body></html>

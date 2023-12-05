@@ -1,0 +1,68 @@
+<!--
+ * @Descripttion: 
+ * @Version: 1.0
+ * @Author: wangph
+ * @Date: 2021-03-31 09:46:02
+ * @LastEditors: wangph
+ * @LastEditTime: 2021-04-27 15:57:48
+-->
+<div>
+<link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+<div id="cart">
+	<el-table
+		:data="tableData"
+		style="width: 100%">
+		<el-table-column
+			prop="date"
+			label="{:lang('日期')}"
+			width="180">
+		</el-table-column>
+		<el-table-column
+			prop="name"
+			label="{:lang('姓名')}"
+			width="180">
+		</el-table-column>
+		<el-table-column
+			prop="address"
+			label="{:lang('地址')}">
+		</el-table-column>
+	</el-table>
+</div>
+
+
+<script src="__PLUG__/vue/vue.min.js"></script>
+<script src="__PLUG__/vue/vue-resource.min.js"></script>
+<script src="__PLUG__/jquery/jquery.min.js?v=20180725"></script>
+<script src="/static/plugins/element-ui/element-ui.js"></script>
+<script>
+	const cart = new Vue({
+		el:'#cart',
+		data:{
+			tableData: [{
+				date: '2016-05-02',
+				name: '王小虎',
+				address: '上海市普陀区金沙江路 1518 弄'
+			}, {
+				date: '2016-05-04',
+				name: '王小虎',
+				address: '上海市普陀区金沙江路 1517 弄'
+			}, {
+				date: '2016-05-01',
+				name: '王小虎',
+				address: '上海市普陀区金沙江路 1519 弄'
+			}, {
+				date: '2016-05-03',
+				name: '王小虎',
+				address: '上海市普陀区金沙江路 1516 弄'
+			}]
+		},
+		created() {
+			this.getData()
+		},
+		methods:{
+			// 获取数据
+			getData() {},
+		},
+	})
+</script>
+</div>

@@ -1,0 +1,27 @@
+<!--
+ * @Descripttion: 
+ * @Version: 1.0
+ * @Author: wangph
+ * @Date: 2021-03-31 09:46:02
+ * @LastEditors: wangph
+ * @LastEditTime: 2021-04-27 15:57:57
+-->
+<form id="lFromFromData" method="POST" action="{:url('Project/saveField',['project_id'=>$data['aid']])}">
+
+
+	<div class="layui-form-item">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<textarea name="value" placeholder="{:lang('请输入内容第三方资料')}" class="layui-textarea" id="DataContent" style="min-height: 200px;">{$data['trilateral']}</textarea>
+		</div>
+		<input type="hidden" name="id" value="{$data['aid']}" >
+		<input type="hidden" name="db" value="trilateral" >
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<button class="layui-btn lLayui-btn" v-on:click="ajaxAdd" data-id="lFromFromData"  type="button">{:lang('提交')}</button>
+		</div>
+	</div>
+
+
+</form>
+

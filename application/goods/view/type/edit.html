@@ -1,0 +1,507 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<style>
+	input{border:1px #eee solid!important;padding-left:10px!important;}
+	input:focus{ border:1px solid #ccc!important;outline:medium; }
+	.specs .badge {
+		position: absolute;
+		top: -8px;
+		right: -4px;
+		font-size: 10px;
+		font-weight: 400;
+	}
+</style>
+{/block}
+
+{block name="content"}
+<script src="/static/plugins/vue/vue.min.js"></script>
+<script src="/static/plugins/element-ui/element-ui.js"></script>
+<link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+<div class="row">
+	<div class="col-md-12">
+		<div class="box nav-tabs-custom">
+			<div class="box-header with-border">
+				<h3 class="box-title">商品规格<!-- 属性 -->（<!-- 含规格和属性； -->注意:本页面所有删除操作均不可逆，请谨慎删除~~）</h3>
+			</div>
+			<div class="box-body">
+				<div class="tab-pane active" id="app">
+					<input type="hidden" v-model="id">
+					<div class="form-group has-error">
+						<label for=""><b>名称(例如：新款P30手机)</b></label>
+						<input type="text" v-model="name" placeholder="请输入名称">
+					</div>
+					<div class="form-group" >
+								<label for=""><b>分类</b></label>
+									<!-- <select class="form-control" v-model="selected">
+										<option v-for="(item,index) in cid" :value="item.cid" v-html="item.name"></option>
+									</select> -->
+									<input type="hidden" name="cid" v-model='goods_cid'>
+									<el-cascader
+									size='small'
+									class="form-control "
+									style="border: 0;padding:0;"
+									:options="goodsOptions"
+									v-model='goods_cid_list'
+									:props="{ checkStrictly: true,
+									value:'id',
+									label:'name',
+									children:'children'}"
+									clearable
+									@change='goodsOptionsChange'
+									ref="cascaderHandle" 
+									:show-all-levels="false" 
+									filterable></el-cascader>
+					</div>
+					<table class="table table-builder table-bordered mb10">
+						<thead>
+						<tr>
+							<td colspan="5"><button type="button" class="btn btn-xs btn-success btn-flat" @click='addNewSpec'>+ 新增规格</button></td>
+						</tr>
+						<tr>
+							<th style="width:150px" class="">规格名称</th>
+							<th style="width:70px" class="">排序</th>
+							<th style="width:150px" class="">是否可以上传图片</th>
+							<th class="">规格值</th>
+							<th style="width:80px" class="text-center">操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr v-for='(list,index) in specs' :key='index'>
+							<td><input type="hidden" v-model="list.id"/><input type="text" class="" v-model="list.name" placeholder="请输入规格名称"/></td>
+							<td><input type="text" class="" v-model="list.sort" placeholder="请输入序号"/></td>
+							<td style="padding-top:13px;">
+								<input type="radio" id="is_upload_image1" v-model="list.is_upload_image" value="1" /><label for="is_upload_image1">是</label>
+								<input type="radio" id="is_upload_image2" v-model="list.is_upload_image" value="0" checked/><label for="is_upload_image2">否</label>
+							</td>
+							<td>
+								<div class="col-xs-2 specs mb5" style="width: 100px; padding: 0px 5px;" v-for='(spec,sp) in list.spec' :key='sp'>
+									<input type="text" class="" v-model="spec.item">
+									<input type="hidden" v-model="spec.id"><span class="badge bg-yellow" @click='deleteSpecItem(index,sp,spec.id)'><i class="fa fa-remove"></i></span>
+								</div>
+								<div class="col-xs-3 mb5" style="width:165px; padding: 0px 5px;">
+									<input type="text" v-model="list.tempSpec" id="tempSpec" class="" placeholder="请输入新的规格值">
+								</div>
+								<div class="col-xs-1 mb5">
+									<div class="row">
+										<button type="button" class="btn btn-sm btn-success btn-flat" @click="addSpecItem(list.tempSpec,index)">+ 添加</button>
+									</div>
+								</div>
+							</td>
+							<td class="text-center"><button type="button" class="btn btn-sm btn-danger btn-flat" @click="deleteSpec(index,list.id)">删除</button></td>
+						</tr>
+						<!-- <tr>
+							<td colspan="5"><button type="button" class="btn btn-xs btn-success btn-flat" @click='addNewSpec'>+ 新增规格</button></td>
+						</tr> -->
+						<tr class="text-center">
+							<td colspan="5"><button type="button" class="btn btn-success" @click='submitForm'><i class="fa fa-fw fa-save"></i> 提交保存</button> 注意:提交保存后才能保存新增的规格和属性，删除是实时删除</td>
+						</tr>
+						</tbody>
+					</table>
+
+					<!-- <table class="table table-builder table-bordered mb10">
+						<thead>
+						<tr>
+							<th style="width:150px" class="">属性名称</th>
+							<th style="width:70px" class="">排序</th>
+							<th style="width:150px" class="">是否显示</th>
+							<th class="">属性值</th>
+							<th style="width:80px" class="text-center">操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr v-for='(attr,index) in attrs' :key='index'>
+							<td><input type="hidden" v-model="attr.id"/><input type="text" class="" v-model="attr.name" placeholder="请输入属性名称"/></td>
+							<td><input type="text" class="" v-model="attr.sort" placeholder="请输入序号"/></td>
+							<td style="padding-top:13px;">
+								<input type="radio" id="is_upload_image1" v-model="attr.is_show" value="1" /><label for="is_upload_image1">是</label>
+								<input type="radio" id="is_upload_image2" v-model="attr.is_show" value="0" checked/><label for="is_upload_image2">否</label>
+							</td>
+							<td>
+								<input type="text" class="" placeholder="多个属性值需要用英文逗号','隔开,商家发布商品是即可下拉选择属性值" v-model="attr.value">
+							</td>
+							<td class="text-center"><button type="button" class="btn btn-sm btn-danger btn-flat" @click="deleteAttr(index,attr.id)">删除</button></td>
+						</tr>
+						<tr>
+							<td colspan="5"><button type="button" class="btn btn-xs btn-success btn-flat" @click='addNewAttr'>+ 新增属性</button></td>
+						</tr>
+						<tr class="text-center">
+							<td colspan="5"><button type="button" class="btn btn-success" @click='submitForm'><i class="fa fa-fw fa-save"></i> 提交保存</button> 注意:提交保存后才能保存新增的规格和属性，删除是实时删除</td>
+						</tr>
+						</tbody>
+					</table> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__PLUG__/vue/vue-resource.min.js"></script>
+<script>
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			goods_cid_list:[], // 商品分类id的多级信息
+			goods_cid:'',  //商品分类id
+			goodsOptions:[], // 商品分类
+			timer:null, // 定时器
+			id:{$info.id|default=0},
+			name:'{$info.name|raw}',
+			cid:{$category|raw},
+			newAddText:'',
+			specs:[
+				{volist name="info.spec" id="goods_type_spec"}
+				{id:{$goods_type_spec.id|default=0},name:'{$goods_type_spec.name|raw}',sort:'{$goods_type_spec.sort}',is_upload_image:{$goods_type_spec.is_upload_image|default=0},spec:[
+						{volist name="goods_type_spec.spec_item" id="spec_item"}{id:{$spec_item.id|default=0},item:'{$spec_item.item|raw}'},{/volist}
+					]},
+				{/volist}
+			],
+			attrs:[
+				{volist name="info.goods_type_attribute" id="attr"}
+				{id:{$attr.id|default=0},name:'{$attr.name}',sort:'{$attr.sort}',is_show:{$attr.is_show|default=1},value:'{$attr.value}'},
+				{/volist}
+			],
+			selected:'{$info.cid|default=0}',
+				allowSubmit: true,
+		},
+		watch: {
+            selected(val){
+                console.log(val);
+                this.$http.post('{:url("verifyCate")}',{cid: val}).then((response) => {
+
+                    if(response.data.code == 1){
+                        this.allowSubmit = true;
+                    }else{
+                        layer.msg(response.data.msg);
+                        this.allowSubmit = false;
+                    }
+                })
+            }
+		},
+		mounted: function(){
+			this.goods_cid = this.selected
+			this.getGoodsOptions()
+	  // 点击文字即选中
+	  this.timer =  setInterval(function() {
+　　　　　　document.querySelectorAll(".el-cascader-node__label").forEach(el => {
+　　　　　　　　el.onclick = function() {
+　　　　　　　　　　if (this.previousElementSibling) this.previousElementSibling.click();
+　　　　　　　　};
+　　　　　　});
+　　　　}, 1000);
+
+		},
+		destroyed(){
+		clearInterval(this.timer)
+	  },
+		methods:{
+			 	// 处理cid在三级联动的位置,
+				 getCidList(val,id){
+						let cid_list =[]
+						val.forEach((item,index)=>{
+							if(item.id ==id){
+								cid_list = [item.id]
+								return false
+							}else{
+								if(item.children){
+									let newCid_list =[item.id]
+									let list = nodefun(item.children,id,newCid_list)
+									if(list) {
+										cid_list =list
+									}
+								}
+							}
+						})
+						// 递归函数
+						function nodefun(newVal,newId,newCid_list){
+							let flag =false
+							newVal.forEach(j=>{
+								// console.log(j)
+								if(j.id == newId){
+									newCid_list.push(j.id)
+									flag =true
+								}else{
+									if(j.children){
+										let	cid_list = JSON.parse(JSON.stringify(newCid_list))
+										cid_list.push(j.id)
+										let list =  nodefun(j.children,newId,cid_list)
+										if(list){
+											newCid_list =list 
+											flag =true
+										}
+									}
+
+								}
+							})
+							if(flag){
+								return	newCid_list						
+							}
+						}
+						return	cid_list
+			},
+		 getQueryVariable(variable){
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i=0;i<vars.length;i++) {
+					var pair = vars[i].split("=");
+					if(pair[0] == variable){return pair[1];}
+				}
+				return(false);
+			},
+
+		  // 获取分类接口数据
+		getGoodsOptions(){
+			let that =this
+			$.get("/admin.php/goods/category/getcategorylist",function(data,status){
+			   if(data.code == 1){
+				console.log('获取商品分类',data.data)
+				that.goodsOptions =data.data
+				// 递归获取cid的位置
+				if(that.goods_cid){
+					that.goods_cid_list = 	that.getCidList(that.goodsOptions,that.goods_cid)
+				}
+			   }else{
+				  that.$message({
+						message: data.msg,
+						type: 'warning'
+					});
+			   }
+			
+			})
+		},
+		// 商品分类选择改变时
+		goodsOptionsChange(e){
+			if(this.goods_cid_list.length>0){
+				this.goods_cid = this.goods_cid_list[this.goods_cid_list.length-1]
+			}else{
+				this.goods_cid =''
+			}
+			// this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+			console.log(this.goods_cid_list)
+			console.log(e,this.goods_cid)
+		},
+			addNewSpec:function(){
+				this.specs.push({
+					id:0,
+					name:'',
+					sort:99,
+					is_upload_image:0,
+					spec:[]
+				})
+				this.newAddText=''
+			},
+			addNewAttr:function(){
+				this.attrs.push({
+					id:0,
+					name:'',
+					sort:99,
+					is_show:1,
+					value:''
+				})
+				this.newAddText=''
+			},
+			deleteSpec: function(index,id){
+				var that = this;
+				if(id > 0){
+					// 删一个规格
+					layer.confirm('规格值删除后不能恢复，确定要删除吗？',{title:'友情提醒'}, function(lay_index){
+					  that.$http.post('{:url("deleteSpec")}',{id:id}).then((response) => {
+							layer.msg(response.data.msg)
+							if(response.data.code == 1){
+								that.specs.splice(index,1);
+							}
+						})
+					  layer.close(lay_index);
+					});
+					/*BootstrapDialog.confirm({
+						title : '友情提醒',
+						message : '规格删除后不能恢复，确定要删除吗？',
+						type : BootstrapDialog.TYPE_DANGER,
+						closable : true,
+						draggable : true,
+						btnCancelLabel : '取消',
+						btnOKLabel : '确定',
+						btnOKClass : 'btn-danger btn-flat',
+						btnCancelClass : 'btn-default btn-flat',
+						size : BootstrapDialog.SIZE_SMALL,
+						cssClass : 'confirm-dialog',
+						callback : function(result) {
+							if (result) {
+								that.$http.post('{:url("deleteSpec")}',{id:id}).then((response) => {
+									layer.msg(response.data.msg)
+									if(response.data.code == 1){
+										that.specs.splice(index,1);
+									}
+								})
+							}
+						}
+					})*/
+				}else{
+					that.specs.splice(index,1);
+				}
+			},
+			deleteSpecItem: function(index,sp,id){
+				var that = this;
+				if(id > 0){
+					// 删一个规格
+					layer.confirm('规格值删除后不能恢复，确定要删除吗？',{title:'友情提醒'}, function(lay_index){
+					  that.$http.post('{:url("deleteSpecItem")}',{id:id}).then((response) => {
+							layer.msg(response.data.msg)
+							if(response.data.code == 1){
+								that.specs[index]['spec'].splice(sp,1);
+							}
+						})
+					  layer.close(lay_index);
+					});
+					/*BootstrapDialog.confirm({
+						title : '友情提醒',
+						message : '规格值删除后不能恢复，确定要删除吗？',
+						type : BootstrapDialog.TYPE_DANGER,
+						closable : true,
+						draggable : true,
+						btnCancelLabel : '取消',
+						btnOKLabel : '确定',
+						btnOKClass : 'btn-danger btn-flat',
+						btnCancelClass : 'btn-default btn-flat',
+						size : BootstrapDialog.SIZE_SMALL,
+						cssClass : 'confirm-dialog',
+						callback : function(result) {
+							if (result) {
+								that.$http.post('{:url("deleteSpecItem")}',{id:id}).then((response) => {
+									layer.msg(response.data.msg)
+									if(response.data.code == 1){
+										that.specs[index]['spec'].splice(sp,1);
+									}
+								})
+							}
+						}
+					})*/
+				}else{
+					that.specs[index]['spec'].splice(sp,1);
+				}
+			},
+			addSpecItem: function(tempSpec,index){
+				// 追加规格元素
+				if(tempSpec == '' || tempSpec == undefined){
+					Stars.notify('规格值名称不能为空', 'danger','fa fa-bell-slash');
+					return false;
+				}
+				if(this.specs[index]['spec'].length >= 30){
+					Stars.notify('规格值最多可添加30个', 'danger','fa fa-bell-slash');
+					return false;
+				}
+				this.specs[index]['spec'].push({item:tempSpec});
+				this.specs[index].tempSpec = '';
+			},
+			deleteAttr: function(index,id){
+				var that = this;
+				if(id > 0){
+					// 删一个属性
+					layer.confirm('规格值删除后不能恢复，确定要删除吗？',{title:'友情提醒'}, function(lay_index){
+					  that.$http.post('{:url("deleteAttribute")}',{id:id}).then((response) => {
+							layer.msg(response.data.msg)
+							if(response.data.code == 1){
+								that.attrs.splice(index,1);
+							}
+						})
+					  layer.close(lay_index);
+					});
+					/*BootstrapDialog.confirm({
+						title : '友情提醒',
+						message : '属性删除后不能恢复，确定要删除吗？',
+						type : BootstrapDialog.TYPE_DANGER,
+						closable : true,
+						draggable : true,
+						btnCancelLabel : '取消',
+						btnOKLabel : '确定',
+						btnOKClass : 'btn-danger btn-flat',
+						btnCancelClass : 'btn-default btn-flat',
+						size : BootstrapDialog.SIZE_SMALL,
+						cssClass : 'confirm-dialog',
+						callback : function(result) {
+							if (result) {
+								that.$http.post('{:url("deleteAttribute")}',{id:id}).then((response) => {
+									layer.msg(response.data.msg)
+									if(response.data.code == 1){
+										that.attrs.splice(index,1);
+									}
+								})
+							}
+						}
+					})*/
+				}else{
+					that.attrs.splice(index,1);
+				}
+			},
+			submitForm: function(){
+				var that = this
+				if(that.name == ''){
+					Stars.notify('请填写名称');
+					return false;
+				}
+				if(!this.allowSubmit) return layer.msg('请选择最后一级分类！');
+
+				for(var j in that.specs) {
+					that.specs[j].name;
+					if(that.specs[j].name == ''){
+						Stars.notify('请填写规格名');
+						return false;
+					}
+					// console.log('>>>>>>>>>>>>>>>>>>>>>',that.specs[j])
+                    if(that.specs[j].tempSpec){
+                        that.specs[j].spec.push({item: that.specs[j].tempSpec});
+                        that.specs[j].tempSpec = null
+                    }
+					if(that.specs[j].spec.length == 0){
+						Stars.notify('请填写规格值');
+						return false;
+					}
+					//规格数目超过规定的数目，不提交，这里为10个
+					if(that.specs[j].spec.length > 10){
+						that.specs[j]['spec'].splice(10, that.specs[j].spec.length - 10);
+					}
+				}
+
+				that.$http.post('{:url()}', {id:that.id,cid:that.goods_cid,name:that.name, goods_spec:that.specs, goods_attr:that.attrs}).then((response) => {
+					if(response.data.code == 1){
+						Stars.notify(response.data.msg);
+						{eq name="layer" value="1"}
+						var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+						parent.layer.close(index);
+							{eq name="reload_type" value="type_index"}
+								window.parent.location.reload();
+							{/eq}
+						{gt name="goodsid" value="0"}
+							//parent.vm.getGoodsSpec({$goodsid},0, response.data.data);
+							//parent.vm.getGoodsAttr({$goodsid},0, response.data.data);
+						{else /}
+							//parent.vm.getGoodsSpec(0, response.data.data);
+							//parent.vm.getGoodsAttr(0, response.data.data);
+						{/gt}
+						//parent.vm.get_spec_type();
+						{/eq}
+						setTimeout(function () {
+							location.href = response.data.url
+						}, 1500)
+					}else{
+						    // that.specs = that.specs.map(item => {
+						    //     item.spec = [];
+							// 	return item;
+							//
+							//
+                            // })
+
+
+
+
+                        console.log("???????",this.specs)
+						Stars.notify(response.data.msg);
+					}
+				})
+			}
+		}
+	});
+</script>
+{/block}

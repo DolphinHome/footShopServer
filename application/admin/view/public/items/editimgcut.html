@@ -1,0 +1,42 @@
+<!-- <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_editimgcut">
+  <div class="col-xs-12 label-title" for="editimgcutThumb" style="text-align: left;">图片</div>
+  <div class="col-xs-12 js-upload-image">
+    <div id="file_list_editimgcut" class="uploader-list" style="float:left">
+      <div class="file-item thumbnail">
+        <a data-magnify="gallery" data-caption="" href=" ">
+          <img data-original="" src="{$info.thumb|get_file_url}" width="100">
+        </a>
+        <i class="fa fa-times-circle remove-picture"></i>
+      </div>
+    </div>
+    <input type="hidden" name="editimgcutThumb" value="{$info.thumb}" data-multiple="false" data-watermark=''
+      data-thumb='' data-size="0" data-ext='' />
+    <div class="col-xs-12 js-upload-images webuploader-pick" id="editimgcutUploadPic">上传图片</div>
+    <div class="clearfix"></div>
+  </div>
+</div> -->
+
+<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_{$form.name}">
+  <div class="col-xs-12 label-title" for="{$form.name}">{$form.title|htmlspecialchars}</div>
+ <div class="col-xs-12 js-upload-images">
+     <div id="file_list_{$form.name}" class="uploader-list pull-left">
+         {notempty name="form.value"}
+             {volist name="form['value']|explode=',',###" id="vo"}
+             <div class="file-item thumbnail">
+                 <a class="img-link" data-magnify="gallery" href="{$vo|get_file_url}" style=" display:block; height: 100px; width: 100px;">
+                     <img src="{$vo|get_thumb}" >
+         <i class="fa fa-fw fa-arrows move-picture"></i>
+       </a>
+       <i class="fa fa-times-circle remove-picture" data-id="{$vo}"></i>
+             </div>
+             {/volist}
+         {/notempty}
+     </div>
+     <input type="hidden" name="{$form.name}" data-multiple="true" data-size="{$form['size']|default=0}" data-ext='{$form["ext"]|default=""}' id="{$form.name}" value="{$form.value|default=''}">
+     <div class="col-xs-12 js-upload-images webuploader-pick" id="editimgcutUploadPic">{:lang('上传图片')}</div>
+ <div class="clearfix"></div>
+     {notempty name="form.tips"}
+     <div class="help-block">{$form.tips|raw}</div>
+     {/notempty}
+ </div>
+</div>

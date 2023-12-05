@@ -1,0 +1,475 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/static/statistics/css/base.css">
+    <link rel="stylesheet" href="/static/statistics/css/transactionSheet.css">
+    <link rel="stylesheet" href="/static/statistics/css/orderDetail.css">
+    <!-- element -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <!-- vue -->
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <!-- 引入组件库 element -->
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <!-- jquery -->
+    <script src="/static/admin/js/crm/jquery.min-2.1.4.js"></script>
+    <script src="__PLUG__/jqueryToast/js/toast.js"></script>
+    <script src="__ADMIN_JS__/stars.js"></script>
+    <style>
+        * {
+            outline: none;
+        }
+
+        /*1.显示滚动条：当内容超出容器的时候，可以拖动：*/
+        .el-drawer__body {
+            overflow: auto;
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="el">
+        <!-- <h1 class="fu-h1">交易记录</h1> -->
+        <div class="fu-search">
+            <form action="" style="display: none;"  id="myForm" method="get">
+                <input type="hidden" name="isExport" value='1'>
+                <input type="hidden" name="payStatus" :value='searchForm.payStatus'>
+            <div style="display: flex;flex-wrap: wrap;">
+                <div class="fu-form-item">
+                    <div class="fu-form-item-title">{:lang('订单号')}</div>
+                    <div class="fu-form-item-data">
+                        <el-input placeholder="{:lang('请输入订单号')}" v-model="searchForm.orderSn" class="input-with-select" name='orderSn' :value='searchForm.orderSn'>
+                        </el-input>
+                    </div>
+                </div>
+                <div class="fu-form-item">
+                    <div class="fu-form-item-title">{:lang('日期')}</div>
+                    <div class="fu-form-item-data">
+                        <el-date-picker v-model="timeRange" type="datetimerange" :picker-options="pickerOptions"
+                            value-format='yyyy-MM-dd HH:mm:ss' range-separator="{:lang('至')}" start-placeholder="{:lang('开始日期')}"
+                            end-placeholder="{:lang('结束日期')}" align="right" @change='getDateTimerange'>
+                        </el-date-picker>
+                        <input type="hidden" name="startTime" :value='searchForm.startTime'>
+                        <input type="hidden" name="endTime" :value='searchForm.endTime'>
+                    </div>
+                </div>
+
+                <div class="fu-form-item">
+                    <div class="fu-form-item-title">{:lang('手机号')}</div>
+                    <div class="fu-form-item-data">
+                        <el-input placeholder="{:lang('手机号')}" v-model="searchForm.userPhone" class="input-with-select"  name='userPhone' :value='searchForm.userPhone'>
+                        </el-input>
+
+                    </div>
+                </div>
+                <div style="margin-left: 10px;">
+                    <el-button type="primary" class="fu-form-item-data-btn" @click="getNewTable">{:lang('查询')}</el-button>
+                    <el-button class="fu-form-item-data-btn" @click='resetData'>{:lang('重置')}</el-button>
+                    <el-button class="fu-form-item-data-btn"   @click='Exp'>{:lang('导出')}</el-button>
+                </div>
+            </div>
+        </form>
+        </div>
+        <div class="fu-refundLost-center">
+            <el-tabs type="card" @tab-click="handleClick" v-model="activeName">
+                <el-tab-pane label="{:lang('全部')}" name="first"></el-tab-pane>
+                <el-tab-pane label="{:lang('支付完成')}" name="second"></el-tab-pane>
+                <el-tab-pane label="{:lang('未支付')}" name="third"></el-tab-pane>
+                <div class="fu-refundLost-center-table">
+                    <el-table :data="tableData" style="width: 100%" id="tabled" ref="tabled" border cneter>
+                        <el-table-column label="{:lang('交易单号')}" width="190">
+                            <template slot-scope="scope">
+                                <div class="fu-table-item-order">
+                                    <span>{{scope.row.transactionNo}}</span>
+                                    <i class="el-icon-document-copy" title="{:lang('点击复制')}" v-if='scope.row.transactionNo'
+                                        @click="copyInfo(scope.row.transactionNo)"></i>
+                                <div v-if='!scope.row.transactionNo'>{:lang('无')}</div>
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="{:lang('订单号')}" width="220">
+                            <template slot-scope="scope">
+                                <el-button type="text" style="margin-left: 10px;" @click='getOrderDetail(scope.row.orderSn)'>
+                                    {{scope.row.orderSn}}
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="{:lang('收货人')}" width="200">
+                            <template slot-scope="scope">
+                                <div style="text-align: left;">
+                                    <span>{{scope.row.consigneeName}}</span>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span>{{scope.row.consigneePhone}}</span>
+                                    <i class="el-icon-document-copy" title="{:lang('点击复制')}" v-if='scope.row.consigneePhone'
+                                        @click="copyInfo(scope.row.consigneePhone)"></i>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span>{{scope.row.consigneeAdress}}</span>
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="{:lang('订单金额')}" prop="" width="">
+                            <template slot-scope="scope">
+                                ￥<span>{{scope.row.orderAmount}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="{:lang('实付金额')}" width="">
+                            <template slot-scope="scope">
+                                <!-- ￥<span>{{scope.row.price}}</span> -->
+                                <span> <span>{{scope.row.realAmount}}</span></span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="{:lang('优惠金额')}" prop="" width="">
+                            <template slot-scope="scope">
+                                ￥<span>{{scope.row.discountsAmount}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="{:lang('支付状态')}" prop="payStatus" width="">
+                            <!-- <template slot-scope="scope">
+                                <span v-if="scope.row.payStatus == 2" class="fu-table-status-2">{:lang('未支付')}</span>
+                                <span v-if="scope.row.payStatus == 1" class="fu-table-status-1">{:lang('支付成功')}</span>
+                            </template> -->
+                        </el-table-column>
+                        <el-table-column label="{:lang('支付方式')}" prop="payType" width="">
+                        </el-table-column>
+                        <el-table-column label="{:lang('订单状态')}" prop="orderStatus" width="">
+                        </el-table-column>
+                        <el-table-column label="{:lang('创建时间')}" prop="" width="160">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.createTime}}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div style="margin-top: 10px;text-align: right;">
+                        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                            :current-page="pageObj.page" :page-sizes="[10, 20, 30, 50,100]" :page-size="pageObj.limit"
+                            layout="total, sizes, prev, pager, next, jumper" :total="pageObj.total">
+                        </el-pagination>
+                    </div>
+                </div>
+            </el-tabs>
+
+        </div>
+        <!-- {:lang('弹框')} -->
+        <div  id="el_drawer" style="display: none;" >
+            <el-drawer title="{:lang('订单明细')}" :visible.sync="dialogFormVisible" direction="rtl" size='45%'>
+                <!-- <el-dialog title="{:lang('订单明细')}" :visible.sync="dialogFormVisible" width='60%'> -->
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>{:lang('订单基本信息')}</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <el-row :gutter="12">
+                            <el-col :span="8" v-if="dialogObj.transactionNo">
+                                <span class="fu-el-col-tips">{:lang('交易单号')}：</span>
+                                <span>{{dialogObj.transactionNo}}</span>
+                            </el-col>
+                            <el-col :span="8">
+                                <span class="fu-el-col-tips">{:lang('订单号')}：</span>
+                                <span>{{dialogObj.orderSn}}</span>
+                            </el-col>
+
+                            <el-col :span="8">
+                                <span class="fu-el-col-tips">{:lang('订单状态')}：</span>
+                                <span class="fu-el-col-status">{{dialogObj.orderStatus}}</span>
+                            </el-col>
+                        </el-row>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <el-row :gutter="12">
+                            <el-col :span="8">
+                                <span class="fu-el-col-tips">{:lang('用户姓名')}：</span>
+                                <span>{{dialogObj.userName}}</span>
+                            </el-col>
+                            <el-col :span="8">
+                                <span class="fu-el-col-tips">{:lang('用户手机号')}：</span>
+                                <span>{{dialogObj.userPhone}}</span>
+                            </el-col>
+                            <el-col :span="8">
+                                <span class="fu-el-col-tips">{:lang('支付方式')}：</span>
+                                <span>{{dialogObj.payType}}</span>
+                            </el-col>
+                        </el-row>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <el-row :gutter="12">
+                            <el-col :span="8">
+                                <span class="fu-el-col-tips">{:lang('订单总金额')}：</span>
+                                <span>￥{{dialogObj.orderAmount}}</span>
+                            </el-col>
+                            <el-col :span="8">
+                                <span class="fu-el-col-tips">{:lang('实付支付')}：</span>
+                                <span>{{dialogObj.realAmount}}</span>
+                            </el-col>
+                            <el-col :span="8">
+                                <span class="fu-el-col-tips">{:lang('优惠总金额')}：</span>
+                                <span style="display: flex;"><span>￥{{dialogObj.discountsAmount}}</span></span>
+                            </el-col>
+                        </el-row>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <el-row :gutter="12">
+
+                            <el-col :span="8">
+                                <span class="fu-el-col-tips">{:lang('下单时间')}：</span>
+                                <span>{{dialogObj.createTime}}
+                                </span>
+                            </el-col>
+                        </el-row>
+                    </div>
+                </el-card>
+                <!-- {:lang('商品清单')} -->
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>{:lang('商品清单')}</span>
+                    </div>
+                    <el-table :data="dialogObj.goodsList" style="width: 100%" border>
+                        <el-table-column prop="date" label="{:lang('商品图片')}" width='140'>
+                            <template slot-scope="scope">
+                                <img :src="scope.row.goodsImgUrl" alt="" class="fu-table-img">
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="goodsName" label="{:lang('商品名称')}"  effect='dark'  :show-overflow-tooltip='true'>
+                        </el-table-column>
+                        <el-table-column prop="goodsSpecification" label="{:lang('规格')}">
+                        </el-table-column>
+                        <el-table-column prop="goodsPrice" label="{:lang('单价')}({:lang('元')})">
+                        </el-table-column>
+                        <el-table-column prop="goodsNum" label="{:lang('数量')}">
+                        </el-table-column>
+                        <el-table-column prop="goodsAmount" label="{:lang('总价')}({:lang('元')})">
+                        </el-table-column>
+                        <el-table-column prop="goodsRealAmount" label="{:lang('实付')}">
+                        </el-table-column>
+                        <el-table-column prop="goodsdiscountsAmount" label="{:lang('总优惠')}({:lang('元')})">
+                        </el-table-column>
+                    </el-table>
+                </el-card>
+                <!-- {:lang('物流信息')} -->
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>{:lang('物流信息')}</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <el-row :gutter="24">
+                            <el-col :span="24">
+                                <span class="fu-el-col-tips">{:lang('收货人信息')}：</span>
+                                <span v-if='dialogObj.consigneeName'>{{dialogObj.consigneeName}} , {{dialogObj.consigneePhone}} ,
+                                    {{dialogObj.consigneeAdress}}</span>
+                            </el-col>
+                        </el-row>
+                    </div>
+                </el-card>
+                <!-- </el-dialog> -->
+
+            </el-drawer>
+        </div>
+    </div>
+    <input type='hidden' id="getPayData" value="{$getPayData}">
+</body>
+<script>
+    new Vue({
+        el: '#el',
+        data() {
+            return {
+                dialogObj: {},
+                searchForm: {
+                    orderSn: '',
+                    startTime: '',
+                    endTime: '',
+                    userPhone: '',
+                    payStatus: '',
+                },
+                pageObj: {
+                    page: 1,
+                    total: 0,
+                    limit: 10
+                },
+                total: 0,
+                activeName: 'first',
+                tableGoodsData: [],
+                dialogFormVisible: false,
+                timeRange: '',
+                pickerOptions: {
+
+                    shortcuts: [{
+                        text: "{:lang('最近一天')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: "{:lang('最近一周')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: "{:lang('最近一个月')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: "{:lang('最近三个月')}",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
+                tableData: [],
+
+            }
+        },
+        mounted() {
+            // 数据渲染
+            let response = JSON.parse(document.getElementById('getPayData').value)
+            console.log(response)
+            this.tableData = response.result.data
+            this.pageObj.total = response.result.total            
+            document.querySelector('#el_drawer').style.display='block'
+            document.querySelector('#myForm').style.display='block'
+        },
+        methods: {
+            Exp(){
+                document.getElementById("myForm").submit()
+            },
+            getNewTable() {
+                this.pageObj.limit = 10
+                this.pageObj.page = 1
+                this.getTable()
+            },
+            handleClick(tab, event) {
+                console.log(tab.name, tab);
+                // -1 全部 0 支付完成 1 未支付
+                var arr = [
+                    { index: 0, val: -1 },
+                    { index: 1, val: 1 },
+                    { index: 1, val: 0 }
+                ]
+                this.searchForm.payStatus = arr[tab.index].val
+
+                this.getNewTable()
+            },
+            // 复制功能
+            copyInfo(val) {
+                let oInput = document.createElement('input');
+                oInput.value = val;
+                document.body.appendChild(oInput);
+                oInput.select(); // 选择对象;
+                console.log(oInput.value)
+                document.execCommand("Copy"); // 执行浏览器复制命令
+                this.$notify({
+                    title: "{:lang('提示')}",
+                    message: "{:lang('已成功复制到剪切板')}",
+                    type: 'success',
+                    duration: 1500
+                });
+                oInput.remove()
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageObj.limit = val
+                this.getTable()
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.pageObj.page = val
+                this.getTable()
+            },
+            getOrderDetail(orderSn) {
+                // 获取数据
+                var formData = { 
+                    orderSn
+                  }
+                Stars.loading();
+                $.ajax({
+                    url: "ordersdetail",
+                    type: "post",
+                    data: formData,
+                    success: (res) => {
+                        var data = JSON.parse(res)
+                        this.dialogFormVisible = true
+                        this.dialogObj = data.result
+                        console.log(this.dialogObj)
+                        // toast提醒
+                        //     Stars.notify('哈哈哈哈','danger');
+                        Stars.loading('hide');
+
+                    }
+                });
+            },
+            queryData() {
+                console.log(this.value)
+            },
+            resetData() {
+                this.searchForm.orderSn = ''
+                this.searchForm.startTime = ''
+                this.searchForm.endTime = ''
+                this.searchForm.userPhone = ''
+                this.timeRange = ''
+            },
+            getDateTimerange() {
+                console.log(this.timeRange)
+                if (this.timeRange) {
+                    this.searchForm.startTime = this.timeRange[0]
+                    this.searchForm.endTime = this.timeRange[1]
+                } else {
+                    this.searchForm.startTime = ''
+                    this.searchForm.endTime = ''
+                }
+            },
+            getTable() {
+                this.searchForm.page = this.pageObj.page
+                this.searchForm.list_rows = this.pageObj.limit
+                console.log(this.searchForm)
+                var formData = this.searchForm
+                // var formData = {
+                //     orderSn: '1',
+                //     startTime: '1',
+                //     endTime: '1',
+                //     userPhone: '1',
+                //     payStatus: '1',
+                //     limit: 1,
+                //     page: 1
+                // }
+                Stars.loading();
+                $.ajax({
+                    url: "getPayData",
+                    type: "post",
+                    data: formData,
+                    success: (res) => {
+                        var data = JSON.parse(res)
+                        console.log(data)
+                        this.tableData = data.result.data
+                        this.pageObj.total = data.result.total
+                        // toast提醒
+                        //     Stars.notify('哈哈哈哈','danger');
+                        Stars.loading('hide');
+
+                    }
+                });
+            }
+        },
+    })
+</script>
+
+</html>
+{/block}

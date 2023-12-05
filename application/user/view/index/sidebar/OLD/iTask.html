@@ -1,0 +1,122 @@
+<?php $powerTask = in_array($admin_role,[20,21,22]) ? 1 : 0;?>
+
+<div>
+	<div class="layui-form-item">
+		<div class="layui-input-inline">
+			<select name="task_state" class="iPlanlistThisSelect">
+				<option value="">状态</option>
+				<?php foreach($taskStateArr as $k=>$v):?>
+				<option value="{$k}">{$v['name']}</option>
+				<?php endforeach;?>
+			</select>
+		</div>
+
+		<div class="layui-input-inline">
+			<select name="task_staff_id" class="iPlanlistThisSelect">
+				<option value="">负责人</option>
+				<?php foreach($data['project_memberList'] as $v):?>
+				<option value="{$v['aid']}">{$v['name']}</option>
+				<?php endforeach;?>
+			</select>
+		</div>
+
+		<div class="layui-input-inline">
+			<input type="text" name="task_confirm_time" value="" class="layui-input iPlanlistThisSelect lInputDateRange" id="lInputDateRangeTask"
+			 data-date="Task" placeholder="日期区间" readonly="readonly">
+		</div>
+
+		<div class="layui-input-inline">
+			<button type="button" class="layui-btn lLayui-btn" v-on:click="planlistThisSearch">查询</button>
+		</div>
+	</div>
+</div>
+
+<table class="layui-table">
+	<thead>
+		<tr>
+			<th class="lTextCenter lTdID">ID</th>
+			<th>功能模块</th>
+			<th class="lTextCenter" style="width: 50px;">前/后端</th>
+			<th class="lTextCenter" style="width: 130px;">状态</th>
+			<th class="lTextCenter" style="width: 50px;">负责人</th>
+			<th class="lTextCenter lTdSave2">确认时间</th>
+			<th class="lTextCenter lTdSave2">结束时间</th>
+			<?php if($powerTask):?>
+			<th class="lTextCenter lTdSave2">操作</th>
+			<?php endif;?>
+		</tr>
+	</thead>
+	<tbody>
+		<template v-for="(item, index) in itemsPlanThis.taskList">
+			<tr>
+				<td class="lTextCenter">{{item.aid}}</td>
+				<td class="">{{item.name1}} - {{item.name2}} - {{item.name}}</td>
+				<td class="lTextCenter">{{item.module_typeName}}</td>
+				<td class="lTextCenter" :style="{'color':item.stateColor}">{{item.stateName}}</td>
+				<td class="lTextCenter">{{item.staff_name}}</td>
+				<td class="lTextCenter">{{item.confirm_timeShow}}</td>
+				<td class="lTextCenter">{{item.end_timeShow}}</td>
+				<?php if($powerTask):?>
+				<td class="lTextCenter">
+					<button v-if="item.staff_id < 1" class="layui-btn layui-btn-xs lLayui-btn" type="button" v-on:click="taskLingqu"
+					 data-url="{:url('ProjectTask/lingqu')}" :data-aid="item.aid">领取</button>
+					<?php if(in_array($admin_role,[20,21])):?>
+					<button v-if="item.staff_id < 1" class="layui-btn layui-btn-xs lLayui-btn" type="button" v-on:click="taskZhipai"
+					 :data-aid="item.aid" :data-name="item.name" :data-name1="item.name1" :data-name2="item.name2">指派</button>
+					<?php endif;?>
+					<button v-if="item.state == 2 && item.staff_id == item.staff_login" class="layui-btn layui-btn-xs lLayui-btn-see"
+					 type="button" v-on:click="taskWancheng" data-url="{:url('ProjectTask/wancheng')}" :data-aid="item.aid">完成</button>
+					<?php if(in_array($admin_role,[20,21])):?>
+					<button v-if="item.state == 3" class="layui-btn layui-btn-xs lLayui-btn-see" type="button" v-on:click="taskShenhe"
+					 data-url="{:url('ProjectTask/shenhe')}" :data-aid="item.aid">审核通过</button>
+					<button v-if="item.state == 2" class="layui-btn layui-btn-xs lLayui-btn-warm" type="button" v-on:click="taskReset"
+					 data-url="{:url('ProjectTask/reset')}" :data-aid="item.aid">重置</button>
+					<?php endif;?>
+				</td>
+				<?php endif;?>
+			</tr>
+		</template>
+		<tr v-if="itemsPlanThis.aid > 0">
+			<td class="lTextCenter">统计</td>
+			<td class="" colspan="7">
+				总数：{{itemsPlanThis.countAll}}
+				&nbsp;&nbsp;
+				完成：{{itemsPlanThis.countSuccess}}
+				&nbsp;&nbsp;
+				剩余：{{itemsPlanThis.countOther}}
+				&nbsp;&nbsp;
+				进度：<font size="" color="#FF0000">{{itemsPlanThis.countPercent}}%</font>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="lFixedDiv" id="lFixedDivTaskZhipai">
+	<div class="bg lFixedDivHide"></div>
+	<div class="contentC50">
+		<div class="lPadding">
+			<blockquote class="layui-elem-quote lLayui-elem-quote site-text">任务指派</blockquote>
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="margin-left: 0;">
+					<input type="text" style="background-color: #F5F5F5;" readonly="readonly" value="任务: " class="layui-input" id="lFixedDivTaskZhipaiTitle">
+					<input type="hidden" name="aid" id="lFixedDivTaskZhipaiId" value="" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="margin-left: 0;">
+					<select id="lFixedDivTaskZhipaValue">
+						<option value="">请选择负责人</option>
+						<?php foreach($data['project_memberList'] as $v):?>
+						<option value="{$v['aid']}">{$v['name']}</option>
+						<?php endforeach;?>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="margin-left: 0;">
+					<button type="button" class="layui-btn lLayui-btn" v-on:click="taskZhipaiSubmit" data-url="{:url('ProjectTask/lingqu')}">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

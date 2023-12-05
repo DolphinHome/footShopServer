@@ -1,0 +1,91 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<script src="__PLUG__/layer/laydate/laydate.js?v={:config('asset_version')}"></script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom" style="border-top: 0;">	    
+			<ul class="nav nav-tabs">
+				<li {if condition="!isset($status)&&!isset($pay_status)"}class="active"{/if} > <a href="{:url('integral/order/index')}">{:lang('全部')}</a> </li>
+				{volist name="tab_list" id="tab"}
+				<li {if condition="(isset($status) and $status==$tab['value']) or (isset($pay_status) and $pay_status==$tab['value'])"}class="active"{/if}> <a href="{$tab.url}">{$tab.title}</a> </li>
+				{/volist}
+		    </ul>
+			<div class="box-body">
+				<div class="tab-pane active">
+					<div class="row">
+						<form action="" method="get" class="marBtm">
+								<div class="col-md-2 col-xs-6">
+										<span class="txt">{:lang('订单号')}：</span>
+										<input type="text" class="form-control" name="order_sn" placeholder="{:lang('请输入订单号')}" value="{$Think.get.order_sn}">
+								</div>
+								<div class="col-md-3 col-xs-6">
+									<span class="txt">{:lang('创建时间')} ：</span>
+									<input type="date" class="form-control js-date" readonly name="create_time" placeholder="{:lang('请输入日期')}" value="{$Think.get.create_time}">
+								</div>
+							<div class="col-md-2 col-xs-6" style="padding-top: 18px;">
+								<button class="btn btn-success btn-flat" type="submit">{:lang('搜索')}</button> <button class="btn btn-success btn-flat" type="button" onclick="clearinput()">{:lang('重置')}</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+            <div class="box-body">
+                <div class="tab-pane active">
+                    <table class="table table-builder table-hover table-bordered table-striped mb10">
+                        <thead>
+                            <th class="text-center" style="width: 55px;">
+                                <input class="minimal-red checkboxCtrl" data-group="ids[]" data-toggle="icheck" type="checkbox">
+                            </th>
+                            <th class="">{:lang('订单')}ID</th>
+                            <th class="">{:lang('订单号')}</th>
+                            <th class="">{:lang('下单人')}</th>
+                            <th class="">{:lang('总积分')}</th>
+                            <th class="text-center">{:lang('订单状态')}</th>
+                            <th class="text-center">{:lang('创建时间')}</th>
+                            <th class="text-center">{:lang('操作')}</th>
+                        </thead>
+                        <tbody>
+                            {volist name="list" id="o"}
+                            <tr>
+                                <td class="text-center" style="width: 55px;"><input class="ids minimal-red" data-toggle="icheck"
+                                        type="checkbox" name="ids[]" value="{$o.aid}"></td>
+                                <td class=""> {$o.aid}
+                                </td>
+                                <td class=""> {$o.order_sn}
+                                </td>
+                                <td class=""> {$o.user_id|get_nickname}
+                                </td>
+                                <td class=""> {$o.payable_money}
+                                </td>
+                                <td class="">
+                                 {if condition="$o['status'] == 1"}
+                                 		<span class="label label-flat label-success"> {:lang('未发货')} </span>
+                                 {elseif condition="$o['status'] == 2"}	
+                                      	<span class="label label-flat label-warning"> {:lang('已发货')} </span>	 
+                                 {/if}
+                                </td>
+                                <td class=""> {$o.create_time}
+                                </td>
+                                <td class="text-center">
+                                <a ident="edit" title="{:lang('详情')}" href="{:url('detail',['order_sn'=>$o['order_sn']])}" icon="fa fa-pencil pr5" class="btn btn-xs mr5 btn-default btn-flat"><i class="fa fa-pencil pr5"></i>{:lang('详情')}</a>
+                                    {if condition="$o.status == 1"}
+                                <a ident="shipping" title="{:lang('发货')}" href="{:url('express_add',['order_sn'=>$o['order_sn']])}" icon="fa fa-ban pr5" class="btn btn-xs mr5 btn-default btn-flat "><i class="fa fa-ban pr5"></i>{:lang('发货')}</a>
+                                    {/if}
+                                <!---<a ident="delete" title="{:lang('删除')}" icon="fa fa-times pr5" class="btn btn-xs mr5 btn-default btn-flat ajax-get confirm"><i class="fa fa-times pr5"></i>{:lang('删除')}</a>-->
+                                </td>
+
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                    <div class="data-table-toolbar">
+                        <div class="row">
+                            {$pages|raw}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

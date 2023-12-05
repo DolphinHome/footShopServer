@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+        <meta name="renderer" content="webkit">
+<!--        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">-->
+        {block name="page-title"}<title>{$page_title|default='后台'} | {:config('web_site_title')}</title>{/block}
+        <link rel="stylesheet" href="__PLUG__/bootstrap/css/bootstrap.min.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/font-awesome/css/font-awesome.min.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/nprogress/nprogress.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/icheck/all.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__ADMIN_CSS__/AdminLTE.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/bootstrap3-dialog/css/bootstrap-dialog.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/jquery-select2/css/select2.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/jquery-select2/css/select2-bootstrap.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/webuploader/webuploader.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/magnify/jquery.magnify.min.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/wang-editor/css/wangEditor.min.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__PLUG__/bootstrap3-editable/css/bootstrap-editable.css?v=20181115006">
+
+        {block name="style"}{/block}
+        <link rel="stylesheet" href="__ADMIN_CSS__/skins/skin-baidu.css?v={:config('asset_version')}">
+        <link rel="stylesheet" href="__ADMIN_CSS__/style.css?v={:config('asset_version')}">
+        <script src="__PLUG__/jquery/jquery.min.js?v={:config('asset_version')}"></script>
+        <script src="__ADMIN_JS__/gb2big5.js"></script>
+        <style>
+            .layui-layer.layui-layer-tips{
+                word-break: break-all;
+            }
+            .main-header{
+                max-height: 66px;
+            }
+            .child-menu{
+                display: none;
+                color: #73777a;
+            }
+            .child-menu.activeShow{
+                display: block;
+            }
+            .left_menu_content_ul{
+                /* overflow: scroll; */
+            }
+            .skin-baidu .left_menu_content ul li ul li{
+                padding-left: 6px;
+            }
+            .navbar-custom-menu-nav{
+                display: none;
+            }
+            @media screen and (min-width: 1400px) {
+                .navbar-custom-menu-nav {
+                    display: block;
+                }
+            }
+            .content-wrapper {
+                min-height: 100%;
+                background-color: #f0f2f5!important;
+            }
+            .magnify-modal {
+               z-index: 10901 !important;
+ 
+            }
+            .form-group{
+                z-index: 1
+            }
+
+
+
+        </style>
+    </head>
+    <body class="hold-transition skin-baidu fixed sidebar-mini">
+        <div class="wrapper" id="oneApp">
+            {empty name="layer"}
+            <header class="main-header">
+                <a href="/admin.php" class="logo hidden-xs">
+                    <span class="logo-mini"></span>
+                    <span class="logo-lg"><img src="{$Think.config.web_site_logo|get_file_url}" style="width:80%" alt=""></span>
+                </a>
+                <nav class="navbar navbar-static-top">
+                    <!-- {empty name="layer"}
+                    <div class="content-header profile_details_left">
+                    	<ol class="breadcrumb">
+                    		{notempty name="location"}
+                            {volist name="location" id="v"}
+                            <li><a href="{notempty name='$v["url_value"]'}{$v.url_value|url}{else/}javascript:void(0);{/notempty}">{$v.title}</a></li>
+                            {/volist}
+                            {/notempty}
+                    	</ol>
+                    </div>
+                    {/empty} -->
+                    <div class="profile_details_left">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown head-dpdn hidden-lg hidden-md hidden-sm pull-left">
+                                <a href="#" class="dropdown-toggle" data-toggle="modal" data-target="#apps-modal"><i
+                                        class="fa fa-fw fa-th-large"></i>{:lang('主菜单')}</a>
+                            </li>
+                            <li class="pull-left hidden-lg hidden-sm hidden-md"><a href="javascript:void(0);" class="sidebar-toggle1" data-toggle="push-menu" data-contentWrapper=".left_menu_content" role="button"><i class="fa fa-list"></i> {:lang('打开')}/{:lang('隐藏菜单')} </a></li>
+                        </ul>
+                    </div>
+                    <div class="navbar-custom-menu hidden-xs pull-left navbar-custom-menu-nav">
+                        <ul class="nav navbar-nav">
+                            <!-- <p class="input-group input-group-sm" style="width:300px;margin:16px">
+                                <input type="text" class="form-control"  placeholder="搜索菜单">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default btn-flat">搜索</button>
+                                </span>
+                            </p> -->
+                            {notempty name="topMenus"}
+                            {volist name="topMenus" id="menu"}
+                                <li class="treeview" style="{$menu['id'] == $location[0]['id'] ?= 'position: relative;z-index: 999;border-bottom:3px solid #209bfa !important;'}">
+                                    <a href="javascript:void(0);" data-module-id="{$menu['id']}" data-module="{$menu['module']}" data-controller="{$menu['controller']}" target="_self" class="top-menu treeview}"><i class="{$menu.icon}"></i> {$menu.title}</a>
+                                </li>
+                            {/volist}
+                            {/notempty}
+                        </ul>
+                    </div>
+                    <div class="navbar-custom-menu hidden-xs hidden-sm " >
+                        <ul class="nav navbar-nav">
+                            {:hook('admin_message')}
+<!--                            <li>-->
+<!--                                <div style="display: flex;height:64px;align-items: center;">-->
+<!--                                    <select class="form-control input-sm" id="cont" name="language" >-->
+<!--                                        {foreach name="lang_array" item="v" key="k"}-->
+<!--                                        <option {if($lang_select==$v)} selected{/if} value="{$v}">{$k}</option>-->
+<!--                                        {/foreach}-->
+
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                            </li>-->
+
+<!--                            <li><a href="/operation" class="dropdown-toggle" target="_blank"> <i class="fa fa-fw fa-twitch"></i>{:lang('客服系统')}</a></li>-->
+                            <li><a href="/index/api/" class="dropdown-toggle" target="_blank"> <i class="fa fa-fw fa-home"></i>API{:lang('文档')}</a></li>
+                            <li><a href="javascript:void(0);" class="dropdown-toggle page-reload"> <i class="fa fa-fw fa-refresh"></i>{:lang('刷新页面')}</a></li>
+                            <li>
+                                <a href="{:url('admin/index/Clear_Cache')}" class="dropdown-toggle ajax-get no-refresh"><i class="fa fa-fw fa-repeat"></i>{:lang('清空缓存')}</a>
+                            </li>
+
+                            <li><a href="{:url('admin/index/setting')}" class="dropdown-toggle page-reload"> <i class="fa fa-fw fa-user"></i> {$Think.session.admin_auth.nickname} </a></li>
+                            <li><a style="cursor: pointer;" href="{:url('admin/login/signout')}" class="dropdown-toggle"> <i class="fa fa-fw fa-sign-out"></i> {:lang('退出')} </a></li>
+
+
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            {/empty}
+            {empty name="layer"}
+            <aside class="main-sidebar  hidden-xs">
+                <section class="sidebar">
+                    <div class="logos">
+                        <a href="/admin.php" class="logo hidden-xs">
+                            <span class="logo-mini"></span>
+                            <span class="logo-lg"><img src="{$Think.config.web_site_logo|get_file_url}" alt=""></span>
+                        </a>
+                    </div>
+                    <ul class="sidebar-menu" data-widget="tree">
+                        <!-- <li class="header">菜单导航</li> -->
+                        {notempty name="topMenusAll"}
+                        {volist name="topMenusAll" id="menu"}
+                        <li class="treeview {$menu['id'] == $location[0]['id'] ?= 'active'}" >
+                            <a href="javascript:void(0);" data-module-id="{$menu['id']}" data-module="{$menu['module']}" data-controller="{$menu['controller']}" target="_self" class="top-menu treeview {$menu['id'] == $location[0]['id'] ?= 'active'}"><i class="{$menu.icon}"></i> {$menu.title}</a>
+                        </li>
+                        {/volist}
+                        {/notempty}
+                                   <!--  <a href="javascript:void(0);" data-module-id="{$menu['id']}" data-module="{$menu['module']}" data-controller="{$menu['controller']}" target="_self" class="top-menu treeview {$menu['id'] == $location[1]['id'] ?= 'active'}"><i class="{$menu.icon}"></i> {$menu.title}</a> -->
+                        <!-- {notempty name="sidebarMenus"}
+                            {volist name="sidebarMenus" id="menu"}
+                                <li class="treeview child2 {$menu['id'] == $location[1]['id'] ?= 'active'}" onclick="childMenu({$menu['id']},{$sidebarJson})" >
+                                   <a href="javascript:void(0);"><i class="{$menu.icon}"></i> {$menu.title}</a>
+                                </li>
+                            {/volist}
+                        {/notempty} -->
+                    </ul>
+                </section>
+            </aside>
+            {notempty name="sidebarMenus"}
+            <div class="left_menu_content" id="childBuilder">
+                <ul class="left_menu_content_ul">
+				<!-- <li><div class="son_title">菜单列表</div></li> -->
+                {volist name="sidebarMenus" id="menu"}
+                    <li class="treeview" >
+                        {notempty name="menu.url_value"}
+                        
+                    	<a class="treeview {$menu['id'] == $location[1]['id']?='active'}" href="{$menu.url_value}" target="{$menu.url_target}"><span>{$menu.title}</span></a>
+                    	                    {else/}
+                    	<div onclick="menuHide({$menu['id']})" class="son_title" style="display: flex;justify-content: space-between;align-items: center;cursor: pointer;">
+                            {$menu.title}
+                            <span id="men_{$menu['id']}" style="color: #dcdcdc;"  class="glyphicon {$menu['id'] == $location[1]['id']?'glyphicon-menu-up':'glyphicon-menu-down'}"></span>
+                        </div>
+                    	{/notempty}
+                        
+                            {notempty name="menu['child']"}
+                        	<ul id="sub_{$menu['id']}" class="{$menu['id'] == $location[1]['id']?'activeShow':''}  child-menu">
+                                {volist name="menu['child']" id="submenu"}
+                                        <li {if(isset($location[2]) && $submenu['id'] == $location[2]["id"])}class="active"{/if} id="menu-{$menu.id}-{$submenu['id']}">
+                                            <a href="{$submenu.url_value}" target="{$submenu.url_target}">{$submenu.title}</a>{neq name="$menu.id" value="10"}<span class="quick_icon pull-right" onclick="add_quick({$submenu['id']})" title="{:lang('添加快捷菜单')}">+</span>{else /}<span class="quick_icon pull-right" onclick="del_quick({$submenu['id']})" title="{:lang('删除快捷菜单')}">×</span>{/neq}
+                                        </li>
+                        		{/volist}
+                            </ul>
+                            {/notempty}
+                     
+                	</li>
+                	{/volist}
+                </ul>		
+            </div>
+            {/notempty}
+			{/empty}
+            <div class="content-wrapper" {eq name="layer" value="1"}style="padding-top:0px;margin-left:0"{/eq}>
+            	<div class="content" {eq name="layer" value="1"}style="padding-bottom:0px;"{/eq}>
+                        {// 主体内容}
+            			{:hook('page_tips')}
+                        {block name="content"}{/block}
+            	</div>
+            </div>
+
+            <div class="control-sidebar-bg"></div>
+            <div class="modal fade" id="apps-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">{:lang('主菜单')}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row text-center">
+                                {notempty name="topMenus"}
+                                {volist name="topMenus" id="menu"}
+                                <div class="col-xs-4 col-sm-3">
+                                    <a class="top-menu btn btn-app {$menu['id'] == $location[0]['id'] ?= 'bg-navy'}" href="javascript:void(0);" data-module-id="{$menu['id']}" data-module="{$menu['module']}" data-controller="{$menu['controller']}" target="_self">
+                                        <div class="block-content text-white">
+                                            <i class="{$menu.icon} fa-2x"></i>
+                                            <div class="font-w600 push-15-t push-15">{$menu.title}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {/volist}
+                                {/notempty}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <script type="text/javascript">
+                var lwwan = {
+                		'file_upload_url': '{$file_upload_url ? $file_upload_url : url("admin/upload/save", ["dir" => "files", "module" => request()->module()])}',
+                        'image_upload_url': '{$image_upload_url ? $image_upload_url : url("admin/upload/save", ["dir" => "images", "module" => request()->module()])}',
+                		'WebUploader_swf': '__PLUG__/webuploader/Uploader.swf',
+               		'upload_check_url': '{$upload_check_url ? $upload_check_url : url("admin/upload/check")}',
+                		'triggers': {$triggers|default=[]|json_encode}, // 触发器集合
+                		'field_hide': '{$field_hide|default=""}', // 需要隐藏的字段
+                        'field_values': '{$field_values|default=""}',
+                		'_field_clear': {$field_clear|default=[]|json_encode},
+                		'quick_edit_url': '{$quick_edit_url ? $quick_edit_url : url("quickEdit")}',
+                		'curr_url': '{:url("", $Request.route)}',
+                        'curr_params': {$Request.param|json_encode|raw},
+                		'get_level_data': '{:url("admin/index/getLevelData")}',
+                		'top_menu_url': '{:url("admin/menu/getSidebarMenu")}',
+                    }                
+            </script>
+            <script src="__PLUG__/bootstrap/js/bootstrap.min.js?v={:config('asset_version')}"></script>
+            <script src="__PLUG__/icheck/icheck.min.js?v={:config('asset_version')}"></script>
+            <script src="__PLUG__/jquery-select2/js/select2.min.js?v={:config('asset_version')}"></script>
+            <script src="__PLUG__/jquery-select2/js/i18n/zh-CN.js?v={:config('asset_version')}"></script>
+            <script src="__PLUG__/webuploader/webuploader.min.js?v={:config('asset_version')}"></script>
+            <script src="__PLUG__/magnify/jquery.magnify.min.js?v={:config('asset_version')}"></script>
+			<script src="__PLUG__/other/jquery-ui.min.js?v={:config('asset_version')}"></script>
+            <script src="__PLUG__/nice-validator/jquery.validator.min.js?local=zh-CN?v={:config('asset_version')}"></script>
+            <script src="__PLUG__/wang-editor/js/wangEditor.js?v={:config('asset_version')}"></script>
+            <script src="__PLUG__/bootstrap3-editable/js/bootstrap-editable.js?v={:config('asset_version')}"></script>
+            <script src="__PLUG__/layer/layer.js?v={:config('asset_version')}"></script>
+			<script src="__PLUG__/layer/laydate/laydate.js?v={:config('asset_version')}"></script>
+            <script type="text/javascript" src="__PLUG__/jquerydaterangepicker/js/moment.min.js"></script>
+            <script type="text/javascript" src="__PLUG__/jquerydaterangepicker/js/daterangepicker.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="__PLUG__/jquerydaterangepicker/css/daterangepicker.css" />
+			<!-- <script src="__PLUG__/layer/laydatePro/laydatePro.min.js?v={:config('asset_version')}"></script> -->
+            <script src="__ADMIN_JS__/adminlte.js?v={:config('asset_version')}"></script>
+            <script src="__ADMIN_JS__/stars.js?v={:config('asset_version')}"></script>
+            <script src="__ADMIN_JS__/form.js?v={:config('asset_version')}"></script>
+            <script src="__ADMIN_JS__/table.js?v={:config('asset_version')}"></script>
+            <link href="__PLUG__/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" />
+            <script src="__PLUG__/bootstrap-select/js/bootstrap-select.min.js"></script>
+            <script type="text/javascript">
+            var api_code = "{:config('api_code')}";//获取配置项的项目序列号
+            // 切换多语言
+            $('#cont').change(function() {
+                let val = $(this).val();
+                let url=window.location.href;
+
+                $.ajax({
+                    data:{
+                        language:val,
+
+                    },
+                        type: 'POST',
+                        url: '/admin.php/user/index/lang',
+                        success: (res) => {
+                            window.location.href=url;
+                        }
+                    })
+            })
+                let that  = this
+                setInterval(function(){
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin.php/goods/order/new_order',
+                        success: (res) => {
+                            if(res.code==1 && res.data && res.data.order_sn){
+                             //  //边缘弹出
+                             layer.open({
+                                type: 1,
+                                title:"{:lang('订单提醒')}",
+                                time: 4000, //20s后自动关闭
+                                offset: 'rt' //具体配置参考：offset参数项
+                                ,content: '<div style="padding: 20px 80px;">'+"{:lang('您好你有个新的订单，订单号')}"+'：'+ res.data.order_sn +'</div>'
+                                ,btn: "{:lang('关闭全部')}"
+                                ,btnAlign: 't' //按钮居中
+                                ,shade: 0 //不显示遮罩
+                                ,yes: function(){
+                                    console.log('yes',4444)
+                                    layer.closeAll();
+                                },
+                                end:function(){
+                                    console.log('end',4414)
+                                },
+
+                                });
+
+                         
+                            }
+                        }
+                    })
+
+                },5000)
+
+                let Html; // 空的模板字符串
+                let slideVal = ''; // 此属性是图片裁剪完之后给from表单的input的value赋值的,不可删除
+                let picNum = 0; // 上传的图片数量
+                // 新增页面（需要在用到这个功能的页面添加一个layer弹窗）
+                $('#addimgcutUploadPic').on('click', async () => {
+                    let cutPicWidth = 0; // 裁剪图片的宽度
+                    let cutPicHeight = 0; // 裁剪图片的高度
+                    console.log('我被请求啦',window.location.href)
+                    // 在这里修改裁剪图片的大小
+                    await new Promise((resolve, reject) => {
+                        $.post('/admin.php/operation/ads_type/getSize', { "id": $("#category_id").val() })
+                        .then(res => {
+                            if (res.code == 1) {
+                                cutPicWidth = res && res.data && res.data.width || 400;
+                                cutPicHeight = res && res.data && res.data.height || 400;
+                                resolve();
+                            }
+                        });
+                    });
+                    let picSize = {
+                        "width": 400,
+                        "height": 400
+                    };
+                    localStorage.setItem('picSize', JSON.stringify(picSize));
+                    // 调用父级页面的方法的参数
+                    slideVal = $('#img_url').attr('value')
+                    let data = {
+                        slideVal,
+                        picNum,
+                        Html,
+                        picSize
+                    }
+                    parent.window.essayAddImgCov(data,(callData) => {
+                        
+                        slideVal = callData.slideVal;
+                        picNum = callData.picNum;
+                        Html = callData.Html;
+                        $('#img_url').attr({ 'value': callData.slideVal });
+                        $("#file_list_addimgcut").append(callData.Html);
+                    })
+                })
+                // 删除图片
+                function removePic(ele) {
+                    let tempId = ele.getAttribute("data-id");
+                    slideVal = slideVal.replace(tempId,'');
+                    $('#img_url').attr({ 'value': slideVal });
+                }
+
+
+				function add_quick(menu_id){
+					$.get('{:url("admin/index/quick_menu")}'+'?menuid='+menu_id, function(res){
+						if (res.code) {
+							layer.msg(res.msg);
+						}else{
+							layer.msg(res.msg,function(){});
+						}
+					})
+				}
+
+				function del_quick(menu_id){
+					$.get('{:url("admin/index/quick_menu_del")}'+'?menuid='+menu_id, function(res){
+						if (res.code) {
+							layer.msg(res.msg);
+							$('#menu-10-'+menu_id).remove();
+						}else{
+							layer.msg(res.msg,function(){});
+						}
+					})
+				}
+
+                function childMenu(id,jsonarr)
+                {
+                    // 处理侧栏样式
+                    // $(".child2").removeClass("active");
+                    // $(this).addClass("active");
+                    console.log()
+                    // 处理数据 
+                    let html = '';
+                    let url = '';
+                    $.each(jsonarr,function(key,submenu){ 
+                        let num = 0;
+                        // <div class="son_title {$menu['id'] == $location[1]["id"]?='active'}">{$menu.title}</div>
+
+                        if(submenu.id == id){
+                            $.each(submenu.child,function(childKey,childSubmenu){
+                                num++;
+                                let str;
+
+                                if(submenu.id == 10){
+                                    str = `<span class="quick_icon pull-right" onclick="del_quick(${childSubmenu.id})" title="删除快捷菜单">×</span>`;
+                                }else{
+                                    str = `<span class="quick_icon pull-right" onclick="add_quick(${childSubmenu.id})" title="添加快捷菜单">+</span>`;
+                                }
+                                html += `
+                                    <li id="menu-${submenu.id}-${childSubmenu.id}" class="treeview child2 ${num == 1?'active':''}" style="list-style-type:none;">
+                                        <a href="${childSubmenu.url_value}" target="${childSubmenu.url_target}" >${childSubmenu.title}</a >
+                                        ${str}   
+                                    </li>
+                                `
+                                if(num == 1){
+                                    url = childSubmenu.url_value;
+                                }
+                            });
+                        }
+                    });
+                    let html1 = `<ul class="left_menu_content_ul"><li class="treeview" ><ul>${html}</ul></li></ul>`;
+                    $('#childBuilder').html(html1);
+                    window.location.href = url;
+                }
+                function menuHide(id){
+                    console.log(id);
+                    $('.glyphicon').removeClass('glyphicon-menu-down');
+                    $('.glyphicon').removeClass('glyphicon-menu-up');
+                    $('.glyphicon').addClass('glyphicon-menu-down');
+                    // $('#men_'+id).removeClass('glyphicon-menu-down').addClass('glyphicon-menu-up')
+                    let flag =false ;
+                    if( $('#sub_'+id).is(":hidden")){
+                        flag = false
+                    }else{
+                        flag = true
+                    }
+                    $('.child-menu').hide();
+                    if(flag){
+                        $('#sub_'+id).hide();
+                    }else{
+                        $('#sub_'+id).show();
+                        $('#men_'+id).removeClass('glyphicon-menu-down').addClass('glyphicon-menu-up')
+                    }
+                }
+            </script>
+            {block name="script"}{/block}
+    </body>
+
+
+</html>

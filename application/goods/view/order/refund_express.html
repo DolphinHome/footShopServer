@@ -1,0 +1,49 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom">
+            <div class="box-body">
+                <div class="box-header with-border">
+                    <h5 class="box-title" style="font-size: 14px;">{:lang('物流信息')}</h5>
+                </div>
+                
+                <div style="display:block" class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-builder table-hover table-bordered table-striped mb10">
+                            <tr>
+                                <td><b>{:lang('物流公司')}</b></td><td>{$order_refund.express_company}</td>
+                            </tr>
+                            <tr>
+                                <td><b>{:lang('物流单号')}</b></td><td>{$order_refund.express_no}</td>
+                            </tr>
+                            <tr>
+                                <td><b>{:lang('包裹信息')}</b></td>
+                                <td>
+								{foreach name="ex['Traces']" item="v"}
+								<p><b style="font-size:15px">{$v.AcceptTime}</b></p>
+								<p style="white-space:pre-wrap;">{$v.AcceptStation}</p>
+								{/foreach}
+								</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-3">
+
+                    </div>
+                </div>
+                
+                <div class="clearfix"></div>
+
+                <div class="row box-header">
+                    <div class="col-md-6 col-md-offset-3">
+                        <a class="btn btn-primary ajax-get confirm" href="{:url('order/refund_change_status',['val'=>2,'rfid'=>$order_refund.id])}" >{:lang('确认收货')}</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{/block}

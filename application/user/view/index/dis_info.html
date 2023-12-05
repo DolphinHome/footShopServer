@@ -1,0 +1,107 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<style type="text/css">
+    .share{
+        width：100%;
+        background-color: #DFDFDF;
+        line-height: 40px;
+        padding-left: 10px;
+        height:40px;
+        font-weight: 600;
+
+    }
+    .bg-white{
+        background-color: white;
+        width：100px;
+    }
+    .color-blug{
+        color:#267FC6;
+    }
+    .content-bg{
+        background-color: #ffffff;
+    }
+
+</style>
+<div class="content-bg">
+    <div class="share">{:lang('用户信息')}</div>
+    <table class="table table-builder  table-bordered table-striped">
+        <thead>
+        <tr>
+            <th width="100" class="bg-white">{:lang('昵称')}:</th>
+            <th>{$info.user_nickname}</th>
+            <th width="100" class="bg-white">{:lang('手机号')}:</th>
+            <th>{$info.mobile}</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <thead>
+        <tr>
+            <th width="100" class="bg-white">{:lang('累计积分')}：</th>
+            <th>{$info.score}</th>
+            <th width="100" class="bg-white">{:lang('分销佣金')}：</th>
+            <th class="color-blug">{$info.commission}</th>
+            <th width="100"  class="bg-white">{:lang('注册时间')}</th>
+            <th class="color-blug">{$info.create_time}</th>
+        </tr>
+        </thead>
+    </table>
+
+
+
+
+    <!-- {:lang('返佣记录')} -->
+    <div class="share">{:lang('返佣记录')}</div>
+    <table class="table table-builder table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>{:lang('会员')}id</th>
+            <th>{:lang('会员名称')}</th>
+            <th>{:lang('会员等级')}</th>
+            <th>{:lang('订单编号')}</th>
+            <th>{:lang('收益金额')}</th>
+            <th>{:lang('时间')}</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {notempty name="list"}
+        {volist name="list" id="v"}
+        <tr>
+            <td>{$v.create_user_id}</td>
+            <td>{$v.user_name}</td>
+            <td>{$v.type}</td>
+            <td >{$v.order_sn}</td>
+            <td>{$v.money}</td>
+            <td >{$v.create_time}</td>
+        </tr>
+        {/volist}
+        {else /}
+        <tr class="table-empty">
+            <td class="text-center empty-info" colspan="6"><i class="fa fa-database"></i> {:lang('暂无数据')} <br></td>
+        </tr>
+        {/notempty}
+    </table>
+
+    <div class="data-table-toolbar">
+        <div class="row">
+            <div class="col-sm-12"> {// 分页 }
+                {notempty name="pages"}
+                {$pages|raw}
+                {/notempty}
+                {notempty name="list"}
+
+                <div class="pagination-info pull-right">
+                    <div>
+                        <input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+                        <input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $list->listRows() : input('param.list_rows');{/php}">
+                        / <strong>{$list->lastPage()|raw}</strong> {:lang('页')}，{:lang('共')} <strong>{$list->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+                    </div>
+                </div>
+                {/notempty}
+            </div>
+        </div>
+    </div>
+
+</div>
+{/block}

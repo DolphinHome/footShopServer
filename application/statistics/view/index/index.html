@@ -1,0 +1,1687 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<!-- import Vue before Element -->
+	<script src="/static/plugins/vue/vue.min.js"></script>
+	<!-- import JavaScript -->
+	<script src="/static/plugins/echarts/echarts.min.js"></script>
+	<script src="/static/plugins/element-ui/element-ui.js"></script>
+	<!-- 引入echarts -->
+	<script src="/static/plugins/echarts/echarts.min.js"></script>
+	<!-- ajax请求 -->
+	<script src="/static/plugins/ajax/axios.js"></script>
+	<!-- import CSS -->
+	<link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+
+	<style type="text/css">
+		.app {
+			width: 100%;
+			margin: 0 auto;
+		}
+
+		/*交易数据*/
+		.select-box {
+			float: right;
+			position: relative;
+			top: -5px;
+		}
+
+		.select-option: {
+			float: right;
+			position: relative;
+			top: -5px;
+			right: 10px;
+			margin-left: 20px;
+		}
+
+		.flex-center {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+		}
+
+		.trading-select-option {
+			float: right;
+			position: relative;
+			top: -5px;
+			right: 10px;
+			margin-left: 20px;
+		}
+
+		.select-option-public {
+			width: 100px !important;
+			height: 26px !important;
+		}
+
+		.trading-content {
+			height: 150px;
+			width: 20%;
+			float: left;
+			/* margin:20px 2%; */
+
+		}
+
+		.dotted-border {
+			border-left: 1px dotted #AAAAAA;
+			height: 150px;
+			width: 20%;
+			float: left;
+		}
+
+		.trading-top {
+			font-size: 17px;
+			font-weight: 600;
+			text-align: center;
+			line-height: 50px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.top-left {
+			padding-left: 20px;
+			font-size: 17px;
+			font-weight: 600;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.top-right {
+			padding-right: 20px;
+			font-size: 14px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.trading-center {
+			width: 100%;
+			text-align: center;
+			line-height: 50px;
+		}
+
+		.center-center {
+			width: 120px;
+			margin: 0 auto;
+			line-height: 50px;
+		}
+
+		.content-bottom {
+			display: flex;
+			justify-content: space-around;
+			line-height: 40px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.bottom-left {
+			padding-left: 20px;
+			font-size: 16px;
+			white-space: nowrap;
+		}
+
+		.bottom-style {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.bottom-unit {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			font-size: 13px;
+			padding-right: 10px;
+			color: #888888;
+			/* 	  justify-content:space-around; */
+		}
+
+		.bottom-right {
+
+			padding-right: 20px;
+			font-size: 19px;
+		}
+
+		.sum-sale {
+			padding-left: 5px;
+			font-size: 13px;
+			color: #888888;
+			width: 100%;
+			text-align: center;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			/* color:#E6A23C; */
+		}
+
+		/*待处理项*/
+		.wait-deal {
+			width: 26%;
+			border-radius: 5px;
+			height: 90px;
+			text-align: center;
+			/* background:#D3D3D3;s */
+			border 1px solid #EFF1F4;
+			cursor: pointer;
+			float: left;
+			margin: 15px 3%;
+		}
+
+		.deal-left {
+			color: #409EFF;
+			font-size: 1.8rem;
+			line-height: 40px;
+			text-align: center;
+		}
+
+		.deal-right {
+			margin-top: 5px;
+			line-height: 2rem;
+			text-align: center;
+			font-size: 12px;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+
+		/*订单*/
+		.order-pick {
+			float: right;
+			position: relative;
+			top: -5px;
+		}
+
+		.order-select {
+			float: right;
+			position: relative;
+			top: -5px;
+			right: 10px;
+			margin-left: 20px;
+		}
+
+		/*echart*/
+		.map-option {
+			float: right;
+			position: relative;
+			top: -5px;
+		}
+
+		.shop-options {
+			float: right;
+			position: relative;
+			top: -5px;
+			right: 3px;
+		}
+
+		.right-padding {
+			float: right;
+			padding: 3px 0
+		}
+
+		.el-row {
+			margin-bottom: 20px;
+				padding-bottom:20px;
+		}
+
+		.fist-box {
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+		}
+
+		.el-col {
+			border-radius: 4px;
+		}
+
+		.bg-purple-dark {
+			background: #99a9bf;
+		}
+
+		.bg-purple {
+			background: #d3dce6;
+		}
+
+		.bg-purple-light {
+			background: #e5e9f2;
+		}
+
+		.grid-content {
+			border-radius: 4px;
+			min-height: 36px;
+		}
+
+		.row-bg {
+			/*padding: 10px 0;*/
+			background-color: #f9fafc;
+		}
+
+		/*刷新*/
+		.refresh-point {
+			font-size: 16px;
+			margin: 5px;
+			cursor: pointer;
+		}
+
+		.box-padding-left {
+			padding-left: 20px;
+		}
+
+		.box-padding-right {
+			padding-right: 20px;
+		}
+
+		.set_img {
+			width: 46px;
+			height: 50px;
+			/* margin-left:calc((100%-56px)/2); */
+			margin-top: 5px;
+		}
+
+		.el-table td,
+		.el-table th {
+			padding: 2px 0 !important;
+		}
+
+		.more-flex {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.more-flex .more-select {
+			cursor: pointer;
+		}
+
+		* {
+			outline: none;
+		}
+
+		.drawer-checkGroup .el-checkbox {
+			margin: 10px 20px;
+			display: block;
+		}
+
+		.drawer-checkGroup .el-checkbox.is-bordered+.el-checkbox.is-bordered {
+			margin: 10px;
+		}
+
+		.drawer-checkGroup .checkGroup-img-style {
+			width: 30px;
+			height: 30px;
+		}
+
+		/*1.显示滚动条：当内容超出容器的时候，可以拖动：*/
+		.el-drawer__body {
+			overflow: auto;
+		}
+
+		/*2.隐藏滚动条，太丑了*/
+		.el-drawer__container ::-webkit-scrollbar {
+			/* display: none; */
+		}
+
+		.pending-h {
+			height: 220px;
+		}
+		.el-row {
+          margin-bottom: 0px !important;
+		  padding-bottom: 12px !important;
+	    }
+		.el_row_left{
+		 padding-left:0 !important;
+		}
+		.el_row_right{
+         padding-right:0 !important;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app" style="display:none;" class="app">
+		<!-- 第一个 -->
+		<el-row class="fist-box"  :gutter="24">
+			<el-card class="box-card">
+				<div slot="header" class="clearfix">
+					<span>{:lang('交易数据')}</span>
+					<i class="el-icon-refresh refresh-point" @click="handleRefreshTrad"></i>
+					<el-select v-model="tradingDate" @change="changeTradingDate"
+						class="trading-select-option select-option-public" placeholder="{:lang('请选择日期')}" size='mini'>
+						<el-option v-for="(item,index) in tradingOptions" :key="index" :label="item.label"
+							:value="item.value">
+						</el-option>
+					</el-select>
+				</div>
+				<!-- 内容部分 -->
+				<div class="flex-center">
+					<div v-for="(item,index) in saleData"  @click="handleClickRoute(item.url,index)" :class="[index == 0 ? 'trading-content' : 'dotted-border'] ":key="index">
+						<!-- <a :href="item.url" style="color: inherit; "> -->
+						<div class="trading-top">
+							{{item.title}}
+						</div>
+						<div class="trading-center">
+							<div style="font-size: 18px;white-space:nowrap;"> {{item.now_money}} <span
+									style="padding-right:1px;" class="top-right">{{item.unit}}</span></div>
+						</div>
+						<div class="bottom-style">
+							<div class="sum-sale"> {:lang('同比')}:{{item.accounted}}%
+								<i v-if="Number(item.accounted)>=0" style="color:#6CE885" class="el-icon-top-right"></i>
+								<i v-else style="color:#F56C6C" class="el-icon-bottom-right"></i>
+							</div>
+							<!-- <div v-if="item.desc" :class="[index !== 4 ? 'box-padding-right' : '']"   class="bottom-left bottom-unit">总:{{item.total_money }} <i style="color:#F56C6C" class="el-icon-star-on"></i> </div> -->
+						</div>
+				    	<!-- </a> -->
+					</div>
+				</div>
+			</el-card>
+		</el-row>
+		<!-- 第二行 -->
+		<el-row :gutter="24">
+			<el-col :span="6"  >
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<div class="more-flex">
+							<span>{:lang('待处理项')}</span>
+							<div class="more-select" @click="drawer = true">{:lang('展示更多')}</div>
+						</div>
+					</div>
+					<div class="pending-h">
+						<el-badge v-for="(item,index) in dataArray" :key="index" style="border:1px solid   #888888;"
+							v-if='item.isShow' class="wait-deal">
+							<a :href="item.url">
+								<el-badge style="width:100%;" style="border:1px solid #888888;margin:0 auto;"
+									type="warning" :value="item.numberData">
+									<img class="set_img" :src="item.src" />
+									<div class="deal-right">{{item.desc}}</div>
+								</el-badge>
+							</a>
+						</el-badge>
+					</div>
+				</el-card>
+			</el-col>
+			<el-col :span="18"  class="el_row_left ">
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<span>{:lang('实时趋势')}</span>
+						<i class="el-icon-refresh refresh-point" @click="handleOrderRefresh"></i>
+						<el-select v-model="orderDate" @change="changeOrderData"
+							class="order-select select-option-public" placeholder="{:lang('请选择')}" size='mini'>
+							<el-option v-for="(item,index) in tradingOptions" :key="index" :label="item.label"
+								:value="item.value">
+							</el-option>
+						</el-select>
+					</div>
+					<!-- 内容 -->
+					<div id="myChart" :style="{width: '100%', height: '210px'}"></div>
+				</el-card>
+			</el-col>
+		</el-row>
+		<!-- 第三行 -->
+		<el-row :gutter="24">
+			<el-col :span="8"  >
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<span>{:lang('会员消费排行')}</span>
+						<el-button class="right-padding" type="text" style="margin-left: 5px;"><a
+								:href="'/admin.php/statistics/detail/getuserconsumptiondetail.html?times='+ memberRanking">{:lang('查看更多')}>></a>
+						</el-button>
+						<el-select v-model="memberRanking" class="shop-options select-option-public"
+							@change="changeMemberRanking" placeholder="{:lang('本周')}" size='mini'>
+							<el-option v-for="(item,index) in tradingOptions" :key="index" :label="item.label"
+								:value="item.value">
+							</el-option>
+						</el-select>
+					</div>
+					<div id="myMeberConsume" :style="{width: '100%', height: '400px'}"></div>
+				</el-card>
+			</el-col>
+			<el-col :span="8" class="el_row_right el_row_left">
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<span>{:lang('会员来源渠道分布')}</span>
+						<el-button class="right-padding" type="text" style="margin-left: 5px;"><a
+								:href="'/admin.php/statistics/detail/getuseraddressdetail.html?times='+ memberSource">{:lang('查看更多')}>></a>
+						</el-button>
+						<el-select v-model="memberSource" class="shop-options select-option-public"
+							@change="changeMemberSource" placeholder="{:lang('本周')}" size='mini'>
+							<el-option v-for="(item,index) in tradingOptions" :key="index" :label="item.label"
+								:value="item.value">
+							</el-option>
+						</el-select>
+					</div>
+					<div id="myMember" :style="{width: '100%', height: '200px' }"></div>
+					<!-- {:lang('表格')} -->
+					<el-table :data="memberTableData" :height="200" stripe style="width: 100%">
+						<el-table-column prop="user_source" label="{:lang('来源渠道')}" width=""> </el-table-column>
+						<el-table-column prop="source_count" label="{:lang('数量')}" width=""> </el-table-column>
+					</el-table>
+				</el-card>
+			</el-col>
+			<el-col :span="8"  >
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<span>{:lang('会员地区分布')}</span>
+						<el-select v-model="memberMap" class="shop-options select-option-public"
+							@change="changeMemberMap" placeholder="{:lang('本周')}" size='mini'>
+							<el-option v-for="(item,index) in tradingOptions" :key="index" :label="item.label"
+								:value="item.value">
+							</el-option>
+						</el-select>
+					</div>
+					<div id="myMemberMap" :style="{width: '100%', height: '200px' }"></div>
+					<!-- 表格 -->
+					<el-table :data="MemberMaptableData" :height="200" stripe style="width: 100%">
+						<el-table-column prop="province" label="{:lang('分布省')}" width=""> </el-table-column>
+						<el-table-column prop="user_count" label="{:lang('数量')}" width=""> </el-table-column>
+					</el-table>
+				</el-card>
+			</el-col>
+
+		</el-row>
+		<!-- 第四行 -->
+		<el-row :gutter="24" style="margin-bottom: 0;">
+
+			<el-col  class="el_row" :span="8">
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<span>{:lang('单品销售榜单')}</span>
+						<el-button class="right-padding" type="text" style="margin-left: 5px;"><a
+								:href="'/admin.php/statistics/detail/getgoodssalesdetail.html?times=' + saleDate">{:lang('查看更多')}>></a></el-button>
+						<el-select v-model="saleDate" class="shop-options select-option-public" @change="changeSaleDate"
+							placeholder="{:lang('本周')}" size='mini'>
+							<el-option v-for="(item,index) in tradingOptions" :key="index" :label="item.label"
+								:value="item.value">
+							</el-option>
+						</el-select>
+
+					</div>
+					<div id="mySale" :style="{width: '100%', height: '400px'}"></div>
+				</el-card>
+			</el-col>
+			<el-col  class="el_row_right el_row_left" :span="8">
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<span>{:lang('购物车榜单')}</span>
+						<el-button class="right-padding" type="text"><a
+								href="/admin.php/statistics/detail/getgoodscartdetail.html">{:lang('查看更多')}>></a></el-button>
+					</div>
+					<div id="myGoods" :style="{width: '100%', height: '400px'}"></div>
+				</el-card>
+			</el-col>
+			<el-col  class="el_row" :span="8">
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<span>{:lang('订单地域分布')}</span>
+						<el-select v-model="mapDate" @change="changeMapOption" class="map-option select-option-public"
+							placeholder="{:lang('本周')}" size='mini'>
+							<el-option v-for="(item,index) in tradingOptions" :key="index" :label="item.label"
+								:value="item.value">
+							</el-option>
+						</el-select>
+					</div>
+					<div id="myMap" :style="{width: '100%', height: '200px' }"></div>
+					<!-- 表格 -->
+					<el-table :data="tableData" :height="200" stripe style="width: 100%">
+						<el-table-column prop="province" label="{:lang('分布省')}" width="120"> </el-table-column>
+						<el-table-column prop="orderPrice" label="{:lang('消费额')}" width="120"> </el-table-column>
+						<el-table-column prop="orderRate" label="{:lang('占比')}">
+							<template scope="scope"> +{{scope.row.orderRate}}%</template>
+						</el-table-column>
+					</el-table>
+				</el-card>
+			</el-col>
+		</el-row>
+		<!-- 抽屉使用 -->
+		<el-drawer title="{:lang('请选择需要展示的模块')}" :visible.sync="drawer" direction="rtl" :before-close="handleClose">
+			<div class="drawer-checkGroup">
+				<el-checkbox v-model="item.isShow" v-for='(item,index) in dataArray' :key='index'
+					:disabled='item.isDisabled' @change='changeSelect'><img :src="item.src" alt=""
+						class="checkGroup-img-style" che> {{item.desc}}
+				</el-checkbox>
+			</div>
+		</el-drawer>
+		<input type='hidden' id="getTransactionData" value="{$getTransactionData}">
+		<input type='hidden' id="getPendingData" value="{$getPendingData}">
+		<input type='hidden' id="getOrderData" value="{$getOrderData}">
+		<input type='hidden' id="getConsumptionArea" value="{$getConsumptionArea}">
+		<input type='hidden' id="getGoodsSalesList" value="{$getGoodsSalesList}">
+		<input type='hidden' id="getGoodsCartList" value="{$getGoodsCartList}">
+		<input type='hidden' id="getUserSource" value="{$getUserSource}">
+		<input type='hidden' id="getUserRegion" value="{$getUserRegion}">
+		<input type='hidden' id="getUserConsumptionList" value="{$getUserConsumptionList}">
+	</div>
+</body>
+<script>
+	new Vue({
+		el: '#app',
+		data: function () {
+			return {
+				form: {},
+				selectCount: 0,
+				/*
+				* checkboxType
+				* isShow 为true 时默认展示
+				* 
+				*
+				*/
+				dataArray: [
+					// {
+					// 		id: 10,
+					// 		isShow: true,
+					// 		isDisabled:false,
+					// 		numberData: 0,
+					// 		src: '/static/home/share/img/backlog.png',
+					// 		desc: "{:lang('代办事项')}"
+					// 	},
+					{
+						id: 1,
+						isShow: true,
+						isDisabled: false,
+						numberData: 0,
+						src: '/static/home/share/img/wait_pay.png',
+						desc: "{:lang('待付款')}",
+						url: '/admin.php/goods/order/index/status/0.html'
+					}, {
+						id: 2,
+						isShow: true,
+						isDisabled: false,
+						numberData: 0,
+						src: '/static/home/share/img/wait_send.png',
+						desc: "{:lang('待发货')}",
+						url: '/admin.php/goods/order/index/status/1.html'
+					}, {
+						id: 3,
+						isShow: true,
+						isDisabled: false,
+						numberData: 0,
+						src: '/static/home/share/img/sale_later.png',
+						desc: "{:lang('待售后')}",
+						url: '/admin.php/goods/order/refund.html'
+					}, {
+						id: 4,
+						isShow: true,
+						isDisabled: false,
+						numberData: 0,
+						src: '/static/home/share/img/warehouse.png',
+						desc: "{:lang('库存预警')}",
+						url: '/admin.php/goods/index/index.html'
+
+					}
+				],
+				drawer: false,
+				tradingDate: 'year',
+				tradingDateRange: [],
+				mapDate: 'year',
+				saleDate: 'year',
+				goodsDate: 'year',
+				orderDate: 'year',
+				memberTableData: [],
+				MemberMaptableData: [],
+				tableData: [],
+				memberSource: 'year',
+				memberMap: 'year',
+				memberRanking: 'year',
+				tradingOptions: [
+					{
+						label: "{:lang('今日')}",
+						value: 'day'
+					}, {
+						label: "{:lang('本周')}",
+						value: 'week'
+					}, {
+						label: "{:lang('本月')}",
+						value: 'month'
+					}, {
+						value: 'quarter',
+						label: "{:lang('本季度')}"
+					}, {
+						value: 'year',
+						label: "{:lang('本年')}"
+					}, {
+						value: 'lastyear',
+						label: "{:lang('上一年')}"
+					}
+				],
+				saleData: [{
+					desc: "{:lang('销售额')}",
+					url:'/admin.php/statistics/goods/transactiondata.html',
+					sumMoney: 0,
+					accounted: 0,
+					sumSaleMoney: 0,
+				}, {
+					desc: "{:lang('订单量')}",
+					url:'/admin.php/statistics/goods/transactiondata.html',
+					sumMoney: 0,
+					accounted: 0,
+					sumSaleMoney: 0,
+				}, {
+					desc: "{:lang('利润额')}",
+					url:'/admin.php/statistics/goods/transactiondata.html',
+					sumMoney: 0,
+					accounted: 0,
+					sumSaleMoney: 0,
+				}, {
+					desc: "{:lang('利润率')}",
+					url:'/admin.php/statistics/goods/transactiondata.html',
+					sumMoney: 0,
+					accounted: 0,
+					sumSaleMoney: 0,
+				}, {
+					desc: "{:lang('客单价')}",
+					url:'/admin.php/statistics/goods/transactiondata.html',
+					sumMoney: 0,
+					accounted: 0,
+					sumSaleMoney: 0,
+				}, {
+					desc: "{:lang('新增用户')}",
+					url:'/admin.php/statistics/user/index.html',
+					sumMoney: 0,
+					accounted: 0,
+					sumSaleMoney: 0,
+				}],
+
+			}
+		},
+		created() {
+			this.getDefaultDataArr()
+		},
+		mounted() {
+			const that = this
+
+			
+
+			if (this.getCookie('tradingDate')) {
+				that.tradingDate = that.getCookie('tradingDate')
+			}
+			if (this.getCookie('mapDate')) {
+				that.mapDate = that.getCookie('mapDate')
+			}
+			if (this.getCookie('saleDate')) {
+				that.saleDate = that.getCookie('saleDate')
+			}
+			if (this.getCookie('orderDate')) {
+				that.orderDate = that.getCookie('orderDate')
+			}
+			if (this.getCookie('memberSource')) {
+				that.memberSource = that.getCookie('memberSource')
+			}
+			if (this.getCookie('memberMap')) {
+				that.memberMap = that.getCookie('memberMap')
+			}
+			if (this.getCookie('memberRanking')) {
+				that.memberRanking = that.getCookie('memberRanking')
+			}
+
+			document.getElementById('app').style.display = 'block'
+
+			// 交易数据
+			if (that.tradingDate === 'month') {
+				that.getTradingData()
+			} else {
+				that.changeTradingDate()
+			}
+			// 待处理
+			this.getWaitDealData()
+			//实时趋势
+			if (that.orderDate === 'month') {
+				that.getOrderData()
+			} else {
+				that.changeOrderData()
+			}
+			// 会员来源渠道
+			if (that.memberSource === 'month') {
+				that.getMemberData()
+			} else {
+				that.changeMemberSource()
+			}
+			//会员地区分布
+			if (that.memberMap === 'month') {
+				that.getMemberMap()
+			} else {
+				that.changeMemberMap()
+			}
+
+			//会员消费
+			if (that.memberRanking === 'month') {
+				that.getMeberConsume()
+			} else {
+				that.changeMemberRanking()
+			}
+
+			//订单
+			if (that.mapDate === 'month') {
+				that.getMapData()
+			} else {
+				that.changeMapOption()
+			}
+
+			if (that.saleDate === 'month') {
+				that.getSingleDate()
+			} else {
+				that.changeSaleDate()
+			}
+			this.getGoodsAddData()
+			this.getWaitDealData()
+			// this.changeTradingDate() //获取交易数据
+			//获取待处理数据
+			// this.changeMapOption() //分布图
+			// this.changeSaleDate()  //单售
+			//加购
+			// this.changeMemberSource() //会员来源渠道占比
+			// this.changeMemberMap()
+			// this.changeMemberRanking()
+		},
+		methods: {
+            handleClickRoute(url,index){
+				if([0,1,2,3].includes(index * 1)){
+					let newIndex = 0
+					if(index ==3){
+						newIndex = 5
+					}else{
+						newIndex =index
+					}
+					sessionStorage.setItem('getOverview_index', newIndex)
+				}
+				if(url){
+					window.location.href=url    
+				}
+			},
+			getDefaultDataArr() {
+				var newDataArr = [];
+				if (this.getCookie('dataArrayDefault')) {
+					this.dataArray = JSON.parse(this.getCookie('dataArrayDefault'))
+				}
+				this.getDefaultCount()
+				this.getDisabledStatus()
+			},
+			// 获取抽屉默认选中数量
+			getDefaultCount() {
+				this.selectCount = 0
+				this.dataArray.forEach((item, index) => {
+					if (item.isShow == true) {
+						this.selectCount++
+					}
+
+				})
+				console.log(this.selectCount)
+			},
+			// 抽屉改变值
+			changeSelect(val) {
+				this.getDefaultCount()
+				this.onSubmitSelect()
+			},
+			getDisabledStatus() {
+				var selectCount = this.selectCount
+				if (selectCount >= 6) {
+					this.dataArray.forEach((item, index) => {
+						if (item.isShow != true) {
+							item.isDisabled = true
+						}
+
+					})
+				} else {
+					this.dataArray.forEach((item, index) => {
+						if (item.isShow != true) {
+							item.isDisabled = false
+						}
+
+					})
+				}
+			},
+			// 抽屉操作
+			onSubmitSelect() {
+				this.getDisabledStatus()
+				this.setCookie('dataArrayDefault', JSON.stringify(this.dataArray), 99)
+			},
+			//   抽屉关闭操作
+			handleClose(done) {
+				done();
+			},
+			// 交易数据
+			getTradingData(getData) {
+				// 请求回来的数据
+				let queryData = JSON.parse(document.getElementById('getTransactionData').value).result
+				if (getData) {
+					queryData = getData
+				}
+
+				let tempArray = []
+				queryData.shop_mall_date.goods_sale_price.title = "{:lang('销售额')}"
+				queryData.shop_mall_date.goods_sale_price.url = "/admin.php/statistics/goods/transactiondata.html"
+				queryData.shop_mall_date.goods_sale_price.desc = "{:lang('总销售额')}"
+				queryData.shop_mall_date.goods_sale_price.total_money = queryData.shop_mall_date.goods_sale_price.order_total_price || 0 //总销售额
+				queryData.shop_mall_date.goods_sale_price.accounted = queryData.shop_mall_date.goods_sale_price.order_price_growth_ratio || 0 // 同比
+				queryData.shop_mall_date.goods_sale_price.now_money = queryData.shop_mall_date.goods_sale_price.stage_order_price || 0 // 现阶销售额
+				queryData.shop_mall_date.goods_sale_price.unit = '元'
+
+				queryData.shop_mall_date.goods_order_number.title = "{:lang('订单量')}"
+				queryData.shop_mall_date.goods_order_number.url = "/admin.php/statistics/goods/transactiondata.html"
+				queryData.shop_mall_date.goods_order_number.desc = "{:lang('总订单量')}"
+				queryData.shop_mall_date.goods_order_number.total_money = queryData.shop_mall_date.goods_order_number.order_total_number || 0 //总订单量
+				queryData.shop_mall_date.goods_order_number.accounted = queryData.shop_mall_date.goods_order_number.order_number_growth_ratio || 0 // 同比
+				queryData.shop_mall_date.goods_order_number.now_money = queryData.shop_mall_date.goods_order_number.stage_order_number || 0 // 现阶订单量
+				queryData.shop_mall_date.goods_order_number.unit = '笔'
+
+				queryData.shop_mall_date.goods_profit.title = "{:lang('利润额')}"
+				queryData.shop_mall_date.goods_profit.url = "/admin.php/statistics/goods/transactiondata.html"
+				queryData.shop_mall_date.goods_profit.desc = "{:lang('总盈利')}"
+				queryData.shop_mall_date.goods_profit.total_money = queryData.shop_mall_date.goods_profit.total_profit_price || 0 //总利润额
+				queryData.shop_mall_date.goods_profit.accounted = queryData.shop_mall_date.goods_profit.profit_price_growth_ratio || 0 // 同比
+				queryData.shop_mall_date.goods_profit.now_money = queryData.shop_mall_date.goods_profit.stage_profit_price || 0 // 现阶利润额
+				queryData.shop_mall_date.goods_profit.unit = '元'
+
+
+				queryData.shop_mall_date.goods_profit_rate.title = "{:lang('利润率')}"
+				queryData.shop_mall_date.goods_profit_rate.url = "/admin.php/statistics/goods/transactiondata.html"
+				queryData.shop_mall_date.goods_profit_rate.total_money = queryData.shop_mall_date.goods_profit_rate.total_profit_price || 0 //总利润率
+				queryData.shop_mall_date.goods_profit_rate.accounted = queryData.shop_mall_date.goods_profit_rate.profit_price_growth_ratio || 0 // 同比
+				queryData.shop_mall_date.goods_profit_rate.now_money = queryData.shop_mall_date.goods_profit_rate.stage_profit_price || 0 // 现阶利润率
+				queryData.shop_mall_date.goods_profit_rate.unit = '%'
+
+
+				queryData.shop_mall_date.average_order.title = "{:lang('客单价')}"
+				queryData.shop_mall_date.average_order.url = "/admin.php/statistics/goods/transactiondata.html"
+				queryData.shop_mall_date.average_order.accounted = queryData.shop_mall_date.average_order.average_order_price_growth_ratio || 0 // 同比
+				queryData.shop_mall_date.average_order.now_money = queryData.shop_mall_date.average_order.average_order_price || 0 // 现阶客单价
+				queryData.shop_mall_date.average_order.unit = '元'
+
+
+				queryData.new_user_date.title = "{:lang('新增用户')}"
+				queryData.new_user_date.desc = "{:lang('总用户')}"
+				queryData.new_user_date.unit = "{:lang('人')}"
+				queryData.new_user_date.url='/admin.php/statistics/user/index.html'
+				queryData.new_user_date.total_money = queryData.new_user_date.total_new_users //总用户数
+				queryData.new_user_date.accounted = queryData.new_user_date.new_users_growth_ratio // 同比
+				queryData.new_user_date.now_money = queryData.new_user_date.stage_new_users // 现阶新增用户
+
+				tempArray.push(queryData.shop_mall_date.goods_sale_price)
+				tempArray.push(queryData.shop_mall_date.goods_profit)
+				tempArray.push(queryData.shop_mall_date.goods_profit_rate)
+				tempArray.push(queryData.shop_mall_date.goods_order_number)
+				tempArray.push(queryData.shop_mall_date.average_order)
+				tempArray.push(queryData.new_user_date)
+				
+				this.saleData = tempArray
+			},
+			changeTradingDate() {
+				const that = this
+				this.setCookie('tradingDate', that.tradingDate)
+				var loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0)',
+				})
+				axios.post('getTransactionData', {
+					times: that.tradingDate
+				})
+					.then(function (response) {
+
+						loading.close();
+						if (Number(response.status) === 200) {
+							that.getTradingData(response.data.result)
+						} else {
+							this.$message({
+								message: response.msg,
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function (error) {
+						loading.close();
+						that.$message.error('出了点小差错，请联系后台管理员!');
+					});
+			},
+			handleRefreshTrad() {
+				this.changeTradingDate()
+			},
+			//待处理项数据
+			getWaitDealData() {
+				let response = JSON.parse(document.getElementById('getPendingData').value).result
+				console.log(response)
+				let queryData = response
+				this.dataArray[0].numberData = queryData.paying_count  // 待付款 
+				this.dataArray[1].numberData = queryData.delivering_count // 待发货 
+				this.dataArray[2].numberData = queryData.after_sale_count  // 待售后
+				this.dataArray[3].numberData = queryData.inventory_early_warning.goods_inventory_early_warning // 库存预警
+				// this.dataArray[5].numberData = queryData.withdrawal_apply_count // 提现申请（提现审核）
+				// this.dataArray[6].numberData = queryData.user_certified // 实名
+				// this.dataArray[7].numberData = queryData.report_count // 举报
+				// this.dataArray[8].numberData = queryData.suggestions_count // 建议
+				// this.dataArray[4].numberData = queryData.goods_outofstock // 缺货登记
+				// this.dataArray[5].numberData = queryData.user_consultation_count // 用户咨询 
+			},
+
+			// 会员来源渠道占比
+			getMemberData(getData) {
+				let response = JSON.parse(document.getElementById('getUserSource').value).result
+				if (getData) {
+					response = getData
+				}
+				let legendData = []
+				let dataContent = []
+				this.memberTableData = response
+				response.forEach(function (item) {
+					legendData.push(item.user_source)
+					dataContent.push({
+						value: item.source_count,
+						name: item.user_source
+					})
+
+				})
+
+
+				//会员占比
+				let myMap = echarts.init(document.getElementById('myMember'))
+				myMap.setOption({
+
+					tooltip: {
+						trigger: 'item',
+						formatter: '{a} <br/>{b}: {c} ({d}%)'
+					},
+					color: ['#3583FF', '#45A2FF', '#33BDB9', '#A5D33E', '#FF9900', '#FF9999', '#FF99FF', '#FFCC99', '#FFFF00', '#98FB98'],
+					legend: {
+						orient: 'vertical',
+						left: 5,
+						data: legendData
+					},
+					series: [{
+						name: "{:lang('分布图')}",
+						type: 'pie',
+						radius: ['50%', '70%'],
+						avoidLabelOverlap: false,
+						label: {
+							show: false,
+							position: 'center'
+						},
+						labelLine: {
+							lineStyle: {
+								color: 'rgba(255, 255, 255, 0.3)'
+							}
+						},
+						emphasis: {
+							label: {
+								show: true,
+								fontSize: '30',
+								fontWeight: 'bold'
+							}
+						},
+						// labelLine: {
+						//     show: false
+						// },
+						data: dataContent
+					}
+					]
+				});
+			},
+			changeMemberSource() {
+				const that = this
+				this.setCookie('memberSource', that.memberSource)
+				var loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0)',
+				})
+				axios.post('getUserSource', {
+					times: that.memberSource
+				})
+					.then(function (response) {
+						loading.close();
+						if (Number(response.status) === 200) {
+							that.getMemberData(response.data.result)
+						} else {
+							that.$message({
+								message: response.msg,
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function (error) {
+						loading.close();
+						that.$message.error('出了点小差错，请联系后台管理员!');
+					});
+
+			},
+			//会员地区分布
+			getMemberMap(getData) {
+				let response = JSON.parse(document.getElementById('getUserRegion').value).result
+				if (getData) {
+					response = getData
+				}
+				this.MemberMaptableData = response
+				let legendData = []
+				let dataContent = []
+				response.forEach(function (item) {
+					legendData.push(item.province)
+					dataContent.push({
+						value: item.user_count,
+						name: item.province
+					})
+
+				})
+				//地图
+				let myMap = echarts.init(document.getElementById('myMemberMap'))
+				myMap.setOption({
+					tooltip: {
+						trigger: 'item',
+						formatter: '{a} <br/>{b}: {c} ({d}%)'
+					},
+					color: ['#3583FF', '#45A2FF', '#33BDB9', '#A5D33E', '#FF9900', '#FF9999', '#FF99FF', '#FFCC99', '#FFFF00', '#FFFF99'],
+					legend: {
+						orient: 'vertical',
+						left: 5,
+						data: legendData
+					},
+					series: [{
+						name: "{:lang('分布图')}",
+						type: 'pie',
+						radius: ['50%', '70%'],
+						avoidLabelOverlap: false,
+						label: {
+							show: false,
+							position: 'center'
+						},
+						labelLine: {
+							lineStyle: {
+								color: 'rgba(255, 255, 255, 0.3)'
+							}
+						},
+						emphasis: {
+							label: {
+								show: true,
+								fontSize: '30',
+								fontWeight: 'bold'
+							}
+						},
+						// labelLine: {
+						//     show: false
+						// },
+						data: dataContent
+					}
+					]
+				});
+			},
+			changeMemberMap() {
+				const that = this
+				this.setCookie('memberMap', that.memberMap)
+				var loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0)',
+				})
+				axios.post('getUserRegion', {
+					times: that.memberMap
+				})
+					.then(function (response) {
+						loading.close();
+						if (Number(response.status) === 200) {
+							that.getMemberMap(response.data.result)
+						} else {
+							that.$message({
+								message: response.msg,
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function (error) {
+						loading.close();
+						that.$message.error('出了点小差错，请联系后台管理员!');
+					});
+
+			},
+			//消费排行榜
+
+			getMeberConsume(getData) {
+				const that=this
+				let response = JSON.parse(document.getElementById('getUserConsumptionList').value).result
+				if (getData) {
+					response = getData
+				}
+				console.log(response, 'getMeberConsume')
+				let legendDataX = []
+				let dataContentY = []
+				response.forEach(function (item) {
+					legendDataX.push(item.user_name)
+					dataContentY.push(item.user_consumption_price)
+				})
+				//会员占比
+				let myMap = echarts.init(document.getElementById('myMeberConsume'))
+				myMap.setOption({
+
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'shadow'
+						}
+					},
+					legend: {
+						data: ["{:lang('会员消费排行')}"]
+					},
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					xAxis: {
+						type: 'value',
+						boundaryGap: [0, 0.01]
+					},
+					yAxis: {
+						type: 'category',
+						data: legendDataX
+					},
+					itemStyle: {
+						color: '#33BDB9'
+					},
+					series: [
+						{
+							name: "{:lang('会员消费排行')}",
+							type: 'bar',
+							barWidth: 20,
+							data: dataContentY
+						}
+
+					]
+				});
+				
+				myMap.on('click',function(params){
+				    console.log(params)
+                   that.handleClickRoute(`/admin.php/statistics/user/detail.html?id=${response[params.dataIndex-1].user_id}`)
+					// let id=params.
+					// admin.php/statistics/user/detail.html?id=3
+					//你的具体逻辑流程
+				})
+			},
+			changeMemberRanking() {
+				const that = this
+				this.setCookie('memberRanking', that.memberRanking)
+				var loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0)',
+				})
+				axios.post('getUserConsumptionList', {
+					times: that.memberRanking
+				})
+					.then(function (response) {
+						loading.close();
+						if (Number(response.status) === 200) {
+							that.getMeberConsume(response.data.result)
+						} else {
+							that.$message({
+								message: response.msg,
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function (error) {
+						loading.close();
+						that.$message.error("{:lang('出了点小差错，请联系后台管理员')}");
+					});
+
+			},
+
+
+			//订单地域分布
+			getMapData(getData) {
+				let response = JSON.parse(document.getElementById('getConsumptionArea').value).result
+				if (getData) {
+					response = getData
+				}
+				this.tableData = response
+				let legendData = []
+				let dataContent = []
+				response.forEach(function (item) {
+					legendData.push(item.province)
+					dataContent.push({
+						value: item.orderPrice,
+						name: item.province
+					})
+
+				})
+				//地图
+				let myMap = echarts.init(document.getElementById('myMap'))
+				myMap.setOption({
+					tooltip: {
+						trigger: 'item',
+						formatter: '{a} <br/>{b}: {c} ({d}%)'
+					},
+					color: ['#3583FF', '#45A2FF', '#33BDB9', '#A5D33E', '#FF9900', '#FF9999', '#FF99FF', '#FFCC99', '#FFFF00', '#FFFF99'],
+					legend: {
+						orient: 'vertical',
+						left: 5,
+						data: legendData
+					},
+					series: [{
+						name: "{:lang('分布图')}",
+						type: 'pie',
+						radius: ['50%', '70%'],
+						avoidLabelOverlap: false,
+						label: {
+							show: false,
+							position: 'center'
+						},
+						labelLine: {
+							lineStyle: {
+								color: 'rgba(255, 255, 255, 0.3)'
+							}
+						},
+						emphasis: {
+							label: {
+								show: true,
+								fontSize: '30',
+								fontWeight: 'bold'
+							}
+						},
+						// labelLine: {
+						//     show: false
+						// },
+						data: dataContent
+					}
+					]
+				});
+			},
+			changeMapOption() {
+				const that = this
+				this.setCookie('mapDate', that.mapDate)
+				var loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0)',
+				})
+				axios.post('getConsumptionArea', {
+					times: that.mapDate
+				})
+					.then(function (response) {
+						loading.close();
+						if (Number(response.status) === 200) {
+							that.getMapData(response.data.result)
+						} else {
+							that.$message({
+								message: response.msg,
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function (error) {
+						loading.close();
+						that.$message.error('出了点小差错，请联系后台管理员!');
+					});
+			},
+
+			//单品销售榜单
+			getSingleDate(getData) {
+				let response = JSON.parse(document.getElementById('getGoodsSalesList').value).result
+
+				if (getData) {
+					response = getData
+				}
+				response = response.reverse()
+				let legendData = []
+				let dataContent = []
+				response.forEach(function (item) {
+					legendData.push(item.name)
+					dataContent.push(item.sales_sum)
+
+				})
+
+
+				//商品加购数
+				let myGoods = echarts.init(document.getElementById('mySale'))
+				myGoods.setOption({
+					// title: {
+					//     text: "{:lang('世界人口总量')}",
+					//     subtext: "{:lang('数据来自网络')}"
+					// },
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'shadow'
+						}
+					},
+					legend: {
+						data: ["{:lang('商品销售数')}"]
+					},
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					xAxis: {
+						type: 'value',
+						boundaryGap: [0, 0.01]
+					},
+					yAxis: {
+						type: 'category',
+						data: legendData,
+						axisLabel: {
+							margin: 8,
+							formatter: function (params) {
+								var val = "";
+								if (params.length > 4) {
+									val = params.substr(0, 6) + '...';
+									return val;
+								} else {
+									return params;
+								}
+							}
+						},
+					},
+					itemStyle: {
+						color: '#A5D33E'
+					},
+					series: [
+						{
+							name: "{:lang('商品销售数')}",
+							type: 'bar',
+							barWidth: 20,
+							data: dataContent
+						}
+
+					]
+				});
+				myGoods.on('click',function(params){
+				    console.log(params)
+                //    that.handleClickRoute(`/admin.php/statistics/user/detail.html?id=${response[params.dataIndex-1].user_id}`)
+					// let id=params.
+					// admin.php/statistics/user/detail.html?id=3
+					//你的具体逻辑流程
+				})
+			},
+			changeSaleDate() {
+				const that = this
+				this.setCookie('saleDate', that.saleDate)
+				var loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0)',
+				})
+				axios.post('getGoodsSalesList', {
+					times: that.saleDate
+				})
+					.then(function (response) {
+						loading.close();
+						if (Number(response.status) === 200) {
+							that.getSingleDate(response.data.result)
+						} else {
+							that.$message({
+								message: response.msg,
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function (error) {
+						loading.close();
+						that.$message.error('出了点小差错，请联系后台管理员!');
+					});
+			},
+
+			//购物车
+			getGoodsAddData(getData) {
+				let response = JSON.parse(document.getElementById('getGoodsCartList').value).result
+				if (getData) {
+					response = getData
+				}
+				response = response.reverse()
+				let legendData = []
+				let dataContent = []
+				response.forEach(function (item) {
+					legendData.push(item.goods_name)
+					dataContent.push(item.goodsCount)
+
+				})
+
+				//购物车
+				let myGoods = echarts.init(document.getElementById('myGoods'))
+				myGoods.setOption({
+					// title: {
+					//     text: '',
+					//     subtext: "{:lang('数据来自网络')}"
+					// },
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'shadow'
+						}
+					},
+					legend: {
+						data: ["{:lang('购物车商品数量')}"]
+					},
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					xAxis: {
+						type: 'value',
+						boundaryGap: [0, 0.01],
+					
+					},
+					yAxis: {
+						type: 'category',
+						data: legendData,
+						axisLabel: {
+							margin: 8,
+							formatter: function (params) {
+								var val = "";
+								if (params.length > 4) {
+									val = params.substr(0, 6) + '...';
+									return val;
+								} else {
+									return params;
+								}
+							}
+						},
+					},
+					itemStyle: {
+						color: '#A5D33E'
+					},
+					series: [
+						{
+							name: "{:lang('购物车商品数量')}",
+							type: 'bar',
+							barWidth: 20,
+							data: dataContent
+						}
+
+					]
+				});
+			},
+			changeAddGoods() {
+				const that = this
+				var loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0)',
+				})
+				axios.post('getGoodsCartList', {
+					times: 'month'
+				})
+					.then(function (response) {
+						loading.close();
+						if (Number(response.status) === 200) {
+							that.getGoodsAddData(response.data.result)
+						} else {
+							that.$message({
+								message: response.msg,
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function (error) {
+						loading.close();
+						that.$message.error('出了点小差错，请联系后台管理员!');
+					});
+			},
+
+			// 对cookie的操作
+			setCookie(name, value, days) {
+				if (days) {
+					var date = new Date();
+					date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+					var expires = "; expires=" + date.toGMTString();
+				} else {
+					var expires = "";
+				}
+				document.cookie = name + "=" + value + expires + "; path=/";
+			},
+			getCookie(name) {
+				var nameEQ = name + "=";
+				var ca = document.cookie.split(';');
+				for (var i = 0; i < ca.length; i++) {
+					var c = ca[i];
+					while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+					if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+				}
+				return null;
+			},
+
+			handleOrderRefresh() {
+				this.changeOrderData()
+			},
+			changeOrderData() {
+				const that = this
+				this.setCookie('orderDate', that.orderDate)
+				var loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0)',
+				})
+				axios.post('getOrderData', {
+					times: that.orderDate
+				})
+					.then(function (response) {
+						loading.close();
+						if (Number(response.status) === 200) {
+							that.getOrderData(response.data.result)
+						} else {
+							that.$message({
+								message: response.msg,
+								type: 'warning'
+							});
+						}
+					})
+					.catch(function (error) {
+						loading.close();
+						that.$message.error("{:lang('出了点小差错，请联系后台管理员')}");
+					});
+			},
+			getOrderData(getData) {
+				let response = JSON.parse(document.getElementById('getOrderData').value).result
+				if (getData) {
+					response = getData
+				}
+				console.log(response, 'response')
+				let legendDataOrder = []
+				let legendDataSale = []
+				let legendDataProfits = []
+				let dataContent = []
+				response.forEach(function (item) {
+					legendDataSale.push(item.orderPrice)
+					legendDataOrder.push(item.orderCount)
+					legendDataProfits.push(item.profitPrice)
+					dataContent.push(item.dateFormat)
+				})
+
+				// 基于准备好的dom，初始化echarts实例
+				let myChart = echarts.init(document.getElementById('myChart'))
+				// 绘制图表
+				myChart.setOption({
+					title: {
+						text: "{:lang('趋势图')}"
+					},
+					tooltip: {
+						trigger: 'axis'
+					},
+					legend: {
+						data: ["{:lang('销售额趋势')}", "{:lang('订单数趋势')}", "{:lang('利润额趋势')}"]
+					},
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					toolbox: {
+						feature: {
+							saveAsImage: {}
+						}
+					},
+					xAxis: {
+						type: 'category',
+						boundaryGap: false,
+						data: dataContent
+					},
+					yAxis: {
+						type: 'value'
+					},
+					// itemStyle:{
+					// 	color:['#5CADFF','#33BDB9','#A5D33E']
+					// },
+					series: [
+						{
+							name: "{:lang('销售额趋势')}",
+							type: 'line',
+							// stack: '总量', //放开即为 堆叠效果
+							itemStyle: {
+								normal: {
+									color: '#5CADFF',
+									lineStyle: {
+										color: '#5CADFF'
+									}
+								}
+							},
+							data: legendDataSale
+						},
+						{
+							name: "{:lang('订单数趋势')}",
+							type: 'line',
+							// stack: '总量', //放开即为 堆叠效果
+							itemStyle: {
+								normal: {
+									color: '#33BDB9',
+									lineStyle: {
+										color: '#33BDB9'
+									}
+								}
+							},
+							data: legendDataOrder
+						},
+						{
+							name: "{:lang('利润额趋势')}",
+							type: 'line',
+							// stack: '总量', //放开即为 堆叠效果
+							itemStyle: {
+								normal: {
+									color: '#A5D33E',
+									lineStyle: {
+										color: '#A5D33E'
+									}
+								}
+							},
+							data: legendDataProfits
+						}
+					]
+
+				});
+
+			}
+		}
+	})
+</script>
+
+</html>
+{/block}

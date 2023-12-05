@@ -1,0 +1,620 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<style>
+    .input-common{
+        border-radius: 0 !important;
+            margin: 0 !important;
+            border: 1px solid #D6D6D6 !important;
+            box-shadow: none !important;
+            font-size: 12px !important;
+            width: 250px !important;
+            padding: 0 6px !important;
+            height: 30px !important;
+            box-sizing: border-box;
+            resize: none !important;
+    }
+    .input-common.harf, .select-common.harf {
+        width: 125px !important;
+    }
+    .msg-wrap{position: inherit!important;}
+    .regional-choice {
+        display: none;
+    }
+    .place-div label {
+      font-weight: 400;
+      font-size: 1.4rem; }
+    .place-div input[type=checkbox] {
+      margin-right: .3rem; }
+    .place-div > div {
+      width: 100%;
+      padding: 10px 30px; }
+    .place-div .checkbtn {
+      background-color: #fbfbfb;
+      text-align: right; }
+      .place-div .checkbtn img {
+        height: 10px;
+        margin-left: 3px; }
+      .place-div .checkbtn .ri {
+        border-right: none; }
+      .place-div .checkbtn a {
+        height: 30px;
+        line-height: 30px;
+        display: inline-block;
+        width: 60px;
+        text-align: center; }
+    .place-div .smallplace .ratio {
+      color: red; }
+    .place-div .smallplace label {
+      padding-right: 10px;
+      text-align: left;
+      width: auto;
+      float: left;
+      cursor: pointer; }
+    .place-div .smallplace .citys {
+      width: auto;
+      background-color: #fff;
+      position: absolute;
+      top: 35px;
+      border: 1px solid #ccc;
+      z-index: 100;
+      visibility: hidden; }
+      .place-div .smallplace .citys > i.jt {
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-bottom: 10px solid #ccc;
+        position: absolute;
+        top: -10px;
+        left: 20px; }
+        .place-div .smallplace .citys > i.jt i {
+          width: 0;
+          height: 0;
+          border-left: 8px solid transparent;
+          border-right: 8px solid transparent;
+          border-bottom: 10px solid #fff;
+          position: absolute;
+          top: 2px;
+          left: -8px; }
+      .place-div .smallplace .citys .row-div {
+        min-width: 250px;
+        padding: 10px;
+        box-sizing: border-box; }
+        .place-div .smallplace .citys .row-div label span {
+          max-width: 175px;
+          white-space: nowrap;
+          vertical-align: middle;
+          font-size: 1.4rem; }
+    .place-div .smallplace .place-tooltips:hover .citys {
+      visibility: visible; }
+    .place-div .smallplace p {
+      float: left;
+      width: auto;
+      margin: 2px 0; }
+    .place-div .smallplace > div {
+      float: left;
+      width: 170px;
+      margin: 0;
+      padding-bottom: 10px;
+      padding-top: 5px;
+      position: relative; }
+    
+    .show-place-div {
+      margin-left: 85px;
+      font-size: 15px; }
+      .show-place-div .smallplace label {
+        min-width: 105px;
+        width: auto; }
+      .show-place-div .smallplace input {
+        margin-left: 0; }
+      .show-place-div .smallplace .citys .row-div p {
+        margin: 5px 0 10px 0; }
+
+
+    /*商品列表*/
+    .table_ul_list,.ul_list{padding-left: 0; margin-bottom: 0;}
+    .table_ul_list li{display: flex; line-height: 40px; border: 1px solid #eee; text-align: center;}
+    .table_ul_list li p{margin: 0;}
+    .table_ul_list li .p_1{width: 50px;}
+    .table_ul_list li .p_2{width: 65px;}
+    .table_ul_list li .p_3{width: 400px; padding: 0 10px;}
+    .table_ul_list li .p_4{width: 100px;}
+    .table_ul_list li .p_5{width: 650px;}
+    .table_ul_list li .p_1,.table_ul_list li .p_2,.table_ul_list li .p_3,.table_ul_list li .p_5{border-right: 1px solid #eee}
+    
+    .list_box{overflow: hidden;}
+    
+
+    .goods_list{max-height: 300px; overflow-y: scroll; margin-right: -17px;}
+    .goods_list li{border-top: none;}
+    .goods_list li .flex_p{display: flex; align-items: center; padding: 0 5px;}
+    .goods_list .flex_p p{width: 30px; height: 30px; line-height: 30px; text-align: center; border: 1px solid #eee; cursor: default; font-size: 18px;}
+    .goods_list li.checked_li .flex_p p{cursor: pointer;}
+    .goods_list .flex_p input{width: 40px; height: 30px; outline: none; text-align: center; margin: 0 -1px; border-color: #eee;}
+
+
+
+    .ul_list li{list-style: none; padding: 10px 0; border-bottom: 1px solid #eee;}
+    #list_address li input{margin-right: 10px;}
+
+    /*规格*/
+    .sku_list{width: 100%; padding-left: 0;}
+    .sku_list li{display: inline-block; height: 28px; padding: 0 10px; border-radius: 5px; line-height: 28px; font-size: 12px; margin: 7px 5px; border: 1px solid #ccc;}
+    .sku_list .active{border-color: #108cee; color: #108cee;}
+    .sku_list_checked li{cursor: pointer;}.sku_list_checked.empty_ul li{cursor: default;}
+    .empty_ul .active{border: none; color: #666;}
+
+
+    .totalMoney input#total_money{width: 60px; outline: none; font-weight: bold; text-align: center; font-size: 16px!important;}
+</style>
+{/block}
+
+{block name="content"}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom">
+            <div class="box-header with-border">
+                <h3 class="box-title">{:lang('新增订单')}</h3>
+            </div>
+            <div class="box-body tab-content">
+                <div class="tab-pane active">
+                    <div class="block-content row" id="app">
+                        
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                <div class="col-sm-1 col-lg-1 label-title text-right" for="money" style="line-height: 36px;">{:lang('选择用户')}：</div>
+                                <div class="col-sm-11 col-lg-5">
+                                    <select name="user_id" id="user_id" required class="select2" onchange="ajaxClass_address()">
+                                    <option value="">{:lang('请选择收货人')}</option>
+                                    {volist name="list_user" id="vo"}
+                                        <option value="{$key}">{$vo['user_nickname']}, {$vo['mobile']}</option>
+                                    {/volist}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-sm-3 col-lg-2 label-title text-right" for="money" style="line-height: 36px;">{:lang('选择商品')}：</div>
+                                <div class="col-sm-6 col-lg-5">
+                                    <select name="cid" id="category" class="form-control select2 custom-css" onchange="ajaxClass()">
+                                    {volist name="category" id="cate"}
+                                      <option value="{$key}" {if strval($key) === strval($map['cid'])}selected{/if}>{neq name="key" value="0"}{$cate|raw}{else /}{:lang('全部分类')}{/neq}</option>
+                                    {/volist}
+                                    </select>
+                                </div>
+                            </div> -->
+                            <!-- 商品列表 -->
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                              <div class="col-sm-1 col-lg-1 label-title text-right"></div>
+                              <div class="col-sm-11 col-lg-10">
+                                  <ul class="table_ul_list title_list" style="display: block;">
+                                    <li style="font-weight: bold;">
+                                      <p class="p_1">{:lang('选择')}</p>
+                                      <p class="p_2">{:lang('商品单价')}</p>
+                                      <p class="p_3">{:lang('商品名称')}</p>
+                                      <p class="p_5">{:lang('规格-库存')}</p>
+                                      <p class="p_4">{:lang('操作')}</p>
+                                    </li>
+                                  </ul>
+                                  <!-- <select name="cid" id="goods_id" class="form-control select2 custom-css">
+                                  </select> -->
+                                  <div class="list_box">
+                                  
+                                    <ul class="table_ul_list goods_list" id="goods_id">
+                                      {volist name="goods_list" id="g"}
+                                        <li>
+                                        <p class="p_1"><input type="checkbox" class="goods_id" id="{$g.id}" value="{$g.id}"></p>
+                                        <p class="p_2 price_input">{$g.shop_price}</p>
+                                        <p class="p_3">{$g.name}</p>
+                                        <div class="p_5">
+                                            {if condition="$g.sku"}
+                                            <ul class="sku_list clearfix sku_list_checked" style="display: none;">
+                                            {volist name="$g['sku']" id="item"}
+                                            <li sku-id="{$item.sku_id}" price="{$item.shop_price}" member_price="{$item.member_price}">{$item.key_name},库存{$item.stock}</li>
+                                            {/volist}
+                                            </ul>
+                                            {else/}
+                                            <ul class="sku_list empty_ul">
+                                              <li sku-id="0" class="active">单规格,库存:{$g.stock}</li>
+                                            </ul>
+                                            {/if}     
+                                        </div>
+                                        <div class="p_4 flex_p">
+                                          <p class="cut">-</p>
+                                          <input type="text" class="num_input" disabled="true" value="1" onkeyup="this.value=this.value.replace(/D/g," ")"="">
+                                          <p class="add">+</p>
+                                        </div>
+                                      </li>
+                                      {/volist}
+                                    </ul>
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                              <div class="col-sm-1 col-lg-1 label-title text-right" style="line-height: 36px;">{:lang('选择配送方式')}：</div>
+                              <div class="col-sm-11 col-lg-5" style="height:41px;line-height: 40px;">
+                                <input type="radio" name="send_type" id="send_type1" value="1" checked=""> 自提
+                                <input type="radio" name="send_type" id="send_type0" value="0" checked=""> 邮寄
+                              </div>
+                            </div>
+                            <!-- 地址列表 -->
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                              <div class="col-sm-1 col-lg-1 label-title text-right" style="line-height: 36px;">{:lang('选择地址')}：</div>
+                              <div class="col-sm-11 col-lg-5">
+                                  <ul class="ul_list" id="list_address">
+                                    <!-- <li class="clearfix">
+                                      <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                                        地址列表1
+                                      </label>
+                                    </li>-->
+                                  </ul>
+                                  <ul class="ul_list" id="list_pick" style="display: none;">
+                                  </ul>
+                              </div>
+                            </div>
+
+                            <!-- <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                              <div class="col-sm-3 col-lg-2 label-title text-right"></div>
+                              <div class="col-sm-6 col-lg-5">
+                                  <div class="totalMoney clearfix" style="display: none;"><span style="float:left; line-height: 36px;">总计：</span><input type="text" id="total_money" value="0"></div>
+                              </div>
+                            </div> -->
+
+                            <div class="form-group col-md-12 col-xs-12">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-primary btn-flat" type="button" onclick="validateBeforeSubmit()"> {:lang('提交')} </button>
+                                    <button class="btn btn-default btn-flat" type="button" onClick="javascript:history.back(-1);return false;">
+                                        {:lang('返回')} </button>
+                                </div>
+                            </div>
+                            <form action="add" method="post" class="marBtm" id="order_manage_from">
+                              <input type="hidden" id="userid" value="">
+                              <input type="hidden" id="goods_ids" value="">
+                              <input type="hidden" id="goods_num" value="">
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="regional-choice"></div>
+{/block}
+{block name="script"}
+<script type="text/javascript" src="__MODULE__/js/area.js"></script>
+<script type="text/javascript" src="__MODULE__/js/freight.js"></script>
+<script type="text/javascript">
+ $(document).ready(function() {
+    $('input[type=radio][name=send_type]').change(function() {
+        if (this.value == '1') {
+          console.log(this.value)
+            $('#list_address').hide()
+            ajaxClass_pickup();
+            $('#list_pick').show() 
+         }
+         else if (this.value == '0') {
+          console.log(this.value)
+            $('#list_address').show()
+            $('#list_pick').hide() 
+         }
+     });
+ });
+
+function ajaxClass(){
+  var cid = $("#category").val();
+  $.ajax({
+    type:'post',
+    dataType:'json',
+    url:"{:url('goods/order/ajaxClass')}",
+    data:{
+        'cid':cid,
+    },
+    success:function(data){
+      console.log(data);
+        if(data.ret==2){
+          var str='';
+          var d = data.data;
+          var sku='';
+          /*$.each(d,function(k,v){
+              if(v.is_spec){
+                sku=`
+                  <ul class="sku_list">
+                    <% for(let i=0; i < v.sku.length; i++) { %>
+                      <li><%= v.sku[i].key_name %></li>
+                    <% } %>
+                  </ul>
+                `
+              }else{
+                sku='无'
+              }
+              str+='<li><p class="p_1"><input type="checkbox" class="goods_id" id="'+v.id+'" value="'+v.id+'"></p>';
+              str+='<p class="p_2 price_input">'+v.shop_price+'</p>';
+              str+='<p class="p_3">'+v.name+'</p><div class="p_5">'+sku+'</div>';
+              str+='<div class="p_4 flex_p"><p class="cut">-</p><input type="text" class="num_input" disabled="true" value="1" onkeyup="this.value=this.value.replace(/\D/g,"")">';
+              str+='<p class="add">+</p></div></li>';
+
+          })*/
+          // $("#goods_id").html(str);
+
+
+          $("#goods_id").html(`
+            ${d.map(item=>{
+              return `<li>
+                <p class="p_1"><input type="checkbox" class="goods_id" id="${item.id}" value="${item.id}"></p>
+                ${
+                  (function(){
+                    if(item.sku && user_level!=0){
+                      return `
+                        <p class="p_2 price_input">${item.sku[0].member_price}</p>
+                      `
+                    }else if(item.sku && user_level==0){
+                      return `
+                        <p class="p_2 price_input">${item.sku[0].shop_price}</p>
+                      `
+                    }else{
+                      return `
+                        <p class="p_2 price_input">${item.shop_price}</p>
+                      `
+                    }
+                  })()
+                }
+                <p class="p_3">${item.name}</p>
+                <div class="p_5">
+                  ${
+                    (function(){
+                       if(item.sku){
+                          return `
+                            <ul class="sku_list clearfix">
+                              ${item.sku.map(c_item=>{
+                                return `<li sku-id="${c_item.sku_id}" price="${c_item.shop_price}" member_price="${c_item.member_price}">${c_item.key_name}</li>`
+                              })}
+                            </ul>
+                          `;
+                       }else{
+                          return `
+                            <ul class="sku_list empty_ul">
+                              <li sku-id="0" class="active">无</li>
+                            </ul>
+                          `;
+                       }
+                    })()
+                  }
+                </div>
+                <div class="p_4 flex_p">
+                  <p class="cut">-</p>
+                  <input type="text" class="num_input" disabled="true" value="1" onkeyup="this.value=this.value.replace(/\D/g,"")">
+                  <p class="add">+</p>
+                </div>
+              </li>`
+            }).join('')}
+          `.trim())
+
+          $('.totalMoney,.title_list').show();
+          $('.totalMoney #total_money').val(0);
+        }
+    },
+    error:function(data){
+        
+    },
+  })
+}
+var user_level=0;
+
+function ajaxClass_address(){
+  var user_id = $("#user_id").val();
+  $('#userid').val(user_id)
+  $.ajax({
+    type:'post',
+    dataType:'json',
+    url:"{:url('goods/order/ajaxClass_address')}",
+    data:{
+        'user_id':user_id,
+    },
+    success:function(data){
+      user_level=data.user_level;
+        if(data.ret==2){
+          var str='';
+          var d = data.data;
+          $.each(d,function(k,v){
+              if(v.is_default==1){
+                str+='<li class="clearfix"><label><input type="radio" name="optionsRadios" id="optionsRadios1" value="'+v.address_id+'" checked>'+v.province+v.city+v.district+v.address+v.mobile+'</label></li>'
+              }else{
+                str+='<li class="clearfix"><label><input type="radio" name="optionsRadios" id="optionsRadios1" value="'+v.address_id+'">'+v.province+v.city+v.district+v.address+v.mobile+'</label></li>'
+              }
+          })
+          $("#list_address").html(str);
+        }
+    },
+    error:function(data){
+        
+    },
+  })
+}
+function ajaxClass_pickup(){
+  var user_id = $("#user_id").val();
+  $('#userid').val(user_id)
+  $.ajax({
+    type:'post',
+    dataType:'json',
+    url:"{:url('goods/order/ajaxClass_pickup')}",
+    data:{
+        'user_id':user_id,
+    },
+    success:function(data){
+
+        if(data.ret==2){
+          var str='';
+          var d = data.data;
+          $.each(d,function(k,v){
+              if(v.is_default==1){
+                str+='<li class="clearfix"><label><input type="radio" name="pickupid" id="pickupid" value="'+v.id+'" checked>'+v.city_name+v.district_name+v.full_address+'</label></li>'
+              }else{
+                str+='<li class="clearfix"><label><input type="radio" name="pickupid" id="pickupid" value="'+v.id+'">'+v.city_name+v.district_name+v.full_address+'</label></li>'
+              }
+          })
+          $("#list_pick").html(str);
+        }
+    },
+    error:function(data){
+        
+    },
+  })
+}
+
+
+// 选择商品
+$('body').on('click',"#goods_id li input[type='checkbox']",function(){
+  var li=$(this).parents('li'),
+      total_money=$('#total_money').val(),//总计
+      price=li.find('.price_input').text(),//商品单价
+      num=li.find('.num_input').val();//商品数量
+  if($(this).prop('checked')){
+    // 计算总计
+    $('#total_money').val(Number(total_money)+price*num);
+    // 为true时   数量/规格 可选   
+    li.addClass('checked_li');
+    li.find('.sku_list').addClass('sku_list_checked').show();
+
+    // 规格第一个添加
+    li.find('.sku_list li:eq(0)').addClass('active')
+  }else{
+    // 计算总计
+    $('#total_money').val(Number(total_money)-price*num);
+    // 
+    li.removeClass('checked_li');
+    li.find('.sku_list').removeClass('sku_list_checked').hide();
+    // 删除规格选中状态
+    li.find('.sku_list li').removeClass('active')
+  }
+})
+
+
+//选择规格
+$('body').on('click','.sku_list_checked li',function(){
+  $(this).addClass('active').siblings().removeClass('active');
+  if(user_level!=0){
+    var price=Number($(this).attr('member_price'));
+  }else{
+    var price=Number($(this).attr('price'));
+  }
+  
+  var old_price=Number($(this).parents('li').find('.price_input').text());//获取选规格前的价格
+  var all_money=Number($('#total_money').val());
+  $(this).parents('li').find('.price_input').text(price)
+  $('#total_money').val(all_money-old_price+price)
+})
+
+// 减
+$('body').on('click','#goods_id li.checked_li .cut',function(){
+  var li=$(this).parents('li'),
+      o_p=Number($('#total_money').val()),//总计
+      p=Number(li.find('.price_input').text()),//商品单价
+      goods_id=li.find('.goods_id').val(),//商品ID
+      num=Number(li.find('.num_input').val());
+  if(num==1){
+    alert("{:lang('不能再少了')}")
+  }else{
+    num--;
+    li.find('.num_input').val(num);
+    var total_money = o_p-p
+    total_money = total_money.toFixed(2);
+    $('#total_money').val(total_money);
+  }
+})
+// 加
+$('body').on('click','#goods_id li.checked_li .add',function(){
+  var li=$(this).parents('li'),
+      o_p=Number($('#total_money').val()),//总计
+      p=Number(li.find('.price_input').text()),//商品单价
+      goods_id=li.find('.goods_id').val(),//商品ID
+      num=Number(li.find('.num_input').val());//数量
+  num++;
+  li.find('.num_input').val(num);
+  var total_money = o_p+p
+  total_money = total_money.toFixed(2);
+  $('#total_money').val(total_money);
+})
+
+function validateBeforeSubmit(){
+  var user_id = $("#user_id").val();
+  var address_id = $(":radio[name='optionsRadios']:checked").val();
+  var good_ids = [];
+  var good_nums = [];
+  var sku_ids = [];
+  var send_type = $(":radio[name='send_type']:checked").val();
+  var pickupid =  $(":radio[name='pickupid']:checked").val();
+
+  $('input:checkbox:checked').each(function(){
+      var li=$(this).parents().parents('li');
+      var good_id=Number(li.find('.goods_id').val());//商品ID
+      var good_num=Number(li.find('.num_input').val());//商品数量
+      var sku_id=Number(li.find('.active').attr('sku-id'));//商品sku-id
+      good_ids.push(good_id);
+      good_nums.push(good_num);
+      sku_ids.push(sku_id);
+  });
+  if(user_id == ''){
+    layer.msg("{:lang('请选择收货人')}");
+    return false;
+  }
+  if(good_ids.length == 0){
+    layer.msg("{:lang('请选择商品信息')}");
+    return false;
+  }else{
+    good_ids = good_ids.join(",");
+    good_nums = good_nums.join(',');
+    sku_ids = sku_ids.join(',');
+  }
+
+  if(address_id == ''){
+    layer.msg("{:lang('请选择收货地址')}");
+    return false;
+  }
+
+  $.ajax({
+    type:'post',
+    dataType:'json',
+    url:"{:url('goods/order/add')}",
+    data:{
+        'user_id':user_id,
+        'good_ids':good_ids,
+        'good_nums':good_nums,
+        'sku_ids':sku_ids,
+        'address_id':address_id,
+        'send_type':send_type,
+        'pickup_id':pickupid
+    },
+    success:function(ret){
+        if(ret.code == 1){
+            layer.alert(ret.msg)
+            setTimeout(function() {
+                location.href = ret.url
+              },
+            1000)
+        }else{
+            layer.alert(ret.msg)
+        }
+    },
+    error:function(ret){
+        
+    },
+  })
+
+
+}
+        
+    $(function() {
+        // 初始化区域选择界面
+        var datas = JSON.parse('{$area|raw}');
+
+        // 配送区域表格
+        new Delivery({
+            table: '.table-area',
+            regional: '.regional-choice',
+            datas: datas
+        });
+    })
+
+</script>
+{/block}

@@ -1,0 +1,177 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12" id="vue_det">
+            <div class="box nav-tabs-custom">
+                <div class="box-body tab-content">
+					<div class="alert alert-danger">{:lang('该文档由开发人员阅读')}，{:lang('非开发人员请勿理会')}</div>
+                    <div class="tab-pane active">
+							<div class="col-xs-12 label-title" >一,{:lang('发送消息')}</div>
+							
+							<div class="alert alert-default">
+								1)，{:lang('先向')}SystemMessage{:lang('模型插入记录')}，{:lang('再调用')}sendMsg{:lang('方法即可推送消息')}<br />
+								
+								2),  {:lang('插入数据字段描述')}
+								<table class="table table-builder table-hover table-bordered table-striped mb10">
+									<thead>  	
+										<th width="50">{:lang('字段名')}</th>  								
+										<th width="100">{:lang('类型')}</th>  
+										<th class="">{:lang('备注')}</th>  										
+									</thead>
+									<tbody class="fields">     
+									
+										<tr>
+										    <td class="">to_user_id</td>
+											<td class="">int</td>
+											<td class="">
+											{:lang('接收者会员')}ID
+											</td>
+										</tr>   
+										<tr>
+										    <td class="">title</td>
+											<td class="">string</td>
+											<td class="">
+											 {:lang('消息标题')}
+											</td>
+										</tr>  										
+									   <tr>
+										    <td class="">content</td>
+											<td class="">string</td>
+											<td class="">
+											 {:lang('消息内容')}
+											</td>
+										</tr> 
+									  <tr>
+										    <td class="">msg_type</td>
+											<td class="">int</td>
+											<td class="">
+											 {:lang('消息类型')}（{:lang('分组')}），{:lang('请参考下述第二条')}
+											</td>
+										</tr> 
+										 <tr>
+										    <td class="">action</td>
+											<td class="">int</td>
+											<td class="">
+											 {:lang('动作')}ID，{:lang('请参考下述第三条')}
+											</td>
+										</tr> 
+										 <tr>
+										    <td class="">custom</td>
+											<td class="">jsonString</td>
+											<td class="">
+											 {:lang('动作内容')}，{:lang('请参考下述第四条')}，{:lang('根据对应的消息')}ID，{:lang('将预设字段以及值以键值对数组方式包装')}，{:lang('然后转为')}json{:lang('字符串即可')} 
+											 <br /> {:lang('例子')} {"url":"http://test.com"}
+											</td>
+										</tr> 
+									</tbody>
+								</table>                  
+							
+							</div>
+                      
+                          	<div class="col-xs-12 label-title" >二,{:lang('关于消息类型')}msg_type{:lang('字段')}</div>
+							
+							<div class="alert alert-default">
+								1)，{:lang('可通过')}“{:lang('消息类型设置')}”{:lang('进行配置')}<br />					
+						        2)，{:lang('可通过')}“SystemMessageType”{:lang('模型获取')}		
+							</div>
+							<div class="col-xs-12 label-title" >三,{:lang('关于动作类型')}action{:lang('字段的配置')}</div>
+							
+							<div class="alert alert-default">
+								1)，{:lang('可通过')}“{:lang('消息动作设置')}”{:lang('进行配置')}	<br />
+								2)，{:lang('可通过')}“SystemMessageAction”{:lang('模型获取')}									
+							
+							</div>
+							<div class="col-xs-12 label-title" >四,{:lang('当前所有动作')}</div>
+							<table class="table table-builder table-hover table-bordered table-striped mb10">
+								<thead>  	
+									<th width="50">{:lang('动作')}ID</th>  								
+									<th width="100">{:lang('动作名称')}</th>  
+									<th class="">{:lang('字段预设')}</th>  										
+								</thead>
+								<tbody class="fields">      
+									{volist name="$action" id="item"}
+                                    <tr>
+									   <td class="">{$item.id}</td>
+                                        <td class="">{$item.name}</td>
+									
+                                        <td class="">
+											<?php $fields = json_decode($item["rule"],true);?>
+										  	<table class="table table-bordered">														
+											
+											<tbody class="fields">      
+											{volist name="$fields" id="i"}
+											<tr>
+											   <td  width="100">{$i.msg}</td>
+											   <td >{$i.field}</td>
+											</tr>
+											{/volist}
+											</tbody>
+											</table>
+										</td>
+                                    </tr>      
+									{/volist}
+								</tbody>
+							</table>   
+							<div class="col-xs-12 label-title" >五，{:lang('推送消息的接收')}</div>							
+                      
+						   <div class="alert alert-default">
+								1)，{:lang('客户端需配置接收透传消息')}，IOS{:lang('客户端透传内容在')}custom{:lang('字段中')}<br />					
+						        2)，{:lang('如果正常接收')}，{:lang('你收到的透传的')}JSON{:lang('对象字段内容如下')}：
+								<table class="table table-builder table-hover table-bordered table-striped mb10">
+									<thead>  	
+										<th width="50">{:lang('字段名')}</th>  								
+										<th width="100">{:lang('类型')}</th>  
+										<th class="">{:lang('备注')}</th>  										
+									</thead>
+									<tbody class="fields">     
+									
+										<tr>
+										    <td class="">id</td>
+											<td class="">int</td>
+											<td class="">
+											 {:lang('消息')}ID
+											</td>
+										</tr>   
+										<tr>
+										    <td class="">msg_type</td>
+											<td class="">int</td>
+											<td class="">
+											 {:lang('消息类型')}
+											</td>
+										</tr>  										
+									   <tr>
+										    <td class="">action</td>
+											<td class="">int</td>
+											<td class="">
+											 {:lang('动作')}ID
+											</td>
+										</tr> 
+									 
+										 <tr>
+										    <td class="">extra</td>
+											<td class="">object | string</td>
+											<td class="">
+											 {:lang('动作内容')}，{:lang('请参考第四条')}，{:lang('根据对应的动作')}ID，{:lang('将存入预设字段的')}JSON{:lang('字符串原样透传')}, {:lang('如果未配置')}，{:lang('将传空值')}
+											 <br /> {:lang('例子')} {"url":"http://test.com"}
+											</td>
+										</tr> 
+									</tbody>
+								</table><br />	
+							  3)，{:lang('由于各端兼容性问题')}，{:lang('弹窗和下载类消息已取消')}，{:lang('全部采用透传消息打包发送')}；<br />
+							    &nbsp;{:lang('如需发送弹窗消息')}，{:lang('可在动作中配置参数')}，{:lang('然后由客户端接收到的透传内容中')}，{:lang('判断动作')}ID，{:lang('根据透传内容渲染出弹窗即可')}								
+							</div>
+                        </div>
+                    </div>
+              
+                </div>
+
+             </div>
+        </div>
+    </div>
+
+{/block}
+{block name="script"}
+
+{/block}
+
+

@@ -1,0 +1,337 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/main.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/iconfont.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/order-new.css?v=2">
+{/block}
+
+{block name="content"}
+
+<div class="warpper">
+    <div class="title">{:lang('商品')} - {:lang('商品自动上下架')}</div>
+    <div class="content">
+        <!---->
+        <div class="tabs_info">
+            <ul>
+                <li><a href="goods_batch">{:lang('商品批量修改')}</a></li>
+                <li><a href="goods_batch_add">{:lang('商品批量上传')}</a></li>
+                <li><a href="goods_batch_export">{:lang('商品批量导出')}</a></li>
+                <li class="curr"><a href="goods_batch_auto">{:lang('批量自动上下架')}</a></li>
+            </ul>
+        </div>            <!---->
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{:lang('操作提示')}</h4><span id="explanationZoom" title="{:lang('收起提示')}"></span></div>
+            <ul>
+                <li>{:lang('选择商品和需要上下架操作的时间进行批量上下架')}。</li>
+                <li>{:lang('也可搜索商品名称进行单个上下架')}。</li>
+            </ul>
+        </div>
+        <ul class="lilist mt20">
+            <li>{:lang('您需要到系统设置')}-&gt;{:lang('计划任务中开启该功能后才能使用')}。</li>
+        </ul>
+        <div class="flexilist">
+            <div class="common-head">
+                <div class="refresh ml0">
+                    <div class="refresh_tit" title="{:lang('刷新数据')}"><i class="icon icon-refresh"></i></div>
+                    <div class="refresh_span">{:lang('刷新')} - 共288{:lang('条记录')}</div>
+                </div>
+                <div class="search">
+                    <form action="javascript:;" name="searchForm" onsubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="goods_name" class="text nofocus" placeholder="{:lang('商品名称')}" autocomplete="off">
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="common-content">
+                <form method="post" action="" id="listForm" enctype="multipart/form-data">
+                    <div class="list-div" id="listDiv">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                            <tr>
+                                <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list"><label for="all_list" class="checkbox_stars"></label></div></th>
+                                <th width="47%"><div class="tDiv">{:lang('商品名称')}</div></th>
+
+                                <th width="10%"><div class="tDiv">{:lang('商家名称')}</div></th>
+                                <th width="10%"><div class="tDiv">{:lang('上架时间')}</div></th>
+                                <th width="10%"><div class="tDiv">{:lang('下架时间')}</div></th>
+                                <th width="15%" class="handle">{:lang('操作')}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="">
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="615" class="checkbox" id="checkbox_615"><label for="checkbox_615" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">Apple/苹果 13 英寸：MacBook Pro Multi-Touch Bar 和 Touch ID 2.9GHz 处理器 512GB 存储容量</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del615" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="616" class="checkbox" id="checkbox_616"><label for="checkbox_616" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">Razer/雷蛇 北海巨妖专业版V2 Kraken Pro 电竞游戏耳麦 耳机</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del616" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="617" class="checkbox" id="checkbox_617"><label for="checkbox_617" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">Razer雷蛇 雨林狼蛛幻彩版 Ornata Chroma 机械式薄膜游戏键盘</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del617" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="618" class="checkbox" id="checkbox_618"><label for="checkbox_618" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">Razer雷蛇 炼狱蝰蛇 精英版/2013/幻彩/守望先锋电竞有线游戏鼠标</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del618" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="619" class="checkbox" id="checkbox_619"><label for="checkbox_619" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">Razer雷蛇 Firefly烈焰神虫织物版 Chroma幻彩硬质游戏鼠标垫</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del619" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="620" class="checkbox" id="checkbox_620"><label for="checkbox_620" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">新品HYC 2k显示器32寸电脑显示器无边框HDMI液晶显示器IPS显示屏 2K高清屏IPS 超薄 厚6mm 无边框</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del620" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="621" class="checkbox" id="checkbox_621"><label for="checkbox_621" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">三星C24F396FH曲面显示器23.5英寸电脑显示器24液晶显示屏幕超22</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del621" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="622" class="checkbox" id="checkbox_622"><label for="checkbox_622" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">Apple/苹果 27” Retina 5K显示屏 iMac:3.3GHz处理器2TB存储</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del622" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="623" class="checkbox" id="checkbox_623"><label for="checkbox_623" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">京天华盛i5 7500/GTX1050Ti独显台式机组装机DIY整机游戏电脑主机 热销25万台 跑分17万 升7代CPU</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del623" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="624" class="checkbox" id="checkbox_624"><label for="checkbox_624" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">名龙堂i7 6700升7700 GTX1060 6G台式电脑主机DIY游戏组装整机 升6GB独显 送正版WIN10 一年上门</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del624" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="625" class="checkbox" id="checkbox_625"><label for="checkbox_625" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">秋季新款男士套头卫衣印花外套韩版简约百搭潮流男生上衣服</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del625" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="626" class="checkbox" id="checkbox_626"><label for="checkbox_626" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">秋冬新款加绒圆领套头卫衣男青年男生韩版潮流学生休闲外套男</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del626" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="627" class="checkbox" id="checkbox_627"><label for="checkbox_627" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">2017春装新款男士卫衣套头圆领韩版潮流时尚男生休闲外套</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del627" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="628" class="checkbox" id="checkbox_628"><label for="checkbox_628" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">爆款 爱慕经典KiKi裤轻薄无痕女士中腰三角内裤多色内衣A</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del628" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="629" class="checkbox" id="checkbox_629"><label for="checkbox_629" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">2017新品 加一尚品无痕内衣女 前扣无钢圈薄款交叉美背文胸M37 厚杯+薄杯 无钢圈 前扣 美背 上薄下厚</div></td>
+
+                                <td><div class="tDiv">商创商城</div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td><div class="tDiv"><!--  -->0000-00-00<!--  --></div></td>
+                                <td class="handle">
+                                    <div class="tDiv">
+                                            <span id="del629" class="font12">
+                                                                                          -
+                                                                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table cellpadding="0" cellspacing="0" border="0" id="page-table">
+                            <tfoot>
+                            <tr>
+                                <td colspan="12">
+                                    <div class="tDiv">
+                                        <input type="hidden" name="act" value="">
+                                        <div class="text_time" id="text_time_start">
+                                            <input type="text" name="date" value="0000-00-00" id="start_time_id" class="text" readonly="" autocomplete="off">
+                                        </div>
+                                        <div class="tfoot_btninfo">
+                                            <input type="button" value="{:lang('批量上架')}" ectype="btnSubmit" class="btn btn_disabled" onclick="return validate('batch_start')" disabled="disabled">
+                                            <input type="button" value="{:lang('批量下架')}" ectype="btnSubmit" class="btn btn_disabled" onclick="return validate('batch_end')" disabled="disabled">
+                                        </div>
+                                        <div class="list-page">
+                                            <!-- $Id: page.lbi 14216 2008-03-10 02:27:21Z testyang $ -->
+
+                                            <div id="turn-page">
+                                                <span class="page page_1">{:lang('总计')} <em id="totalRecords">288</em>{:lang('个记录')}</span>
+                                                <span class="page page_2">{:lang('分为')}<em id="totalPages">20</em>页</span>
+                                                <!--<span>页当前第<em id="pageCurrent">1</em></span>-->
+                                                <span class="page page_3"><i>{:lang('每页')}</i><input type="text" size="3" id="pageSize" value="15" onkeypress="return listTable.changePageSize(event)"></span>
+                                                <span class="page mr10"><i>至</i><input type="text" size="3" value="1" onkeyup="listTable.gotoPage($(this).val())"></span>
+                                                <span id="page-link">
+                                                    <a href="javascript:listTable.gotoPageFirst()" class="first" title="{:lang('第一页')}"></a>
+                                                    <a href="javascript:listTable.gotoPagePrev()" class="prev" title="{:lang('上一页')}"></a>
+                                                    <select id="gotoPage" onchange="listTable.gotoPage(this.value)">
+                                                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="20">20</option>        </select>
+                                                    <a href="javascript:listTable.gotoPageNext()" class="next" title="{:lang('下一页')}"></a>
+                                                    <a href="javascript:listTable.gotoPageLast()" class="last" title="{:lang('最末页')}"></a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+{/block}

@@ -1,0 +1,114 @@
+<?php if($leaderType['isLeaderYg']):?>
+<input type="hidden" name="" class="clearCheckboxBtn" id="clearCheckboxBtnLog" data-class="Log" value="{:lang('清空')}" />
+<form id="lFromFromLog" method="POST" action="{:url('ProjectLog/add',['project_id'=>$data['aid']])}">
+	<!-- 
+	<div class="layui-form-item">
+		<?php foreach($moduleList as $v):?>
+		<div class="layui-input-inline">
+			<input type="checkbox" name="module[]" class="clearCheckboxLog" title="{$v['mould']}" value="{$v['mould']}" lay-skin="primary">
+		</div>
+		<?php endforeach;?>
+	</div>
+	
+	<?php if($leaderType['isLeaderJs']):?>
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-form-labelLeft" style="width: 80px;">{:lang('页面')}/{:lang('后台')}：</label>
+		<div class="layui-input-inline">
+			<input type="text" name="count_page" placeholder="{:lang('请输入页面数')}/{:lang('后台功能数')}" id="logCount_page" class="layui-input">
+		</div>
+
+		<label class="layui-form-label layui-form-labelLeft" style="width: 70px;">{:lang('接口数')}：</label>
+		<div class="layui-input-inline">
+			<input type="text" name="count_api" placeholder="{:lang('请输入接口数')}" id="logCount_api" class="layui-input">
+		</div>
+	</div>
+	<?php endif;?> 
+	-->
+	
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-form-labelLeft" style="width: 80px;">{:lang('页面数量')}：</label>
+		<div class="layui-input-inline">
+			<input type="text" name="page_number" placeholder="{:lang('请输入完成页面数量')}" id="logPage_number" class="layui-input" onkeydown="if(event.keyCode==13){return false;}">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-form-labelLeft" style="width: 80px;">BUG{:lang('数量')}：</label>
+		<div class="layui-input-inline">
+			<input type="text" name="bug_number" placeholder="{:lang('请输入完成')}BUG{:lang('数量')}" id="logBug_number" class="layui-input" onkeydown="if(event.keyCode==13){return false;}">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<textarea name="content" placeholder="{:lang('请输入工作日志及计划')}" id="logContent" class="layui-textarea" rows="10" @click="tains"></textarea>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<input type="hidden" name="type_work" value="{$staff_info['type_work']}" />
+			<button type="button" class="layui-btn lLayui-btn" v-on:click="logAdd">{:lang('提交')}</button>
+		</div>
+	</div>
+</form>
+<?php endif;?>
+
+<!-- 项目工作日志记录 -->
+<ul class="notesListUL notesListULShow" style="display: none;">
+	<div class="bgs" @click="offs" v-show="zzbg"></div>
+	<div class="boss bounceIn animated " v-show="fugai" >
+	<img name="randimg" src="/btad.png" >
+	</div>
+	<div class="layui-form-item" style="margin-top: 5px;">
+	<label class="layui-form-label layui-form-labelLeft">{:lang('查看员工')}:</label>
+		<div class="layui-input-inline">
+			<select name="staff_id_log" id="staff_id_log" >
+				<option value="0">{:lang('全部')}</option>
+				<?php foreach($staff_log_list as $k => $v):?>
+				<option value="{$k}">{$v}</option>
+				<?php endforeach;?>
+			</select>
+		</div>
+		<button @click="loglist()" style="display: block;" class="layui-btn">{:lang('搜索')}</button>
+	</div>
+	<li v-for="(item,index) in itemsLog" class="firLi" @click="readLog(item.aid,3)" @mouseenter="readLog(item.aid,1)"
+	 @mouseleave="readLog(item.aid,2)">
+		<p class="title">
+			<img class="header" :src="item.staff_avatarImg">
+			<span class="name">{{item.staff_name}}</span>
+			<span class="time">{{item.create_time}}</span>
+			<button style="float:right" v-if="item.del_btn == 1" @click="open(item.aid)" class="layui-btn layui-btn-danger layui-btn-sm">{:lang('删除')}</button>
+		</p>
+
+		<p class="content">{:lang('页面数量')}：{{item.page_number}}</p>
+		<p class="content">BUG{:lang('数量')}：{{item.bug_num}}</p>
+		<p class="content" v-html="item.content"></p>
+		<ul v-if="item.child.length > 0" class="replyList">
+			<li v-for="(item2, index2) in item.child">
+				<p class="title2">
+					<span class="name">{{item2.staff_name}}</span>
+					<span class="time">{{item2.create_time}}</span>
+				</p>
+				<p class="content">{{item2.content}}</p>
+			</li>
+		</ul>
+
+		<ul v-if="item.readList.length > 0" class="readList">
+			<li class="count">
+				<b style="color: #1E9FFF;">{{item.readList.length}}</b>{:lang('人已读')}
+			</li>
+			<li v-for="(item2, index2) in item.readList" :title="item2.name">
+				<img v-if="item2.path && 1 == 2" :src="item2.path" alt="">
+				<p v-else>{{item2.nameCut}}</p>
+			</li>
+		</ul>
+
+		<div style="margin-top:10px;display:flex;">
+			<input type="text" @input="enteringLog" @keyup.enter="logReply" :id="'logReplay'+item.aid" data-url="{:url('ProjectLog/add',['project_id'=>$data['aid']])}"
+			 :data-id="item.aid" placeholder="{:lang('请输入回复内容')}(Enter)" autocomplete="off" class="layui-input" style="margin-left:50px;">
+			<button class="layui-btn layui-btn-normal" @click="logReply" :data-id="item.aid" data-url="{:url('ProjectLog/add',['project_id'=>$data['aid']])}">{:lang('回复')}</button>
+		</div>
+	</li>
+	<button @click="loadMore()" style="margin:16px auto;display: block;" class="layui-btn" id="more_str">{:lang('加载更多')}</button>
+</ul>
+<input type="hidden" value="1" id="page_num" />

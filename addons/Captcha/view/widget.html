@@ -1,0 +1,38 @@
+				    <link rel="stylesheet" type="text/css" href="/static/admin/captcha/css/css.css" />
+					<div class="lCaptchaFz" style="margin:0">
+						<div class="lCaptchaBtn lCaptchaShow" style="background:rgba(45, 179, 249, 0.2); line-height:36px; border:1px solid #eee; text-align:center; color:#2DB3F9;">点击完成验证</div>
+						<div class="lCaptcha" style="z-index:99; margin-left:0; left:-35px">
+							<!-- <span class="close lCaptchaClose">×</span>
+							<p class="title">中犇技术支持</p> -->
+							<div class="image">
+								<img class="bg" id="lCaptchaImageBg" src="">
+								<img class="icon" id="lCaptchaImageIcon" src="">
+							</div>
+							<div class="move">
+								<p class="bg">向右拖动滑块填充拼图</p>
+								<span class="icon" id="lCaptchaMoveIcon"></span>
+							</div>
+							<div class="bot">
+								<span class="close lCaptchaClose"></span>
+								<span class="refresh lCaptchaRefresh"></span>
+								由中犇提供技术支持
+							</div>	
+						</div>
+					</div>
+					<input type="hidden" name="" id="lCaptchaUrlGet" value="{:url('admin/captcha/get')}" />
+					<input type="hidden" name="" id="lCaptchaUrlCheck" value="{:url('admin/captcha/check')}" />
+					<input type="hidden" name="captcha" id="lCaptchaToken" value="" />
+					<script src="__PLUG__/jquery/jquery.min.js"></script>
+				    <script src="/static/admin/captcha/js/js.js"></script>
+				    <script>
+				    window.onload = function () {
+			            captchaInit({
+			                'lCaptchaUrlGet': "{:url('admin/captcha/get')}",
+			                'lCaptchaUrlCheck': "{:url('admin/captcha/check')}",
+			                'check_success': function (res) {
+			                	
+
+			                }
+			            });
+			        }
+				    </script>

@@ -1,0 +1,215 @@
+<?php $powerPlan = in_array($admin_role,[20,21,22]) && $admin_dept == $data['deptid'] ? 1 : 1;?>
+
+<?php if($admin_dept == $data['deptid']):?>
+<!-- 主部门才能设置 -->
+<?php if($admin_role == 20):?>
+<blockquote class="layui-elem-quote lLayui-elem-quote site-text">总计划</blockquote>
+
+<!-- 部门经理才能设置 -->
+<div class="layui-form-item">
+	<div class="layui-input-block" style="margin-left: 0;">
+		<input type="text" name="time_start" readonly="readonly" placeholder="开始时间" class="layui-input lInputDateAjax" id="lInputDateTime_start"
+		 data-date="Time_start" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="time_start" value="<?php echo $data['time_start'] ? date('Y-m-d',$data['time_start']) : ''?>">
+	</div>
+</div>
+<div class="layui-form-item">
+	<div class="layui-input-block" style="margin-left: 0;">
+		<input type="text" name="time_test_plan" readonly="readonly" placeholder="计划提测时间" class="layui-input lInputDateAjax"
+		 id="lInputDateTime_test_plan" data-date="Time_test_plan" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+		 data-db="time_test_plan" value="<?php echo $data['time_test_plan'] ? date('Y-m-d',$data['time_test_plan']) : ''?>">
+	</div>
+</div>
+<!-- 部门经理才能设置 -->
+<?php endif;?>
+<!-- 主部门才能设置 -->
+<?php endif;?>
+
+<blockquote class="layui-elem-quote lLayui-elem-quote site-text">
+	周计划
+	<?php if($powerPlan):?>
+	<small class="lFixedDivShow" data-id="Plan" style="float: right;color: #009688;cursor: pointer;">
+		<?php if(!empty($project_planInfo['aid'])):?>编辑<?php else:?>新增<?php endif;?>
+	</small>
+	<?php endif;?>
+</blockquote>
+<table v-if="itemsPlan.length > 0" class="layui-table layui-form">
+	<thead>
+		<tr>
+			<th>日期</th>
+			<th class="">负责人</th>
+			<th class="">任务数量</th>
+			<th class="">已完成</th>
+			<th class="">未完成</th>
+			<th class="">完成</th>
+			<th class="">备注</th>
+			<th class="">创建时间</th>
+			<th class="">操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		<template v-for="(item, index) in itemsPlan">
+			<tr>
+				<td class="">{{item.dateShow}}</td>
+				<td class="">{{item.staff_name}}</td>
+				<td class="">{{item.countAll}}</td>
+				<td class="">{{item.countSuccess}}</td>
+				<td class="">{{item.countOther}}</td>
+				<td class="" style="color: #FF0000;">{{item.countPercent}}%</td>
+				<td class="">{{item.remark}}</td>
+				<td class="">{{item.create_timeShow}}</td>
+				<td class="">
+					<button class="layui-btn layui-btn-xs lLayui-btn-see" type="button" v-on:click="planDetail" :data-index="index">查看</button>
+				</td>
+			</tr>
+		</template>
+	</tbody>
+</table>
+
+<?php if($powerPlan):?>
+<div class="lFixedDiv lFixedDivPlan" style="display: ;">
+	<div class="bg lFixedDivHide"></div>
+	<div class="contentRT60">
+		<div class="lPadding">
+			<blockquote class="layui-elem-quote lLayui-elem-quote site-text">
+				<?php if(!empty($project_planInfo)):?>
+				编辑周计划（{$project_planInfo['date']|date="Y-m-d"})）
+				<?php else:?>
+				新增周计划（{$project_planInfo['date']|date="Y-m-d"})）
+				<?php endif;?>
+			</blockquote>
+
+			<form id="lFromFromPlan" method="POST" action="{:url('ProjectPlan/add',['project_id'=>$data['aid']])}">
+				<table class="layui-table layui-form lTableTree" data-level='3'>
+					<thead>
+						<tr>
+							<th class="lTdCheckbox">
+								<input type="checkbox" name="" lay-skin="primary" class="lCheckboxAll" lay-filter="lCheckboxAll" value="">
+							</th>
+							<th>功能模块</th>
+							<th class="lTextCenter lTdSave3">前/后端</th>
+							<!-- <th class="lTextCenter lTdSave3">建议时长（分钟）</th> -->
+							<th class="lTextCenter lTdSave3">状态</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($taskList as $v):?>
+						<tr data-id="{$v['id']}" data-pid="0" data-level="1">
+							<td class="lTdCheckbox">
+								<?php if($v['state'] != 3):?>
+								<?php if(in_array($v['id'],$project_planInfo['contentArr'])):?>
+								<input type="checkbox" name="content[]" lay-filter="module" value="{$v['id']}" lay-skin="primary" class="lCheckboxOne"
+								 checked="checked">
+								<?php else:?>
+								<input type="checkbox" name="content[]" lay-filter="module" value="{$v['id']}" lay-skin="primary" class="lCheckboxOne">
+								<?php endif;?>
+								<?php else:?>
+								<?php if(in_array($v['id'],$project_planInfo['contentArr'])):?>
+								<input type="hidden" name="content[]" value="{$v['id']}" />
+								<?php endif;?>
+								<?php endif;?>
+							</td>
+							<td class="lTableTreeClick" data-id="{$v['id']}">{$v['name']}</td>
+							<td class="lTextCenter"></td>
+							<td class="lTextCenter" style="color: {$v['stateColor']};">{$v['stateName']}</td>
+						</tr>
+						<?php foreach($v['child'] as $v2):?>
+						<tr data-id="{$v2['id']}" data-pid="{$v2['pid']}" data-level="2">
+							<td class="lTdCheckbox">
+								<?php if($v2['state'] != 3):?>
+								<?php if(in_array($v2['id'],$project_planInfo['contentArr'])):?>
+								<input type="checkbox" name="content[]" lay-filter="module" value="{$v2['id']}" lay-skin="primary" class="lCheckboxOne checkboxChange{$v['id']}"
+								 checked="checked">
+								<?php else:?>
+								<input type="checkbox" name="content[]" lay-filter="module" value="{$v2['id']}" lay-skin="primary" class="lCheckboxOne checkboxChange{$v['id']}">
+								<?php endif;?>
+								<?php else:?>
+								<?php if(in_array($v2['id'],$project_planInfo['contentArr'])):?>
+								<input type="hidden" name="content[]" value="{$v2['id']}" />
+								<?php endif;?>
+								<?php endif;?>
+							</td>
+							<td class="lTableTreeClick" data-id="{$v2['id']}">&nbsp;&nbsp;&nbsp;&nbsp;|-- {$v2['name']}</td>
+							<td class="lTextCenter"></td>
+							<td class="lTextCenter" style="color: {$v2['stateColor']};">{$v2['stateName']}</td>
+						</tr>
+						<?php foreach($v2['child'] as $v3):?>
+						<tr data-id="{$v3['id']}" data-pid="{$v3['pid']}" data-level="3">
+							<td class="lTdCheckbox">
+								<?php if($v3['state'] != 3):?>
+								<?php if(in_array($v3['id'],$project_planInfo['contentArr'])):?>
+								<input type="checkbox" name="content[]" lay-filter="module" value="{$v3['id']}" lay-skin="primary" class="lCheckboxOne checkboxChange{$v['id']} checkboxChange{$v2['id']}"
+								 checked="checked">
+								<?php else:?>
+								<input type="checkbox" name="content[]" lay-filter="module" value="{$v3['id']}" lay-skin="primary" class="lCheckboxOne checkboxChange{$v['id']} checkboxChange{$v2['id']}">
+								<?php endif;?>
+								<?php else:?>
+								<?php if(in_array($v3['id'],$project_planInfo['contentArr'])):?>
+								<input type="hidden" name="content[]" value="{$v3['id']}" />
+								<?php endif;?>
+								<?php endif;?>
+							</td>
+							<td class="lTableTreeClick" data-id="{$v3['id']}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--{$v3['name']}</td>
+							<td class="lTextCenter">{$v3['module_typeName']}</td>
+							<td class="lTextCenter" style="color: {$v3['stateColor']};">{$v3['stateName']}</td>
+						</tr>
+						<?php endforeach;?>
+						<?php endforeach;?>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+
+				<div class="layui-form-item">
+					<div class="layui-input-block" style="margin-left: 0;">
+						<textarea name="remark" placeholder="请输入备注信息" class="layui-textarea"><?php if(isset($project_planInfo['remark'])):?>{$project_planInfo['remark']}<?php endif;?></textarea>
+					</div>
+				</div>
+
+				<div class="layui-form-item lMarginT">
+					<div class="layui-input-block" style="margin-left: 0;">
+						<button class="layui-btn lLayui-btn" v-on:click="planSubmit" type="button">提交</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<?php endif;?>
+
+<div v-if="itemsPlanDetail.aid > 0" class="lFixedDiv lFixedDivPlanDetail" style="display:block;">
+	<div class="bg" v-on:click="planDetailHide"></div>
+	<div class="contentRT80">
+		<div class="lPadding">
+			<blockquote class="layui-elem-quote lLayui-elem-quote site-text">
+				周计划（{{itemsPlanDetail.dateShow}}）
+			</blockquote>
+
+			<table class="layui-table layui-form">
+				<thead>
+					<tr>
+						<th class="lTextCenter lTdID">ID</th>
+						<th>功能模块</th>
+						<th class="lTextCenter lTdSave2">前/后端</th>
+						<th class="lTextCenter lTdSave2">状态</th>
+						<th class="lTextCenter lTdSave3">负责人</th>
+					</tr>
+				</thead>
+				<tbody>
+					<template v-for="(item, index) in itemsPlanDetail.taskList">
+						<tr>
+							<td class="">{{item.aid}}</td>
+							<td class="">{{item.name1}} - {{item.name2}} - {{item.name}}</td>
+							<td class="lTextCenter">{{item.module_typeName}}</td>
+							<td class="lTextCenter" :style="{'color':item.stateColor}">{{item.stateName}}</td>
+							<td class="lTextCenter">
+								{{item.staff_name}}
+								<template v-if="item.staff_name"><br></template>
+								确认：{{item.confirm_timeShow}}<br>
+								完成：{{item.end_timeShow}}
+							</td>
+						</tr>
+					</template>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

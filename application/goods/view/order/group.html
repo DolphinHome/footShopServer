@@ -1,0 +1,183 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<script src="__PLUG__/layer/laydate/laydate.js?v={:config('asset_version')}"></script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom"  style="border-top: 0;">	    
+			<ul class="nav nav-tabs">
+				<li {if condition="!isset($active)"}class="active"{/if} > <a href="{:url('goods/order/group')}">{:lang('全部')}</a> </li>
+				{volist name="tab_list" id="tab"}
+				<li {if strval($field) === strval($tab['field'])}{if strval($active) === strval($tab['value']) }class="active"{/if}{/if}> 
+				    <a href="{$tab.url}">{$tab.title}</a> 
+				</li>
+				{/volist}
+		    </ul>
+			<div class="box-body" >
+				<div class="tab-pane active">
+					<div class="row">
+						<form action="" method="get" class="marBtm">
+								<div class="col-md-2 col-xs-6">
+										<span class="txt">{:lang('订单号')}：</span>
+										<input type="text" class="form-control" name="order_sn" placeholder="{:lang('请输入订单号')}" value="{:input('param.order_sn')}">
+								</div>
+                                <div class="col-md-2 col-xs-6">
+                                        <span class="txt">{:lang('下单人姓名')}：</span>
+                                        <input type="text" class="form-control" name="user_name" placeholder="{:lang('请输入下单人姓名')}" value="{:input('param.user_name')}">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                        <span class="txt">{:lang('下单人手机号')}：</span>
+                                        <input type="text" class="form-control" name="user_mobile" placeholder="{:lang('请输入下单人手机号')}" value="{:input('param.user_mobile')}">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                        <span class="txt">{:lang('收货人手机号')}：</span>
+                                        <input type="text" class="form-control" name="receiver_mobile" placeholder="{:lang('请输入收货人手机号')}" value="{:input('param.receiver_mobile')}">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                        <span class="txt">{:lang('收货人地址')}：</span>
+                                        <input type="text" class="form-control" name="receiver_address" placeholder="{:lang('请输入收货人地址')}" value="{:input('param.receiver_address')}">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                        <span class="txt">{:lang('收货人姓名')}：</span>
+                                        <input type="text" class="form-control" name="receiver_name" placeholder="{:lang('请输入收货人姓名')}" value="{:input('param.receiver_name')}">
+                                </div>
+                            <div class="col-md-2 col-xs-6">
+                                <span class="txt">{:lang('是否满团')}：</span>
+                                <select name="is_full" placeholder="{:lang('请选择')}" class="form-control  custom-css">
+                                    <option value="-1" {if($is_full==-1)} selected="selected" {/if}>{:lang('全部')}</option>
+                                    <option value="1"  {if($is_full==1)} selected="selected" {/if} >是</option>
+                                    <option value="0"  {if($is_full==0)} selected="selected" {/if} >否</option>
+                                </select>
+                            </div>
+								<div class="col-md-3 col-xs-6">
+									<span class="txt">{:lang('创建时间')} ：</span>
+									<input type="date" class="form-control js-date" readonly name="create_time" placeholder="{:lang('请输入日期')}" value="{$Think.get.create_time}">
+								</div>
+							<div class="col-md-2 col-xs-6" style="padding-top: 18px;">
+								<button class="btn btn-primary btn-flat" type="submit">{:lang('搜索')}</button> <button class="btn btn-danger btn-flat" type="button" onclick="clearinput()">{:lang('重置')}</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+            <div class="box-body" style="overflow-x: scroll;">
+                <div class="tab-pane active">
+                       <table class="table table-builder table-hover table-bordered table-striped mb10">
+                        <thead>
+                            <!-- <th class="text-center" style="width: 55px;">
+                                <input class="minimal-red checkboxCtrl" data-group="ids[]" data-toggle="icheck" type="checkbox">
+                            </th> -->
+                            <th class="">{:lang('商品图片')}</th>
+                            <th class="">{:lang('商品名称')}</th>
+                            <th class="">{:lang('订单号')}</th>
+							<th class="text-center">{:lang('是否满团')}</th>
+                            <th class="">{:lang('下单人')}</th>
+                            <th class="">{:lang('订单金额')}</th>
+                            <th class="">{:lang('应付金额')}</th>
+                            <th class="">{:lang('实付金额')}</th>
+                            <th class="text-center">{:lang('支付状态')}</th>
+                            <th class="text-center">{:lang('支付类型')}</th>
+                            <th class="">{:lang('收货人信息')}</th>
+                            <th class="text-center">{:lang('订单状态')}</th>
+                            <th class="text-center">{:lang('创建时间')}</th>
+                            <th class="text-center">{:lang('操作')}</th>
+                        </thead>
+                        <tbody>
+                            {volist name="list" id="o"}
+                            <tr>
+                                <!-- <td class="text-center" style="width: 55px;"><input class="ids minimal-red" data-toggle="icheck"
+                                        type="checkbox" name="ids[]" value="{$o.aid}"></td> -->
+                                <td>
+                                    <img  style="height: 40px;width:40px;"  src="{$o.goods_thumb|get_file_url}" class="img_pic" />
+                                </td>
+                                <td class=""> 
+                                  <p style="width:90px; white-space :nowrap;text-overflow :ellipsis;overflow : hidden; ">{$o.goods_name}</p> 
+                                </td>
+                                <td class=""> <a ident="edit" title="{:lang('详情')}" href="{:url('detail',['order_sn'=>$o['order_sn']])}" class="mr5">{$o.order_sn}</a>{if condition="$o.refund eq 1"} <a href="{:url('goods/order/refund',['server_no'=>$o.refund_info.server_no,'status'=>$o.refund_info.status])}"><span class="label label-flat label-warning">{:lang('有退款')}</span></a> {/if}
+                                </td>
+								<td class="text-center"> 
+								{if condition='$o.group_info.is_full==0'}
+								<span class="label label-flat label-warning">{:lang('未成团')}</span>
+								{else/}
+								<span class="label label-flat label-success">{:lang('已成团')}</span>
+								{/if}
+                                </td>
+                                <td class="">
+                                    <div class="receiver_info" >
+                                        <p>{$o.user_id|get_nickname}</p>
+                                        <p>TEL {$o.mobile}</p>
+                                    </div>
+                                </td>
+                                <td class=""> {$o.order_money}
+                                </td>
+                                <td class=""> {$o.payable_money}
+                                </td>
+                                <td class=""> {$o.real_money}
+                                </td>
+                                <td class="text-center">
+                                    <span class="label label-flat {if condition='$o.pay_status==0'}label-warning{else/}label-success{/if}">{$o.pay_status_name}</span>
+                                </td>
+                                <td class="text-center">
+                                {if condition="$o['pay_status'] == 1"}
+                                 <span class="label label-flat label-success">{$o.pay_type_name}</span>
+                                {/if}
+                                </td>
+                                <td class="">
+                                <div class="receiver_info" >
+                                         <p>{$o.receiver_name}</p> <!-- 收货人 -->
+                                         <p>TEL {$o.receiver_mobile}</p>    <!-- 手机号 --> 
+                                         <p  style="min-width: 100px;">{$o.province} {$o.city} {$o.district} {$o.receiver_address} </p> <!-- 收货地址 -->
+                                    </div>
+                            </td>
+                                <td class="text-center">
+                                    <span class="label label-flat {if condition='$o.status==0 or $o.status==-1'}label-warning{else/}label-success{/if}">{$o.status_name}</span>
+                                </td>
+                                <td class="text-center"> {$o.create_time|date="Y-m-d H:i:s"}
+                                </td>
+                                <td class="text-center font12">
+								<a ident="download" title="{:lang('打印')}" href="getPrintHtml?aids={$o.aid}" class="mr5">{:lang('打印')}</a>
+								|
+                                <a ident="edit" title="{:lang('详情')}" href="{:url('detail',['order_sn'=>$o['order_sn']])}" class="mr5">{:lang('详情')}</a>
+                                    {if condition="$o.status == 1"}
+                                |<a ident="shipping" title="{:lang('发货')}" href="{:url('goods/order/express_index',['order_sn'=>$o['order_sn']])}" class="mr5 "> {:lang('发货')}</a>
+								    {if condition='$o.group_info.is_full==0'}
+									|<a ident="shipping" title="{:lang('立即成团')}" href="{:url('add_robot_to_group',['group_id'=>$o['group_info']['id']])}" class="mr5 ajax-get"> {:lang('立即成团')}</a>
+									{/if}
+                                    {/if}
+                                <!---<a ident="delete" title="{:lang('删除')}" icon="fa fa-times pr5" class="mr5 ajax-get confirm"><i class="fa fa-times pr5"></i>{:lang('删除')}</a>-->
+                                </td>
+
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                    <div class="data-table-toolbar">
+                        <div class="row">
+							<div class="pagination-info pull-right">
+								<div>
+									{$pages|raw}
+
+									<input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+									<input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $list->listRows() : input('param.list_rows');{/php}">
+									/ <strong>{$list->lastPage()|raw}</strong> 页，共 <strong>{$list->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function clearinput() {
+        $('[name="order_sn"]').val('');
+        $('[name="user_name"]').val('');
+        $('[name="user_mobile"]').val('');
+        $('[name="receiver_mobile"]').val('');
+        $('[name="receiver_address"]').val('');
+        $('[name="receiver_name"]').val('');
+        $('[name="create_time"]').val('');
+        window.location.href = '/admin.php/goods/order/group.html';
+    }
+</script>
+{/block}

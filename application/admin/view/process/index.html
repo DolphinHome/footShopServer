@@ -1,0 +1,108 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/main.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/iconfont.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/order-new.css?v=2">
+{/block}
+
+{block name="content"}
+
+<style type="text/css">
+    .select-list {
+        width:150px;
+        height:150px;
+        /*overflow: hidden;*/
+        overflow:scroll;
+    }
+    .select-container {
+        display: none;
+    }
+    .select2 {
+        width: 140px !important;
+    }
+</style>
+<div class="warpper">
+    <div class="title">{:lang('业务流程')} <a href="add" >{:lang('添加')}</a></div>
+    <div class="content">
+        <div class="tabs_info">
+            <ul class="tabs_box">
+                {volist name="list" id="listall"}
+                <li class=""><a href="javascript:;">{$listall.name} <i  val="{$listall.id}"></i></a> </li>
+                {/volist}
+                <!-- <li class="curr"><a href="javascript:;">{:lang('会员来源')}</a></li> -->
+            </ul>
+        </div>
+        <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info operationFlow">
+                        {volist name="list" id="listall"}
+                        {if ($listall.type eq 2) }
+                        <div class="switch_info of_tabmian_one" style="">
+                            {volist name="listall['detail']" id="d"}
+                            <div class="of_item">
+                                <div class="tit">
+                                    <i class="icon of-icon-admin"></i>
+                                    <h2>{$d.name}</h2>
+                                </div>
+                                <div class="con">
+                                    {volist name="d['detail']" id="content"}
+                                    <p>{$content}</p>
+                                    {/volist}
+                                </div>
+                            </div>
+                            {/volist}
+                        </div>
+                        {else /}
+                        <div class="switch_info" style="display: none;">
+                            {if ($listall.type eq 1) }
+                            <div class="explanation">
+                                <div class="ex_tit"><i class="sc_icon"></i><h4>{$listall.name}</h4><span id="explanationZoom" title="{:lang('收起提示')}"></span></div>
+                                <ul>
+                                    {volist name="listall['synopsis']" id="c"}
+                                    <li>{$c}</li>
+                                    {/volist}
+                                    
+                                </ul>
+                            </div>
+                            {/if}
+                            <div class="img"><img src="{$listall.url}"></div>
+                        </div>
+                        {/if}
+                        {/volist}
+                        
+                        
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+    
+<script type="text/javascript">
+    $(function(){ 
+        $('.tabs_info li').eq(0).attr('class', 'curr');
+        $('.switch_info').eq(0).css('display','block');
+
+        $('.tabs_info li').click(function(){
+            $(this).addClass('curr').siblings().removeClass('curr')
+                $('.switch_info').eq($(this).index()).show().siblings().hide()
+            })
+
+        $('.icon-trash').click(function() {
+
+            var flag=window.confirm("{:lang('删除将不可恢复，是否继续')}"+'？');
+            if(flag==true){
+                var id = $(this).attr('val');
+                // alert(id);
+                location.href = "delete?id="+id;
+            }
+             
+        });
+
+        });
+    
+</script>
+
+
+{/block}

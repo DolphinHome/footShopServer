@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>项目管理</title>
+		<link rel="stylesheet" type="text/css" href="/static/crm/layui/css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="/static/crm/lStyle.css?<?php echo time();?>" />
+		<style>
+			.layui-rowInput{
+				padding-bottom: 20px;
+			}
+			.layui-rowInput>div{
+				height: 30px;
+				line-height: 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="layui-form lMargin lPadding lRadiusXs lBgWhite">
+			{include file='project/sidebar/iBase' /}
+			<div class="lMarginT lMarginB lLayui-tab">
+				<div class="layui-tab layui-tab-brief">
+					<ul class="layui-tab-title lBgGray" style="padding-left: 10px;">
+						<?php if(!$tab || $tab=='record' ):?>
+						<li class="layui-this">项目分析</li>
+						<?php else:?>
+						<li>项目分析</li>
+						<?php endif;?>
+
+						<?php if($admin_role != 22):?>
+						<?php if($tab=='member' ):?>
+						<li class="layui-this">人员分配</li>
+						<?php else:?>
+						<li>人员分配</li>
+						<?php endif;?>
+						<?php endif;?>
+
+						<?php if($tab=='module' ):?>
+						<li class="layui-this">功能模块</li>
+						<?php else:?>
+						<li>功能模块</li>
+						<?php endif;?>
+
+						<?php if($tab=='plan' ):?>
+						<li class="layui-this">项目计划</li>
+						<?php else:?>
+						<li>项目计划</li>
+						<?php endif;?>
+
+						<?php if($tab=='task' ):?>
+						<li class="layui-this">计划任务</li>
+						<?php else:?>
+						<li>计划任务</li>
+						<?php endif;?>
+
+						<?php if($tab=='test' ):?>
+						<li class="layui-this">测试记录</li>
+						<?php else:?>
+						<li>测试记录</li>
+						<?php endif;?>
+
+						<?php if($tab=='question' ):?>
+						<li class="layui-this">疑难求助</li>
+						<?php else:?>
+						<li>疑难求助</li>
+						<?php endif;?>
+					</ul>
+					<div class="layui-tab-content" id="vueDome">
+						<div class="layui-tab-item <?php if(!$tab || $tab == 'record'):?>layui-show<?php endif;?>">
+							{include file='project/sidebar/iRecord' /}
+						</div>
+
+						<?php if($admin_role != 22):?>
+						<div class="layui-tab-item <?php if($tab == 'member'):?>layui-show<?php endif;?>">
+							{include file='project/sidebar/iMember' /}
+						</div>
+						<?php endif;?>
+
+						<div class="layui-tab-item <?php if($tab == 'module'):?>layui-show<?php endif;?>">
+							{include file='project/sidebar/iModule' /}
+						</div>
+
+						<div class="layui-tab-item <?php if($tab == 'plan'):?>layui-show<?php endif;?>">
+							{include file='project/sidebar/iPlan' /}
+						</div>
+
+						<div class="layui-tab-item <?php if($tab == 'task'):?>layui-show<?php endif;?>">
+							{include file='project/sidebar/iTask' /}
+						</div>
+						<div class="layui-tab-item <?php if($tab == 'test'):?>layui-show<?php endif;?>">测试记录</div>
+						<div class="layui-tab-item <?php if($tab == 'question'):?>layui-show<?php endif;?>">疑难求助</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<input type="hidden" id="project_id" value="{$data['aid']}" /> <!-- 项目id -->
+		<input type="hidden" id="record_url" value='{:url("ProjectRecord/listByProject")}' /> <!-- 项目分析URL -->
+		<input type="hidden" id="task_url" value='{:url("ProjectTask/listByProject")}' /> <!-- 计划任务URL -->
+		<input type="hidden" id="plan_url" value='{:url("ProjectPlan/listByProject")}' /> <!-- 周计划 -->
+		<input type="hidden" id="plan_url_this" value='{:url("ProjectPlan/listByProjectThis")}' /> <!-- 本周计划 -->
+		<script src="/static/crm/jquery.min-2.1.4.js"></script>
+		<script src="/static/crm/layui/layui.js"></script>
+		<script src="/static/crm/lTableTree.js"></script> <!-- 表格树 -->
+		<script src="/static/crm/lJs.js?<?php echo time();?>"></script> <!-- 通用js -->
+		<script src="/static/plugins/vue/vue.min.js"></script><!-- VUE -->
+		<script src="/static/crm/Project/sidebar.js?<?php echo time();?>"></script> <!-- 本页js -->
+	</body>
+</html>

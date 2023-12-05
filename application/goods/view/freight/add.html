@@ -1,0 +1,266 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<style>
+    .input-common{
+        border-radius: 0 !important;
+            margin: 0 !important;
+            border: 1px solid #D6D6D6 !important;
+            box-shadow: none !important;
+            font-size: 12px !important;
+            width: 250px !important;
+            padding: 0 6px !important;
+            height: 30px !important;
+            box-sizing: border-box;
+            resize: none !important;
+    }
+    .input-common.harf, .select-common.harf {
+        width: 125px !important;
+    }
+    .msg-wrap{position: inherit!important;}
+    .regional-choice {
+        display: none;
+    }
+    .place-div label {
+      font-weight: 400;
+      font-size: 1.4rem; }
+    .place-div input[type=checkbox] {
+      margin-right: .3rem; }
+    .place-div > div {
+      width: 100%;
+      padding: 10px 30px; }
+    .place-div .checkbtn {
+      background-color: #fbfbfb;
+      text-align: right; }
+      .place-div .checkbtn img {
+        height: 10px;
+        margin-left: 3px; }
+      .place-div .checkbtn .ri {
+        border-right: none; }
+      .place-div .checkbtn a {
+        height: 30px;
+        line-height: 30px;
+        display: inline-block;
+        width: 60px;
+        text-align: center; }
+    .place-div .smallplace .ratio {
+      color: red; }
+    .place-div .smallplace label {
+      padding-right: 10px;
+      text-align: left;
+      width: auto;
+      float: left;
+      cursor: pointer; }
+    .place-div .smallplace .citys {
+      width: auto;
+      background-color: #fff;
+      position: absolute;
+      top: 35px;
+      border: 1px solid #ccc;
+      z-index: 100;
+      visibility: hidden; }
+      .place-div .smallplace .citys > i.jt {
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-bottom: 10px solid #ccc;
+        position: absolute;
+        top: -10px;
+        left: 20px; }
+        .place-div .smallplace .citys > i.jt i {
+          width: 0;
+          height: 0;
+          border-left: 8px solid transparent;
+          border-right: 8px solid transparent;
+          border-bottom: 10px solid #fff;
+          position: absolute;
+          top: 2px;
+          left: -8px; }
+      .place-div .smallplace .citys .row-div {
+        min-width: 250px;
+        padding: 10px;
+        box-sizing: border-box; }
+        .place-div .smallplace .citys .row-div label span {
+          max-width: 175px;
+          white-space: nowrap;
+          vertical-align: middle;
+          font-size: 1.4rem; }
+    .place-div .smallplace .place-tooltips:hover .citys {
+      visibility: visible; }
+    .place-div .smallplace p {
+      float: left;
+      width: auto;
+      margin: 2px 0; }
+    .place-div .smallplace > div {
+      float: left;
+      width: 170px;
+      margin: 0;
+      padding-bottom: 10px;
+      padding-top: 5px;
+      position: relative; }
+    
+    .show-place-div {
+      margin-left: 85px;
+      font-size: 15px; }
+      .show-place-div .smallplace label {
+        min-width: 105px;
+        width: auto; }
+      .show-place-div .smallplace input {
+        margin-left: 0; }
+      .show-place-div .smallplace .citys .row-div p {
+        margin: 5px 0 10px 0; }
+        .selected-content{
+            white-space: normal!important;
+        }
+</style>
+{/block}
+
+{block name="content"}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom">
+            <div class="box-header with-border">
+                <h3 class="box-title">{:lang('新增运费模板')}</h3>
+            </div>
+            <div class="box-body tab-content">
+                <div class="tab-pane active" style="overflow: hidden;">
+                    <div class="block-content row" id="app">
+                        <form id="form" parent_reload="1" data-validator-option="{timely:1, theme:'bootstrap'}">
+                            {if($company_id)}
+                            <input type="hidden" name="company_id" value="{$company_id}">
+                            {/if}
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_name">
+                                <div class="col-xs-12 label-title" for="name">{:lang('模板名称')}</div>
+                                <div class="col-sm-12">
+                                    <input class="form-control" data-rule="required" type="text" id="name" name="name"
+                                        value="" placeholder="{:lang('请输入模板名称')}">
+                                </div>
+                            </div>
+                            {if($company)}
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_name">
+                                <div class="col-xs-12 label-title" for="name">{:lang('快递公司')}</div>
+                                <div  class="col-sm-12">
+                                <select name="company_id" id="" class="form-control">
+                                    <option value="-1">{:lang('请选择')}</option>
+                                    {notempty name="company"}
+                                    {volist name="company" id="module"}
+                                    <option value="{$module.aid}" >{$module.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+                            </div>
+                            {/if}
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_show">
+                                <div class="col-xs-12 label-title" for="show" style="margin-bottom: 14px;">{:lang('计费方式')}</div>
+                                <div class="col-xs-12">
+                                    <label class="pr10">
+                                        <input type="radio" name="method" id="show2" value="1" checked />
+                                        {:lang('按重量')} </label>
+                                    <label class="pr10">
+                                        <input type="radio" name="method" id="show1" value="2" />
+                                        {:lang('按件数')} </label>
+                                    <div class="help-block"></div>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_tel" style="width: 96%;overflow: auto;">
+                                                <table class="table-area table table-builder table-bordered table-striped" style="width: 100%;margin-left: 15px;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td width="20%" align="center">{:lang('可配送区域')}</td>
+                                                            <td width="20%" align="center" class="danwei-one">{:lang('首重')}(kg)</td>
+                                                            <td width="20%" align="center">{:lang('运费')}(元)</td>
+                                                            <td width="20%" align="center" class="danwei-two">{:lang('续重')}(kg)</td>
+                                                            <td width="20%" align="center">{:lang('续费')}(元)</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="left"> <a style="float:left;" href="javascript:;" class="add-region btn btn-info btn-sm"><i class="fa fa-fw fa-map-marker" ></i>{:lang('点击选择区域')}</a>
+                                                            </td>
+                                                            <td align="center" colspan="5"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_sort">
+                                <div class="col-xs-12 label-title" for="sort">{:lang('排序')}</div>
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="number" id="sort" name="sort" value="100"
+                                        placeholder="{:lang('请输入排序')}">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_sort">
+                                <div class="col-xs-12 label-title" for="sort">{:lang('运费说明')}</div>
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" name="freight_explain" id="freight_explain" cols="30" rows="10"></textarea>
+                                </div>
+                            </div>
+                            <!-- <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_is_default">
+                                <div class="col-xs-12 label-title" for="is_default" style="margin-bottom: 14px;">{:lang('是否设置默认')}</div>
+                                <div class="col-xs-12">
+                                    <label class="pr10">
+                                        <input type="radio" name="is_default" id="is_default1" value="0" checked>
+                                        否 </label>
+                                    <label class="pr10">
+                                        <input type="radio" name="is_default" id="is_default2" value="1">
+                                        是 </label>
+                                </div>
+                            </div> -->
+
+                            <div class="form-group col-md-12 col-xs-12">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-primary btn-flat" type="button" onclick="validateBeforeSubmit()"> {:lang('提交')} </button>
+                                    <button class="btn btn-default btn-flat" type="button" onClick="javascript:history.back(-1);return false;">
+                                        {:lang('返回')} </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="regional-choice"></div>
+{/block}
+{block name="script"}
+<script type="text/javascript" src="__MODULE__/js/area.js"></script>
+<script type="text/javascript" src="__MODULE__/js/freight.js"></script>
+<script type="text/javascript">
+    function validateBeforeSubmit(){
+      Stars.loading();
+        $('#form').isValid(function(v) {
+            var form_data = $('#form').serialize()
+            if (v) {
+                $.post('{:url()}', form_data).then((response) => {
+                    Stars.loading('hide');
+                    if (response.code == 1) {
+                        Stars.notify(response.msg, 'success', 'fa fa-bell-slash');
+                        setTimeout(function() {
+                               parent.location.reload();return false;
+                            },
+                            1500)
+                    } else {
+                        Stars.notify(response.msg, 'danger', 'fa fa-bell-slash');
+                    }
+                });
+                return;
+            } else {
+                Stars.loading('hide');
+            }
+        });
+    }
+        
+    $(function() {
+        // 初始化区域选择界面
+        var datas = JSON.parse('{$area|raw}');
+
+        // 配送区域表格
+        new Delivery({
+            table: '.table-area',
+            regional: '.regional-choice',
+            datas: datas
+        });
+    })
+</script>
+{/block}

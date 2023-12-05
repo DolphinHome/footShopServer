@@ -1,0 +1,107 @@
+<form id="lFromFromRecord" method="POST" action="{:url('ProjectRecord/add',['project_id'=>$data['aid']])}">
+	<?php if($admin_dept == $data['deptid']):?>
+	<!-- 主部门才能设置 -->
+	<!-- 主部门才能设置 -->
+	<?php endif;?>
+	
+	<?php if($admin_role == 20):?>
+	<!-- 部门经理才能设置 -->
+	<div class="layui-form-item">
+		<div class="layui-input-inline">
+			<?php if($data['is_receive']):?>
+			<input type="checkbox" name="" title="是否可以承接" value="1" lay-skin="primary" checked="checked" lay-filter="saveFieldCheckbox"
+			 data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="is_receive">
+			<?php else:?>
+			<input type="checkbox" name="" title="是否可以承接" value="1" lay-skin="primary" lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+			 data-db="is_receive">
+			<?php endif;?>
+		</div>
+
+		<div class="layui-input-inline">
+			<?php if($data['has_resemble']):?>
+			<input type="checkbox" name="" title="是否有类型项目" value="1" lay-skin="primary" checked="checked" lay-filter="saveFieldCheckbox"
+			 data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="has_resemble">
+			<?php else:?>
+			<input type="checkbox" name="" title="是否有类型项目" value="1" lay-skin="primary" lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+			 data-db="has_resemble">
+			<?php endif;?>
+		</div>
+	</div>
+	<!-- 部门经理才能设置 -->
+	<?php endif;?>
+
+	<div class="layui-form-item" style="border-bottom: 1px solid #eee;padding-bottom: 15px;">
+		<div class="layui-input-inline">
+			<?php if($data['has_admin']):?>
+			<input type="checkbox" name="" title="是否有后台" value="1" lay-skin="primary" checked="checked" lay-filter="saveFieldCheckbox"
+			 data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="has_admin">
+			<?php else:?>
+			<input type="checkbox" name="" title="是否有后台" value="1" lay-skin="primary" lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+			 data-db="has_admin">
+			<?php endif;?>
+		</div>
+
+		<div class="layui-input-inline">
+			<?php if($data['has_page']):?>
+			<input type="checkbox" name="" title="是否有页面" value="1" lay-skin="primary" checked="checked" lay-filter="saveFieldCheckbox"
+			 data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="has_page">
+			<?php else:?>
+			<input type="checkbox" name="" title="是否有页面" value="1" lay-skin="primary" lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+			 data-db="has_page">
+			<?php endif;?>
+		</div>
+
+		<div class="layui-input-inline">
+			<?php if($data['has_api']):?>
+			<input type="checkbox" name="" title="是否有接口" value="1" lay-skin="primary" checked="checked" lay-filter="saveFieldCheckbox"
+			 data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="has_api">
+			<?php else:?>
+			<input type="checkbox" name="" title="是否有接口" value="1" lay-skin="primary" lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+			 data-db="has_api">
+			<?php endif;?>
+		</div>
+
+		<div class="layui-input-inline">
+			<?php if($data['has_data']):?>
+			<input type="checkbox" name="" title="是否有数据" value="1" lay-skin="primary" checked="checked" lay-filter="saveFieldCheckbox"
+			 data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="has_data">
+			<?php else:?>
+			<input type="checkbox" name="" title="是否有数据" value="1" lay-skin="primary" lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+			 data-db="has_data">
+			<?php endif;?>
+		</div>
+	</div>
+	
+	<div class="layui-form-item">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<textarea name="content" placeholder="请输入内容" class="layui-textarea" id="recordContent"></textarea>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<button class="layui-btn lLayui-btn" v-on:click="recordAdd" type="button">提交</button>
+		</div>
+	</div>
+</form>
+
+<!-- 项目分析记录 -->
+<ul class="notesListUL" id="notesListULShow" style="display: none;">
+	<li v-for="(item, index) in itemsRecord" class="firLi">
+		<p class="title">
+			<img class="header" :src="item.staff_avatarImg">
+			<span class="name">{{item.staff_name}}</span>
+			<span class="time">{{item.create_time}}</span>
+			<span class="reply" v-on:click="recordReply" :data-id="item.aid" data-url="{:url('ProjectRecord/add',['project_id'=>$data['aid']])}">回复</span>
+		</p>
+		<p class="content">{{item.content}}</p>
+		<ul v-if="item.child.length > 0" class="replyList">
+			<li v-for="(item2, index2) in item.child">
+				<p class="title2">
+					<span class="name">{{item2.staff_name}}</span>
+					<span class="time">{{item2.create_time}}</span>
+				</p>
+				<p class="content">{{item2.content}}</p>
+			</li>
+		</ul>
+	</li>
+</ul>

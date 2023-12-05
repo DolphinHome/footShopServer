@@ -1,0 +1,182 @@
+{block name="style"}
+<style>
+    .actions button,
+    .actions a.btn {
+        background-color: #209bfa;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 3px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+        text-shadow: none;
+    }
+
+    .actions button:focus {
+        outline: none;
+    }
+
+    .actions .file-btn {
+        position: relative;
+    }
+
+    .actions .file-btn input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
+
+    .actions {
+        padding: 5px 0;
+    }
+
+    .actions button {
+        margin-right: 5px;
+    }
+
+    .actions .crop {
+        display: none
+    }
+    .picBox {
+        margin: 10px auto 0;
+    }
+    .btn-box {
+        display: flex;
+
+    }
+    .layeradd {
+        font-size: 12px;
+        line-height: 1.5;
+        white-space: nowrap;
+        text-align: center;
+        color: #FFFFFF;
+        border-radius: 3px;
+        padding: 5px 10px;
+        background-color: #0684e8!important;
+        border-color: #0684e8!important;
+        cursor: pointer;
+        text-align: center;
+        margin: 0 auto;
+    }
+    .upload-result {
+        margin-left: 10px;
+        font-size: 12px;
+        line-height: 1.5;
+        white-space: nowrap;
+        text-align: center;
+        color: #FFFFFF;
+        border-radius: 3px;
+        padding: 5px 10px;
+        background-color: #0684e8!important;
+        border-color: #0684e8!important;
+        cursor: pointer;
+    }
+    .result-button{
+        margin: 0 auto;
+        justify-content: center;
+        position: fixed;
+    left: 50%;
+    z-index: 999;
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="row">
+    <link rel="stylesheet" href="/static/plugins/croppie/croppie.css">
+    <div class="actions">
+       <div class="btn-box">
+            <div class="file-btn btn btn-sm mr5 btn-primary layeradd">
+                {:lang('上传')}
+                <input type="file" id="upload" value="{:lang('选择图片文件')}" />
+            </div>
+            <!-- <div class="upload-result">{:lang('确定裁剪')}</div> -->
+       </div>
+
+        <div class="picBox">
+            <div class="crop">
+                <div id="upload-demo" style="height: 80%;"></div>
+            </div>
+        </div>
+
+        <!-- <div id="result"></div> -->
+        <div class="result-button btn-box" style="display: none;"><div class="upload-result  btn btn-sm mr5 btn-primary">{:lang('确定裁剪')}</div> </div>
+    </div>
+
+    <script src="/static/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/plugins/croppie/croppie.js"></script>
+	<script src="__PLUG__/layer/layer.js?v=20180725"></script>
+    <script>
+        $(function () {
+            let picSize = JSON.parse(localStorage.getItem('picSize'))
+            localStorage.removeItem('picSize')
+            var $uploadCrop;
+
+            function readFile(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $uploadCrop.croppie('bind', {
+                            url: e.target.result
+                        });
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $uploadCrop = $('#upload-demo').croppie({
+                viewport: {
+                    width: picSize && picSize.width || 400,
+                    height: picSize && picSize.height || 400,
+                    type: 'square'
+                },
+                boundary: {
+                    width: picSize && picSize.width + 100 || 500,
+                    height: picSize && picSize.width + 100 || 500
+                },
+                showZoomer: false,
+            });
+
+            $('#upload').on('change', function () {
+                var file = $(this).val();
+                console.log(file)
+                var pos = file.lastIndexOf("\\");
+                var filename = file.substring(pos+1);
+
+                var fileextname = filename.substring(filename.lastIndexOf("."), filename.length);
+                console.log(fileextname)
+                if (!(fileextname == '.png' || fileextname == '.jpg' || fileextname == '.jpeg')) {
+                    layer.msg('文件不合法')
+                    return
+                }
+                $(".crop").show();
+                $('.result-button').show()
+                readFile(this);
+            });
+
+            $('.upload-result').on('click', function (ev) {
+                $uploadCrop.croppie('result', 'canvas').then(function (resp) {
+                    if(resp == 'data:,') {
+                        layer.msg('请先上传图片')
+                        return
+                    }
+                    localStorage.setItem('picBase64',resp)
+                    // parent.layer.close()
+                    let index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                });
+            });
+        });
+    </script>
+
+
+
+</div>
+<script src="__PLUG__/vue/vue.min.js"></script>
+<script src="__PLUG__/vue/vue-resource.min.js"></script>
+{/block}

@@ -1,0 +1,91 @@
+<form id="lFromFromMember" method="POST" action="{:url('Project/saveProject_member')}">
+	<?php if($admin_role == 20 || $admin_role == 21):?>
+	<!-- 部门经理和部门主管才能设置 -->
+	<?php if($admin_dept == $data['deptid']):?>
+	<!-- 主部门才能设置项目经理 -->
+	<!-- 主部门才能设置项目经理 -->
+	<?php endif;?>
+	
+	<div class="layui-form-item">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">项目经理：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<select name="project_manager" lay-search="" lay-filter="saveFieldSelect" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+			 data-db="project_manager">
+				<option value="">请选择</option>
+				<?php foreach($memberList as $v):?>
+				<?php if($v['role'] != 20):?>
+				<?php if($v['aid'] == $data['project_manager']):?>
+				<option value="{$v['aid']}" selected="selected">{$v['name']}</option>
+				<?php else:?>
+				<option value="{$v['aid']}">{$v['name']}</option>
+				<?php endif;?>
+				<?php endif;?>
+				<?php endforeach;?>
+			</select>
+		</div>
+	</div>
+
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">前端成员：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($memberList as $v):?>
+			<?php if($v['type_work'] == 1 && $v['role'] != 20):?>
+			<?php if(in_array($v['aid'],$data['project_memberArr'])):?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary" checked="checked"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php else:?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php endif;?>
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">后端成员：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($memberList as $v):?>
+			<?php if($v['type_work'] != 1 && $v['role'] != 20):?>
+			<?php if(in_array($v['aid'],$data['project_memberArr'])):?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary" checked="checked"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php else:?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php endif;?>
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">跨部门：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($data['project_memberList'] as $v):?>
+			<?php if(!in_array($v['aid'],$memberArr)):?>
+			<span style="display: inline-block;margin-top: 10px; line-height: 18px;margin-right: 10px;">{$v['name']}</span>
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<!-- 部门经理和部门主管才能设置 -->
+	<?php else:?>
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">项目成员：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($data['project_memberList'] as $v):?>
+			<span style="display: inline-block;margin-top: 10px; line-height: 18px;margin-right: 10px;">{$v['name']}</span>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php endif;?>
+
+	<!--
+	<div class="layui-form-item">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<input type="hidden" name="aid" value="{$data['aid']}" />
+			<button class="layui-btn lLayui-btn lFormSubmit" data-id="Member" type="button">提交</button>
+		</div>
+	</div>
+	-->
+</form>

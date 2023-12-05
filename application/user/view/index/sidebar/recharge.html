@@ -1,0 +1,58 @@
+<div>
+    <table class="table table-builder table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>{:lang('业务流水号')}</th>
+            <th>{:lang('变动前金额')}</th>
+            <th>{:lang('操作金额')}</th>
+            <th>{:lang('变动后金额')}</th>
+            <th class="column-right_button text-center">{:lang('操作时间')}</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {notempty name="recharge"}
+        {volist name="recharge" id="module"}
+        <tr>
+            <td>{$module.order_no|default='无标题'}</td>
+            <td>{$module.before_money}</td>
+            <td>{$module.change_money}</td>
+            <td>{$module.after_money}</td>
+            <td class="text-center">{$module.create_time}</td>
+        </tr>
+        {/volist}
+        {else /}
+        <tr class="table-empty">
+            <td class="text-center empty-info" colspan="6"><i class="fa fa-database"></i> {:lang('暂无数据')} <br></td>
+        </tr>
+        {/notempty}
+        </tbody>
+
+    </table>
+    <div class="data-table-toolbar">
+        <div class="row">
+            <div class="col-sm-12"> {// 分页 }
+                {notempty name="recharge_pages"}
+                {$recharge_pages|raw}
+                {/notempty}
+                {notempty name="recharge"}
+
+                <div class="pagination-info pull-right">
+                    <div>
+                        <input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+                        <input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $recharge->listRows() : input('param.list_rows');{/php}">
+                        <select>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        / <strong>{$recharge->lastPage()|raw}</strong> {:lang('页')}，{:lang('共')} <strong>{$recharge->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+                    </div>
+                </div>
+                {/notempty}
+            </div>
+        </div>
+    </div>
+
+</div>

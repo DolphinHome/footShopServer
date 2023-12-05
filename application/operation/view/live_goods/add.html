@@ -1,0 +1,483 @@
+{extend name="$admin_layout" /} {block name="style"}
+<style>
+    .table>tbody>tr>td {
+        padding: 15px;
+        font-size: 14px;
+    }
+    
+    .select-link {
+        display: inline-block;
+        width: 70px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+        border-radius: 0 16px 16px 0;
+        border: 1px solid #b6dafc;
+        color: #067fe0;
+        background-color: #ecf5ff;
+        cursor: pointer;
+    }
+    
+    #uploadPic {
+        position: relative;
+    }
+    
+    #uploadPic #fileImg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        -moz-opacity: 0;
+        -khtml-opacity: 0;
+    }
+    
+    .img-choose-wrapper {
+        border: 1px solid #eee;
+        border-radius: 4px;
+        width: 120px;
+        height: 120px;
+        position: relative;
+    }
+    
+    .img-choose-wrapper::before {
+        content: '';
+        width: 60px;
+        height: 2px;
+        background: #eee;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    .img-choose-wrapper::after {
+        content: '';
+        width: 2px;
+        height: 60px;
+        background: #eee;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    .img-choose {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    
+    .img-wrap {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        display: none;
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    .img-wrap .layui-icon-close-fill {
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        font-size: 24px;
+        color: #bfbfbf;
+        cursor: pointer;
+        display: none;
+    }
+    
+    .img-wrap:hover .layui-icon-close-fill {
+        display: block;
+    }
+</style>
+{/block} {block name="content"}
+<!-- layui css -->
+<link rel="stylesheet" href="/static/admin/js/layui/css/layui.css">
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom">
+            <div class="box-header with-border">
+                <h3 class="box-title">{$page_title|default=""|htmlspecialchars} <small style="color:red">
+                        {$page_tip|default=""|htmlspecialchars}</small></h3>
+                <div class="close close_crm_set_bar icon-del" onClick="closelayer()"></div>
+            </div>
+
+            <div class="box-body tab-content">
+                <div class="tab-pane active">
+                    <div class="block-content" style="max-width: 600px;">
+
+                        <!-- 表单验证请保留id="form"，否则验证不起作用 -->
+                        <form class="form row" name="form" id="form" parent_reload="{$url_param.reload|default = '1'}" action="{:url('',$url_param)}" method="post" data-validator-option="{timely:1, theme:'bootstrap'}">
+
+
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_name">
+                                <div class="col-xs-12 label-title" for="name">{:lang('商品名称')}</div>
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="text" id="name" name="name" placeholder="{:lang('请输入商品名称')}">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_name">
+                                <div class="col-xs-12 label-title" for="name">{:lang('价格')}</div>
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="text" id="price" name="price" placeholder="{:lang('请输入价格')}">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 imgInfo" id="form_group_images form_group_img">
+                                <div class="col-xs-12 label-title" for="name" style="text-align: left;">{:lang('素材图片')}
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="img-choose-wrapper">
+
+                                    </div>
+                                    <div class="img-wrap">
+                                        <img alt="" class="img-choose">
+                                        <i class="layui-icon layui-icon-close-fill" onclick="delteImg()"></i>
+                                    </div>
+
+                                    <input type="hidden" name="media_id" value="">
+                                    <!-- <select class="form-control input-sm" name="coverImgUrl">
+                                        {foreach name="media" item="v" key="k"}
+                                        <option value="{$v.media_id}">{$v.media_name}</option>
+                                        {/foreach}
+                                    </select> -->
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_href">
+                                <div class="col-xs-12 label-title" for="href" id="myLink">{:lang('链接')}</div>
+                                <div class="col-sm-12" style="display: flex;">
+                                    <input class="form-control" type="text" id="href" name="url" value="" placeholder="{:lang('请输入链接')}" style="width: calc(100% - 72px);">
+                                    <span class="select-link">{:lang('点击选择')}</span>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-md-12 col-xs-12">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-primary " type="submit" id="submitBtn"> {:lang('提交')}
+                                    </button>
+                                    <!-- <button class="btn btn-primary " type="submit" onclick="let index = parent.layer.getFrameIndex(window.name);parent.layer.close(index);setTimeout(()=>{parent.window.location.reload()},0);"> {:lang('提交')} </button> -->
+                                    <button class="btn btn-default btn-flat" type="button" onClick="closelayer()">
+                                        {:lang('关闭')}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- layui js -->
+<script src="/static/admin/js/layui/layui.js"></script>
+<script src="__PLUG__/vue/vue.min.js"></script>
+<script src="__PLUG__/vue/vue-resource.min.js"></script>
+<script>
+    let layerIndex = '';
+    // 获取图片打开弹窗
+    document.querySelector('.img-choose-wrapper').addEventListener('click', () => {
+
+            $.ajax({
+                url: '/admin.php/operation/live_goods/get_media',
+                type: 'POST',
+                success(res) {
+                    console.log(res);
+                    if (res.code == 1) {
+                        let list = res.data;
+                        let str = ''
+                        list.forEach((val, i) => {
+                                let str_item = `
+                                <div style="margin: 10px;text-align:center;">
+                                    <div style="width:120px;height:120px;background:#f1f1f1;cursor:pointer;" class="img_item" onclick="chooseImg('${val.url}','${val.media_id}')" >
+                                        <img  src="${val.url}" style="object-fit:contain;width:120px;height:120px;" />
+                                    </div>
+                                    <div style="margin-top: 5px;width:120px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">${val.name}</div>
+                                </div>
+                                `;
+                                str += str_item;
+                            })
+                            // console.log(str)
+                        let _html = `
+                            <div class="img_wrap" style="display:flex;flex-wrap:wrap;">
+                                ${str}
+                            </div>
+                        `;
+                        layer.open({
+                            title: '链接选择',
+                            area: ['600px', '500px'],
+                            content: _html,
+                            btn: [],
+                            success: function(layero, index) {
+                                console.log(layero, index)
+                                layerIndex = index;
+
+
+                            }
+                        });
+                    }
+                },
+                fail(err) {
+                    console.log(err);
+                }
+            })
+        })
+        // 删除图片
+    function delteImg() {
+        $('.img-choose-wrapper').show();
+        $('.img-wrap').hide().children('.img-choose').attr('src', '');
+        $('input[name="media_id"]').val('');
+    }
+    // 选择图片
+    function chooseImg(url, media_id, ) {
+        console.log('执行了', url, media_id)
+        layer.close(layerIndex);
+        $('.img-choose-wrapper').hide();
+        $('.img-wrap').show().children('.img-choose').attr('src', url);
+        $('input[name="media_id"]').val(media_id)
+    }
+    let page = 1;
+    let list_rows = 10;
+    let total = 0;
+
+    function getData(page, isInit, cb) {
+        $.ajax({
+            url: '/admin.php/operation/live_goods/get_link',
+            type: 'POST',
+            data: {
+                page: page,
+                list_rows: list_rows
+            },
+            success(res) {
+                console.log(res);
+                if (res.code == 1) {
+                    let list = res.data.data;
+                    total = res.data.total;
+                    let str = ''
+                    list.forEach((val, i) => {
+                            let str_item = `
+                                <div onclick="chooseUrl('${val.url}')" style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;height:40px;line-height:40px;border-bottom:1px solid #eee;cursor:pointer;">
+                                    ${val.name}
+                                </div>
+                            `;
+                            str += str_item;
+                        })
+                        // console.log(str)
+
+                    if (isInit) {
+                        let _html = `
+                                    <div class="url_wrap" style="">
+                                        ${str}
+                                    </div>
+                                    <div id="paging" style="position:absolute;bottom:0px;right:20px;"></div>
+                            `;
+                        cb(_html)
+                    } else {
+                        cb(str)
+                    }
+                }
+            },
+            fail(err) {
+                console.log(err);
+            }
+        })
+    }
+    // 获取链接打开弹窗
+    document.querySelector('.select-link').addEventListener('click', () => {
+        getData(page, true, (res) => {
+            layer.open({
+                title: '链接选择',
+                area: ['600px', '540px'],
+                content: res,
+                btn: [],
+                success: function(layero, index) {
+                    console.log(layero, index)
+                    layerIndex = index;
+                    layui.use('laypage', function() {
+                        var laypage = layui.laypage;
+                        //执行一个laypage实例
+                        laypage.render({
+                            elem: 'paging',
+                            count: total,
+                            limit: list_rows,
+                            jump: function(obj, first) {
+                                console.log(obj, first)
+                                    //首次不执行
+                                if (!first) {
+                                    //do something
+                                    getData(obj.curr, false, (result) => {
+                                        console.log(result)
+                                        $('.url_wrap').html(result);
+                                    })
+                                }
+                            }
+                        });
+                    });
+
+                }
+            });
+        })
+    })
+
+    function chooseUrl(url) {
+        console.log(url);
+        layer.close(layerIndex);
+        $('input[name="url"]').val(url);
+    }
+
+    function closelayer() {
+        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+        parent.layer.close(index);
+    }
+    //提交
+    // document.getElementById("block").addEventListener("click",function(e){
+    // 	console.log(1111)
+    // 	if(e.target.tagName=="INPUT"){
+    // 		console.log("radiovalue",e.target.value)
+    // 	}
+    // })
+
+    $('.imgInfo').show()
+    $("#imgInfo").click(function(e) {
+        console.log(11122, e)
+        $('.videoInfo').hide()
+        $('.imgInfo').show()
+        console.log(Html)
+    })
+    $("#videoInfo").click(function(e) {
+        console.log(2333, e)
+        $('.imgInfo').hide()
+        $('.videoInfo').show()
+    })
+    $('#submitBtn').click(function() {
+        var form_data = $('#form').serialize()
+        console.log(form_data, 8585)
+
+
+        // let index = parent.layer.getFrameIndex(window.name);
+        // parent.layer.close(index);
+        // setTimeout(()=>{
+        // 	parent.window.location.reload()
+        // },0);
+    })
+
+    function removeV(ele) {
+        $('#file_list_images2').html('')
+        $('#video').attr({
+            'value': ''
+        });
+    }
+    layui.use('upload', function() {
+        var $ = layui.jquery,
+            upload = layui.upload;
+        upload.render({
+            elem: '#uploadVideo',
+            url: '/api/v1/5fc615f7da92b' //改成您自己的上传接口
+                ,
+            accept: 'video' //视频
+                ,
+            done: function(res) {
+                layer.msg('上传成功');
+                console.log(res)
+                $('#video').attr({
+                    'value': res.data.data.fileId
+                });
+                var NewHtml = `
+			<div style=' position: relative;'>
+			<video src="${res.data.data.file}" width="221" height="121" controls="controls" id="video" >
+				</video>
+				<span  onclick="removeV(this)" style='position: absolute;top: 0;right: 0;margin-right: 10px;fonst-size:24px;border:1px solid #000;border-radius: 3px;padding: 2px 5px;cursor: pointer;'>x</span>
+			</div>`
+                $('#file_list_images2').html(NewHtml)
+            }
+        });
+    })
+    let cutPicWidth = 0; // 裁剪图片的宽度
+    let cutPicHeight = 0; // 裁剪图片的高度
+    $('#typeid').on('change', () => {
+            $('#file_list_images2').html('')
+            $('#file_list_images').html('')
+            $('#video').attr({
+                'value': ''
+            });
+            $('#slideVal').attr({
+                'value': ''
+            });
+            if ($("#typeid").val() == 5 || $("#typeid").val() == 12) {
+                $('#form_group_status').show()
+            } else {
+                $('#form_group_status').hide()
+            }
+            $('.videoInfo').hide()
+            $('.imgInfo').show()
+            $('#imgInfo .imgI >.iradio_minimal-red').addClass('checked')
+            $('#imgInfo .imgI input').attr('checked', true)
+            $('#videoInfo .imgV >.iradio_minimal-red').removeClass('checked')
+            $('#videoInfo .imgV input').attr('checked', false)
+            console.log($('#imgInfo input'))
+            $.post('/admin.php/operation/ads_type/getSize', {
+                    "id": $("#typeid").val()
+                })
+                .then(res => {
+                    if (res.code == 1) {
+                        cutPicWidth = res.data.width;
+                        cutPicHeight = res.data.height;
+                        $("input[name='width']").val(res.data.width);
+                        $("input[name='height']").val(res.data.height);
+                    }
+                })
+        })
+        // document.getElementById('fileImg').onchange = function() {
+        //     let flieInfo = this.files['0'];
+        //     console.log(flieInfo)
+        //     if (flieInfo.size > 10 * 1024 * 1024) {
+        //         layer.msg('图片大小不能超过10M');
+        //         return false;
+        //     }
+        //     var fd = new FormData();
+        //     fd.append("file", flieInfo);
+        //     $.ajax({
+        //         url: '/admin.php/operation/live_goods/add_media',
+        //         type: 'POST',
+        //         contentType: false,
+        //         processData: false,
+        //         data: fd,
+        //         success(res) {
+        //             console.log(res);
+        //         },
+        //         fail(err) {
+        //             console.log(err);
+        //         }
+        //     })
+        // }
+
+    // 删除图片
+    function removePic(ele) {
+        let tempId = ele.getAttribute("data-id");
+        for (let i = 0; i < Html.length; i++) {
+            if (Html[i].includes(
+                    `<i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${tempId}"></i>`
+                )) {
+                Html.splice(i, 1);
+                return
+            }
+        }
+        slideVal.replace(`${tempId},`, '');
+        $('#slideVal').attr({
+            'value': slideVal
+        });
+    }
+</script>
+{/block}

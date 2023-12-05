@@ -1,0 +1,174 @@
+.crm_mask {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 2000;
+}
+.crm_set_bar {
+    height: 100%;
+    background: #fff;
+    z-index: 3000;
+    padding: 20px 0;
+    transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    overflow: scroll;
+}
+
+.crm_set_bar .close{
+    height: 20px;
+    width: 20px;
+    right: 20px;
+    top: 20px;
+}
+
+.crm_set_bar .close img{
+
+    height: 20px;
+    width: 20px;
+    position: fixed;
+    top: 20px;
+    z-index: 996;
+}
+.crm_set_bar .set_title {
+    height: 70px;
+    overflow: hidden;
+    line-height: 30px;
+    position: relative;
+    padding: 0 20px;
+}
+.crm_set_bar .set_title:after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    bottom: 0;
+    right: 20px;
+    height: 1px;
+    width: auto;
+    background: #eee;
+}
+
+.crm_set_bar .set_title .img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    float: left;
+}
+.crm_set_bar .set_title .img img{
+    height: 50px;
+    width: 50px;
+
+}
+.crm_set_bar .set_title .label {
+    font-size: 18px;
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+    font-weight: bold;
+    float: left;
+    color: #000;
+}
+
+
+.crm_set_bar .header{
+
+    padding: 10px 20px;
+
+}
+.crm_set_bar .header p{
+
+    font-size: 14px;color: #111;
+
+
+}
+.crm_set_bar .header p span{
+
+    color: #999;
+
+
+}
+.crm_set_bar .header div{
+
+
+    font-size: 14px;color: #333;
+    margin-top: 10px;
+
+}
+
+.crm_set_bar .header div span{
+
+
+
+    margin-right: 10px;
+
+}
+
+.list_bar{
+
+    width: 100%;
+    overflow: hidden;
+    background: rgb(242, 243, 247);
+}
+.list_bar .show_ul{
+
+    white-space: nowrap;
+    overflow-x: scroll;
+    padding: 5px;
+    font-size: 0
+
+}
+.list_bar .show_ul::-webkit-scrollbar {
+    width: 2px;
+    height: 3px;
+    /*background-color: #ddd;*/
+}
+
+
+/*滑块*/
+.list_bar .show_ul::-webkit-scrollbar-thumb {
+    background-color: #999;
+    border-radius: 10px;
+}
+
+.list_bar .show_ul::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+}
+
+
+/*滑道*/
+.list_bar .show_ul::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px #999;
+    border-radius: 10px;
+}
+
+.list_bar ul li{
+
+    display: inline-block;
+    padding: 5px 20px;
+    font-size: 14px;color: #303133;
+    cursor: pointer;
+    line-height: 20px;
+
+}
+.list_bar ul li:hover{
+    color: #27b59c;
+}
+.list_bar ul li.act{
+    color: #27b59c;
+}
+
+.list_con{
+
+    width: 100%;
+    padding: 10px;
+
+
+}
+.list_con .show_ul{
+    display: none;
+}

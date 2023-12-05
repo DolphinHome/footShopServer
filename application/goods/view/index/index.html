@@ -1,0 +1,1179 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<script src="/static/plugins/vue/vue.min.js"></script>
+<!-- import JavaScript -->
+<script src="/static/plugins/element-ui/element-ui.js" ></script>
+<!-- import CSS -->
+<link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+<style type="text/css">
+.choose-btn { display: none !important; }
+.choose-label { box-shadow: #b1b1b1 0px 0px 0px 1px; width: 30px; height: 14px; display: inline-block; border-radius: 16px; position: relative; background-color: #bdbdbd; overflow: hidden; margin: 0;  cursor: pointer; vertical-align: middle; }
+.choose-label:before { content: ''; position: absolute; left: 0; width: 14px; height: 14px; display: inline-block; border-radius: 20px; background-color: #fff; z-index: 20; -webkit-transition: all 0.2s; transition: all 0.2s; }
+.choose-btn:checked + label.choose-label:before { left: 14px; }
+.choose-btn:checked + label.choose-label { background-color: #409EFF; box-shadow: #409EFF 0px 0px 0px 1px; }
+.choose-text { display: inline-block; vertical-align: middle; line-height: 15px; color: #888; font-size: 12px;  }
+.textpadd{ padding:0 5px; min-width:80px; margin-right:0;}
+.text{ float:left; border:1px solid #dbdbdb; border-radius:2px; height:22px; line-height:22px; padding:0 10px;
+-moz-box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) inset;
+-webkit-box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) inset; box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) inset;-o-transition: all .2s; -moz-transition: all .2s; -webkit-transition: all .2s; -ms-transition: all .2s; margin-right:10px;}
+input:focus{outline:none;}
+.img_pic {
+    float: left;
+    width: 68px;
+    height: 68px;
+    border: 1px solid #eee;
+}
+.product_name{
+	padding: 10px 0 10px 20px;
+	display: flex;
+	flex-direction: row;
+}
+.product_desc {
+    float: left;
+    margin-left: 10px;
+    min-width: 200px;
+}
+.product_desc .name span {
+	display:block;line-height: 20px;word-break:break-all;white-space: pre-wrap;word-wrap: break-word;
+    color: #333;
+    /* display: block;
+	float: left; */
+	word-wrap:break-word;
+    /* overflow: hidden; */
+    /* white-space: wrap; */
+    /* text-overflow: ellipsis; */
+	width: 100%;
+	word-break:break-all;
+    cursor: pointer;
+}
+.categroy_dialog{
+	z-index: 100014;
+    width: 863px;
+    top: 180px;
+	left: 226px;
+	position: fixed;
+    border-radius: 5px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    border: 1px solid #dcdcdc;
+	background: #fff;
+	min-height: 500px;
+
+}
+.el-table td, .el-table th{
+	padding:0 !important;
+}
+.el-table .cell{
+   padding-right: 0 !important;
+   padding-left: 0 !important;
+}
+.filters-title {
+	display: flex;
+	height: 50px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.text-16 {
+	font-size: 16px;
+}
+
+.text-14 {
+	font-size: 14px;
+}
+
+.text-12 {
+	font-size: 12px;
+}
+
+.color-theme {
+	color: #60b0fc;
+}
+
+
+.filters-content .el-select {
+	width: 100%;
+}
+
+.filters-content .el-row {
+	margin-bottom: 20px;
+}
+
+.filters-content .el-date-editor {
+	width: 100%;
+}
+
+.filters-content .el-row :last-child {
+	margin-bottom: 0;
+}
+
+.filters-flex {
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #bbbbbb;
+}
+
+.filters-bottom {
+	height: 60px;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.unselect {
+	user-select: none;
+}
+</style>
+<div class="row" class="app" id="app">
+	<div class="col-md-12">
+		<div class="box nav-tabs-custom" >
+			<div class="box-body">
+				<div class="tab-pane active" >
+					<div class="row">
+						<form action="" method="get" class="marBtm" style="padding:10px;">
+								<!-- 未对接口 -->
+						  <div class="row" style="display: flex;align-items: center">
+							  <div class="col-md-2 col-xs-6" style="display: flex;align-items: center">
+								  <span class="txt"  style="width: 120px;display: inline-block;white-space: nowrap;">{:lang('商品名称')}：</span>
+								  <input type="text" class="form-control" name="name" placeholder="{:lang('请输入商品名称')}" value="{$map.name}">
+							  </div>
+<!--							<div class="col-md-2 col-xs-6">
+								<span class="txt">{:lang('商品')}ID：</span>
+								<input type="text" class="form-control" name="shopId" placeholder="{:lang('请输入商品')}ID" value="{$map.id}">
+							</div>-->
+						    <div class="col-md-2 col-xs-6" style="display: flex;align-items: center">
+								<span class="txt"   style="width: 120px;display: inline-block;white-space: nowrap;">{:lang('所属分类')}：</span>
+								<!-- <select name="cid" id="category" class="form-control select2 custom-css">
+								{volist name="category" id="cate"}
+									<option value="{$key}" {if strval($key) === strval($map['cid'])}selected{/if}>{neq name="key" value="0"}{$cate|raw}{else /}全部分类{/neq}</option>
+								{/volist}
+								</select> -->
+								<input type="hidden" name="cid" v-model='goods_cid'>
+								<el-cascader
+								size='small'
+								:options="goodsOptions"
+								v-model='goods_cid_list'
+								:props="{ checkStrictly: true,
+								value:'id',
+								label:'name',
+								children:'children'}"
+								clearable
+								@change='goodsOptionsChange'
+								ref="cascaderHandle" 
+								:show-all-levels="false" 
+								filterable></el-cascader>
+								<!-- :show-all-levels="false" -->
+								<!-- //自定义  级联选择器value label -->
+							</div>
+							  <!-- 未对接口 -->
+							  <div class="col-md-2 col-xs-6" style="display: flex;align-items: center">
+								  <span class="txt"   style="width: 120px;display: inline-block;white-space: nowrap;">{:lang('是否上架')}：</span>
+								  <select name="is_sale"  placeholder="{:lang('请选择')}" class="form-control  custom-css">
+									  <option value="-1" {if $map['is_sale']==-1}selected{/if}>{:lang('全部')}</option>
+									  <option value="1"  {if $map['is_sale']==1}selected{/if} >是</option>
+									  <option value="0" {if $map['is_sale']==0}selected{/if}>否</option>
+								  </select>
+							  </div>
+							<!--
+							<div class="col-md-2 col-xs-6">
+								<select name="sex" class="select2"><option value="">请选择</option><option value="0" {eq name="map.sex" value="0"}selected{/eq}>保密</option><option value="1" {eq name="map.sex" value="1"}selected{/eq}>男</option><option value="2" {eq name="map.sex" value="2"}selected{/eq}>女</option></select>
+							</div>
+							-->
+							<div class="col-md-2 col-xs-6" style="display: flex;align-items: center">
+								<span class="txt" style="display:block">&nbsp;</span>
+								<button class="btn btn-primary btn-flat" type="submit" style="margin-right: 10px;">{:lang('搜索')}</button> <button class="btn btn-default btn-flat" type="button" onclick="clearinput()">{:lang('重置')}</button>
+							</div>
+						  </div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="nav-tabs-custom" >
+<!--			<ul class="nav nav-tabs pull-left" style="width: 100%;">
+		        <li {eq name="type" value="all"}class="active"{/eq}> <a href="{:url('goods/index/index')}">全部</a> </li>
+				{volist name="tab_list" id="tab"}
+				<li {eq name="tab.type" value="$type"}class="active"{/eq}> <a href="{$tab.url}">{$tab.title}</a> </li>
+				{/volist}
+				<li class="pull-right pr5">
+					<div class="pagination-info text-right">第 {:input('param.page', '1')} 页 / 总计 {$data_list->lastPage()} 页，共 <strong>{$data_list->total()}</strong> 条数据</div>
+				</li>
+			</ul>-->
+			<div class="clearfix"></div>
+			<div class="box-body">
+				<div class="tab-pane active">
+					<div class="pb10">
+<!--					<a title="新增商品" href="{:url('goods/index/add',['cid'=>$cid])}" class="btn btn-sm mr5 btn-primary btn-flat"><i class="fa fa-plus pr5"></i> 新增商品</a>
+					<a title="批量启用" href="{:url('goods/index/setstatus',['type'=>enable])}" icon="fa fa-check-circle pr5" class="btn btn-sm mr5 btn-default btn-flat ajax-post confirm" target-form="ids"><i class="fa fa-check-circle pr5"></i> 批量启用</a>
+					<a title="批量禁用" href="{:url('goods/index/setstatus',['type'=>disable])}" icon="fa fa-ban pr5" class="btn btn-sm mr5 btn-default btn-flat ajax-post confirm" target-form="ids"><i class="fa fa-ban pr5"></i> 批量禁用</a>
+					<a title="批量删除" href="{:url('goods/index/setstatus',['type'=>delete])}" icon="fa fa-ban pr5" class="btn btn-sm mr5 btn-default btn-flat ajax-post confirm" target-form="ids"><i class="fa fa-ban pr5"></i> 批量删除</a>
+					<a title="批量上架" href="{:url('goods/index/setstatus',['type'=>on])}" icon="fa fa-ban pr5" class="btn btn-sm mr5 btn-default btn-flat ajax-post confirm" target-form="ids"><i class="fa fa-ban pr5"></i> 批量上架</a>
+					<a title="批量下架" href="{:url('goods/index/setstatus',['type'=>off])}" icon="fa fa-ban pr5" class="btn btn-sm mr5 btn-default btn-flat ajax-post confirm" target-form="ids"><i class="fa fa-ban pr5"></i> 批量下架</a>-->
+						<a title="{:lang('新增商品')}" href="{:url('goods/index/add',['cid'=>$cid])}" class="btn btn-sm mr5 btn-primary btn-flat"><i class="fa fa-plus pr5"></i> {:lang('新增商品')}</a>
+
+<!--						<a title="{:lang('高级搜索')}" class="btn btn-sm mr5 btn-default btn-flat ajax-post confirm" @click="openFilterDialog"> {:lang('高级搜索')}</a>-->
+					</div>
+					<div style="padding: 0 0 10px 0;display:none;" id="searchHigh" >
+						<a class="btn btn-sm mr5 btn-default btn-flat" v-for="(item,index) in tags" :index="index">
+							{{item.name}} {{item.expression}} {{item.value_key || item.value}}
+							<i class="fa fa-close" style="margin-left: 20px" @click="removeTag(index)"></i>
+						</a>
+					</div>
+
+					<div class="table-responsive">
+					<table class="table table-builder table-hover table-bordered table-striped mb10">
+						<thead>
+						<th class="text-center" style="width: 55px;">
+							 <input class="minimal-red checkboxCtrl" data-group="ids[]" data-toggle="icheck" type="checkbox">
+							</th>
+							<th class="">ID</th>
+							<th class="">{:lang('商品名称')}</th>
+							<th class="">{:lang('商品分类')}</th>
+							<!-- <th class="">{:lang('缩略图')}</th> -->
+							<th class=""> {:lang('价格')}/{:lang('货号')}/{:lang('运费')} </th>
+							<!-- <th class="">本店价
+								{php}
+								$_by = input('param.by') == 'asc' ? 'desc' : 'asc';
+								$_param = array_merge(input('get.'), ['by' => $_by, 'order' => 'shop_price']);
+								if ($_param) {
+								$_get = [];
+								foreach ($_param as $key => $value) {
+								$_get[] = $key. '=' .$value;
+								}
+								$_get = '?'.implode('&', $_get);
+								}
+								{/php}
+								<a href="{$Request.baseUrl}{$_get}" data-toggle="tooltip" data-original-title="排序">
+									{php}
+									if (input('param.order') == 'shop_price') {
+									echo input('param.by') == 'asc' ? '<i class="fa fa-caret-up"></i>' : '<i class="fa fa-caret-down"></i>';
+									} else {
+									echo '<i class="fa fa-sort text-muted"></i>';
+									}
+									{/php}
+								</a>
+							</th>
+							<th class="">会员价</th> -->
+							<th class="">{:lang('是否规格')}</th>
+							<!-- <th class="">{:lang('库存')}</th> -->
+							<th class="">{:lang('虚拟销量')}
+									{php}
+										$_by = input('param.by') == 'asc' ? 'desc' : 'asc';
+										$_param = array_merge(input('get.'), ['by' => $_by, 'order' => 'sales_sum']);
+										if ($_param) {
+											$_get = [];
+											foreach ($_param as $key => $value) {
+												$_get[] = $key. '=' .$value;
+											}
+											$_get = '?'.implode('&', $_get);
+										}
+									{/php}
+									<a href="{$Request.baseUrl}{$_get}" data-toggle="tooltip" data-original-title="{:lang('排序')}">
+										{php}
+											if (input('param.order') == 'sales_sum') {
+												echo input('param.by') == 'asc' ? '<i class="fa fa-caret-up"></i>' : '<i class="fa fa-caret-down"></i>';
+											} else {
+												echo '<i class="fa fa-sort text-muted"></i>';
+											}
+										{/php}
+									</a>
+							</th>
+							<th class="">{:lang('真实销量')}</th>
+							<th class="text-center">{:lang('标签')}
+							</th>
+
+						<!-- 	<th class="text-center">{:lang('新品')}</th>
+							<th class="text-center">{:lang('热卖')}</th>
+							<th class="text-center">{:lang('推荐')}</th>
+							<th class="text-center">{:lang('精品')}</th>-->
+							<th class="text-center">{:lang('上架')}</th>
+							<th class="text-center">SKU/{:lang('库存')}</th>
+							<th class="text-center">{:lang('库存预警')}</th>
+							<!-- <th class="text-center">{:lang('状态')}</th> -->
+							<th class="text-center">{:lang('操作')}</th>
+							</thead>
+						<tbody>
+							{volist name="data_list" id="g"}
+							<tr>
+								<td class="text-center" style="width: 55px;"><input class="ids minimal-red" data-toggle="icheck" type="checkbox" name="ids[]" value="{$g.id}"></td>
+								<td class=""><a title="{:lang('编辑')}" href="{:url('edit',['id'=>$g['id'],'is_copy'=>'false'])}" class="mr5" >{$g.id}</a></td>
+								<!-- 商品名称 -->
+								<td class="">
+									<div class="product_name">
+										<div class="img_pic" >
+											 <a data-magnify="gallery{$g.id}" data-caption="{$g.id}" href="{$g.thumb|get_thumb_file_url}">
+												<el-image lazy  preview-src-list="[{$g.thumb|get_thumb_file_url}]"  src="{$g.thumb|get_thumb_file_url}" style="width:68px;height:68px;display: flex;justify-content: center;align-items: center;">
+													<div slot="error" class="image-slot">
+													  <i class="el-icon-picture-outline" style="font-size: 30px;"></i>
+													</div>
+												  </el-image>
+												 <!-- <img data-original="{$g.id}" src="{$g.thumb|get_file_url}" alt="" style="width:68px;height:68px;" /> -->
+											 </a>
+										</div>
+										<div class="product_desc"  >
+											<div class="name" style="line-height: 25px;">
+												<!-- <span 	id="texttip{$g.id}" onmouseover="texttips('{$g.name}','texttip{$g.id}')" data-toggle="tooltip" class="span">{$g.name} -->
+											   <span   	id="texttip{$g.id}"    onclick="listTable(this, 'name', {$g},'text')">{$g.name}</span>
+											</span>
+											</div>
+										 
+										 </div>
+									</div>
+
+									 <!-- {eq name="g.is_shipping" value="1"}
+									 <span class="label label-flat label-success">{:lang('包邮')}</span>{/eq}
+									 <span class="text-tip" id="texttip{$g.id}" onmouseover="texttips('{$g.name}','texttip{$g.id}')">{$g.name}</span> -->
+								</td>
+								<td class=""> <a href="{:url('index')}?cid={$g['cid']}">{$g.cate_name}</a> </td>
+								<!-- 缩略图 -->
+								<!-- <td class=""> <a data-magnify="gallery{$g.id}" data-caption="{$g.id}" href="{$g.thumb|get_file_url}"><img data-original="{$g.id}" src="{$g.thumb|get_file_url}" alt="" style="width:25px;height:25px;" /></a></td> -->
+								<!-- 本店价/会员价/货号/运费 -->
+								<td class="">
+									<div style="display:flex;">
+										<p style="margin:0 !important;font-size:12px;">{:lang('价格')}：</p>
+											<span onclick="listTable(this, 'shop_price', {$g},'number')">{$g.shop_price}</span>
+										</p>
+
+									</div>
+									<!-- <div style="display:flex;">
+										<p style="margin:0 !important;font-size:12px;">{:lang('会员价')}：</p>
+										<p style="margin:0 !important;">
+											<span onclick="listTable(this, 'shop_price', {$g})">{$g.shop_price}</span>
+										</p>
+									</div> -->
+									<div style="display:flex;">
+										<p style="margin:0 !important;font-size:12px;">{:lang('货号')}：</p>
+										<p style="margin:0 !important;">
+											<span> {$g.sn}</span>
+										</p>
+									</div>
+									<div style="display:flex;">
+										<p style="margin:0 !important;font-size:12px;">{:lang('运费')}：</p>
+										<p style="margin:0 !important;">
+											<p class="activity" style="float:left;">
+												{if condition="$g.is_shipping eq 1"}
+												   <span class="text-tip" >{:lang('包邮')}</span>
+										    	{else/}
+												 <span class="text-tip" >{$g.freight_template_id}</span>
+										        {/if}
+											</p>
+										</p>
+									</div>
+								</td>
+								<!-- <td class=""> {$g.shop_price}</td>
+								<td class=""> {$g.member_price}</td> -->
+								<td class=""> {if condition="$g.is_spec eq 1"}是{else}否{/if}</td>
+								<!-- <td class=""> {$g.stock}</td> -->
+								<!-- 虚拟销量 -->
+								<td class="">
+									<span onclick="listTable(this, 'sales_sum', {$g},'number')">{$g.sales_sum}</span>
+								</td>
+								<td class="">
+									{$g.sales_num_new}
+								</td>
+								<td class="">
+									<div style="display:flex;">
+										<p style="margin:0 !important;font-size:12px;">{:lang('新品')}：</p>
+										<p style="margin:0 !important;">
+											<input type="checkbox" name="switch1" id="{$g.id}1" chageId="{$g.id}" changeType="is_new" class="choose-btn"  {eq name="g.is_new" value="1"}checked{/eq} data-toggle="{:lang('开启')}|{:lang('关闭')}">
+											<label for="{$g.id}1" class="choose-label"></label>
+											<span class="choose-text"></span>
+										</p>
+									</div>
+<!--									<div style="display:flex;font-size:12px;">-->
+<!--										<p style="margin:0 !important;">{:lang('热卖')}：</p>-->
+<!--										<p style="margin:0 !important;">-->
+<!--											<input type="checkbox" name="switch1" id="{$g.id}2" chageId="{$g.id}" changeType="is_hot" class="choose-btn"    {eq name="g.is_hot" value="1"}checked{/eq} data-toggle="{:lang('开启')}|{:lang('关闭')}">-->
+<!--											<label for="{$g.id}2" class="choose-label"></label>-->
+<!--											<span class="choose-text"></span>-->
+<!--										</p>-->
+<!--									</div>-->
+									<div style="display:flex;font-size:12px;">
+										<p style="margin:0 !important;">{:lang('推荐')}：</p>
+										<p style="margin:0 !important;">
+											<input type="checkbox" name="switch1" id="{$g.id}3" chageId="{$g.id}" changeType="is_recommend"  class="choose-btn"  {eq name="g.is_recommend" value="1"}checked{/eq}  data-toggle="{:lang('开启')}|{:lang('关闭')}">
+											<label for="{$g.id}3" class="choose-label"></label>
+											<span class="choose-text"></span>
+										</p>
+									</div>
+<!--									<div style="display:flex;font-size:12px;">-->
+<!--										<p style="margin:0 !important;">{:lang('精品')}：</p>-->
+<!--										<p style="margin:0 !important;">-->
+<!--											<input type="checkbox" name="switch1" id="{$g.id}4"  chageId="{$g.id}" changeType="is_boutique" class="choose-btn"  {eq name="g.is_boutique" value="1"}checked{/eq}  data-toggle="{:lang('开启')}|{:lang('关闭')}">-->
+<!--											<label for="{$g.id}4" class="choose-label"></label>-->
+<!--											<span class="choose-text"></span>-->
+<!--										</p>-->
+<!--									</div>-->
+									<!-- <div style="display:flex;font-size:12px;">
+										<p style="margin:0 !important;">上架：</p>
+										<p style="margin:0 !important;">
+											<input type="checkbox" name="switch1" id="{$g.id}5"  chageId="{$g.id}" changeType="is_sale" class="choose-btn" {eq name="g.is_sale" value="1"}checked{/eq}  data-toggle="开启|关闭">
+											<label for="{$g.id}5" class="choose-label"></label>
+											<span class="choose-text"></span>
+										</p>
+									</div> -->
+								</td>
+							<!-- 	<td class="text-center">
+									<label class="css-input switch switch-sm switch-primary" title="开启/关闭">
+									<input data-toggle="icheck" type="checkbox" data-model="goods" data-module="goods" data-controller="index" data-id="{$g.id}" data-field="is_new" {eq name="g.is_new" value="1"}checked{/eq}>
+									</label>
+								</td>
+								<td class="text-center"> <label class="css-input switch switch-sm switch-primary" title="开启/关闭"><input data-toggle="icheck" type="checkbox" data-module="goods" data-controller="index" data-model="goods" data-id="{$g.id}" data-field="is_hot" {eq name="g.is_hot" value="1"}checked{/eq}></label></td>
+								<td class="text-center"> <label class="css-input switch switch-sm switch-primary" title="开启/关闭"><input data-toggle="icheck" type="checkbox" data-module="goods" data-controller="index" data-model="goods" data-id="{$g.id}" data-field="is_recommend" {eq name="g.is_recommend" value="1"}checked{/eq}></label></td>
+								<td class="text-center"> <label class="css-input switch switch-sm switch-primary" title="开启/关闭"><input data-toggle="icheck" type="checkbox" data-module="goods" data-controller="index" data-model="goods" data-id="{$g.id}" data-field="is_boutique" {eq name="g.is_boutique" value="1"}checked{/eq}></label></td>
+								-->
+							
+								<td class="text-center">
+									<!-- <label class="css-input switch switch-sm switch-primary" title="开启/关闭">
+										<input data-toggle="icheck" type="checkbox" data-module="goods" data-controller="index"
+										 data-model="goods" data-id="{$g.id}" data-field="is_sale" {eq name="g.is_sale" value="1"}checked{/eq}></label> -->
+									<div style="display:flex;font-size:12px;">
+										<p style="margin:0 !important;">
+											<input type="checkbox" name="switch1" id="{$g.id}5"  chageId="{$g.id}" changeType="is_sale" class="choose-btn" {eq name="g.is_sale" value="1"}checked{/eq}  data-toggle="{:lang('开启')}|{:lang('关闭')}">
+											<label for="{$g.id}5" class="choose-label"></label>
+											<span class="choose-text"></span>
+										</p>
+									</div>
+								</td>
+								<td class="text-center">
+									{if condition="$g.is_spec eq 1"}
+<!--										<img src="/static/goods/images/edit.png" @click="getGoodsSkuData({$g},{$g.id})"  style="height:16px;width:16px;cursor:hand;">-->
+										<i @click="getGoodsSkuData({$g},{$g.id})" class="el-icon-edit-outline" style="font-size:18px;color:#409EFF;cursor:pointer;font-weight: 400;"></i>
+									{else/}
+									  <p style="margin:0 !important;line-height: 30px;">
+										  <span onclick="listTable(this, 'stock', {$g},'number')">{$g.stock}</span>
+									  </p>
+									{/if}
+
+							  </td>
+							  <td class="">
+							  	<span onclick="listTable(this, 'stock_warning', {$g},'number')">{$g.stock_warning}</span>
+							  </td>
+								<!-- <td class="text-center"> {if condition="$g.status eq 1"}<font color="green">{:lang('启用')}</font>{else/}<font color="red">{:lang('禁用')}</font>{/if} </td> -->
+								<td class="text-center font12">
+									<a title="{:lang('编辑')}" href="{:url('edit',['id'=>$g['id'],'is_copy'=>'false'])}" class="mr5" >{:lang('编辑')}</a>&nbsp;|&nbsp;
+									<a title="{:lang('复制')}" href="{:url('edit',['id'=>$g['id'],'is_copy'=>'true'])}" class="mr5" >{:lang('复制')}</a>&nbsp;|&nbsp;
+									<!-- {eq name="$g.status" value="1"}
+										<a title="{:lang('禁用')}" href="{:url('setstatus',['ids'=>$g['id'],'type'=>'disable'])}" class="mr5 ajax-get confirm" >{:lang('禁用')}</a>&nbsp;|&nbsp;
+									{else /}
+										<a title="{:lang('启用')}" href="{:url('setstatus',['ids'=>$g['id'],'type'=>'enable'])}" class="mr5 ajax-get confirm" >{:lang('启用')}</a>&nbsp;|&nbsp;
+									{/eq} -->
+									<a title="{:lang('删除')}" href="{:url('setstatus',['ids'=>$g['id'],'type'=>'delete'])}" icon="fa fa-times pr5" class="mr5 ajax-get confirm" >{:lang('删除')}</a>
+									<!--<a title="{:lang('商品评论')}" href="{:url('comment/index',['goods_id'=>$g['id']])}" class="mr5 comment" > {:lang('商品评论')}({$g.goods_comment_count})</a>&nbsp;|&nbsp;-->
+									<!--<a title="{:lang('链接')}" href="{:url('set_ads_url',['ids'=>$g['id'],'layer'=>1])}" class="mr5 comment" data-toggle="dialog-right">{:lang('轮播图链接')}</a>-->
+									</td>
+							</tr>
+							{/volist}
+						</tbody>
+					</table>
+
+					<!-- <div style="border:1px solid red;height:100px;width:300rpx;">
+						{volist name="bottom_button_select" id="row"}
+							<div>{$row}</div>
+						{/volist}
+					</div> -->
+					</div>
+
+					<div class="data-table-toolbar" style="display:flex;justify-content:space-between;align-items:center;">
+						{if condition="$count gt 0"}
+						<div class="bottom-select-all">
+							<div>
+								{if (!$hide_checkbox)}
+								<th class="text-center" style="width: 70px;">
+									<input class="minimal-red checkboxCtrl" data-group="ids[]" data-toggle="icheck" type="checkbox">
+								</th>
+								{/if}
+								<span>{:lang('全选')}</span>
+							</div>
+							<div>
+
+								<select  name="" id="selectMore" class="select-mian" >
+									<option value="-1" >{:lang('请选择')}</option>
+									{volist name="bottom_button_select" id="row"}
+									<option type="/admin.php/{$action}"    action="{$row.ident}">{$row.title}</option>
+									{/volist}
+								</select>
+
+							</div>
+							<div>
+								<button class="select-btn" id="select-btn">{:lang('确定')}</button>
+							</div>
+						</div>
+						{/if}
+						<div class="row">
+							<div class="col-sm-12">
+								{notempty name="pages"}
+								{$pages|raw}
+								{/notempty}
+								{notempty name="data_list"}
+								<div class="pagination-info pull-right">
+									<div>
+										<input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+										<input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $data_list->listRows() : input('param.list_rows');{/php}">
+										/ <strong>{$data_list->lastPage()|raw}</strong> 页，共 <strong>{$data_list->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+									</div>
+								</div>
+								<!--<div class="pagination-info pull-left"> 第 {:input('param.page', '1')} 页 / 总计 {$data_list->lastPage()} 页，共 <strong>{$data_list->total()}</strong> 条数据 </div>-->
+								{/notempty}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<el-dialog title="{:lang('修改规格')}"  :visible.sync="dialogVisible"  width="60%" >
+		<el-table  :data="tableData"  border 	style="width: 100%;" :max-height="500">
+		<el-table-column  prop="sku_id"  align="center" label="SKU{:lang('编号')}" min-width="60">
+			<!-- <template slot-scope="scope">
+				<el-input v-model="scope.row.sku_id"   @change="saveData(scope.row,'sku_id')" ></el-input>
+			 </template> -->
+		</el-table-column>
+		<el-table-column  prop="key_name"  align="center"  label="{:lang('规格')}"  >
+			<!-- <template slot-scope="scope">
+				<el-input v-model="scope.row.key_name"  @change="saveData(scope.row,'key_name')"  ></el-input>
+			 </template> -->
+		</el-table-column>
+		<el-table-column  prop="sku_sn"   align="center" label="{:lang('货号')}"  min-width="100">
+			<!-- <template slot-scope="scope">
+				<el-input v-model="scope.row.sku_sn"  @change="saveData(scope.row,'sku_sn')" ></el-input>
+			 </template> -->
+		</el-table-column>
+		<el-table-column  prop="market_price"   align="center" label="{:lang('市场价')}" min-width="60">
+			<template slot-scope="scope">
+				<el-input v-model="scope.row.market_price"  type="number"  @input="changeInitData(scope.row,'market_price')"  @change="saveData(scope.row,'market_price')" ></el-input>
+			 </template>
+		</el-table-column>
+		<el-table-column  prop="shop_price"   align="center" label="{:lang('本店价')}"  min-width="60">
+			<template slot-scope="scope">
+				<el-input v-model="scope.row.shop_price"  type="number" @input="changeInitData(scope.row,'shop_price')"   @change="saveData(scope.row,'shop_price')" ></el-input>
+			 </template>
+		</el-table-column>
+<!--		<el-table-column  prop="member_price"   align="center" label="{:lang('会员价')}"  min-width="60">-->
+<!--			<template slot-scope="scope">-->
+<!--				<el-input v-model="scope.row.member_price"  type="number"  @input="changeInitData(scope.row,'member_price')"   @change="saveData(scope.row,'member_price')" ></el-input>-->
+<!--			 </template>-->
+<!--		</el-table-column>-->
+		<el-table-column  prop="cost_price"   align="center" label="{:lang('成本价')}" min-width="60">
+			<template slot-scope="scope">
+				<el-input v-model="scope.row.cost_price"  type="number" @input="changeInitData(scope.row,'cost_price')"  @change="saveData(scope.row,'cost_price')" ></el-input>
+			 </template>
+		</el-table-column>
+		
+		<el-table-column  prop="stock"  align="center"  label="{:lang('库存')}"  min-width="60">
+			<template slot-scope="scope">
+				<el-input v-model="scope.row.stock"  type="number"  @change="saveData(scope.row,'stock')" ></el-input>
+			 </template>
+		</el-table-column>
+		<el-table-column  prop="stock_warning"  align="center"  label="{:lang('库存预警')}"  min-width="60">
+			<template slot-scope="scope">
+				<el-input v-model="scope.row.stock_warning"  type="number"  @change="saveData(scope.row,'stock_warning')" ></el-input>
+			 </template>
+		</el-table-column>
+
+		</el-table>
+		<span slot="footer" class="dialog-footer">
+		<el-button type="primary" @click="dialogVisible = false">{:lang('关闭')}</el-button>
+		</span>
+	</el-dialog>
+	<el-dialog title="{:lang('高级筛选')}"  :visible.sync="filterDialogVisible"  width="60%" >
+		<div class="filters-title">
+			<span class="text-14 unselect">{:lang('筛选条件')}</span>
+		</div>
+		<div class="filters-content">
+			<el-row :gutter="20" v-for="(ele,idx) in form" :key="idx">
+				<el-col :span="9">
+					<el-select v-model="ele.key" placeholder="{:lang('请选择')}" @change="handleSelect($event,idx)">
+						<el-option v-for="item in selects" :key="item.name.field" :label="item.name.value" :value="item.name.field">
+						</el-option>
+					</el-select>
+				</el-col>
+				<el-col :span="15" v-if="ele.type !== 'date'">
+					<el-row :gutter="20">
+						<el-col :span="8">
+							<el-select v-model="ele.keyfil" placeholder="{:lang('请选择')}">
+								<el-option v-for="item in filters" :key="item.id" :label="item.name" :value="item.id">
+								</el-option>
+							</el-select>
+						</el-col>
+						<el-col :span="14" v-if="ele.type !== 'select'">
+							<el-input v-model="ele.value" placeholder="{:lang('请输入内容')}"></el-input>
+						</el-col>
+						<el-col :span="14" v-else>
+							<el-select v-model="ele.value" placeholder="{:lang('请选择')}">
+								<el-option v-for="item in ele.selects" :key="item.id" :label="item.name" :value="item.id">
+								</el-option>
+							</el-select>
+						</el-col>
+						<el-col :span="2" class="filters-flex">
+							<i class="el-icon-error" @click.stop="removeCondition(idx)"></i>
+						</el-col>
+					</el-row>
+				</el-col>
+				<el-col :span="15" v-else>
+					<el-row :gutter="20">
+						<el-col :span="22">
+							<el-date-picker v-model="ele.value" type="daterange" range-separator="至"
+											start-placeholder="{:lang('开始日期')}" end-placeholder="{:lang('结束日期')}">
+							</el-date-picker>
+						</el-col>
+						<el-col :span="2" class="filters-flex">
+							<i class="el-icon-error" @click.stop="removeCondition(idx)"></i>
+						</el-col>
+					</el-row>
+
+				</el-col>
+			</el-row>
+		</div>
+		<div class="filters-title">
+			<span class="text-12 color-theme unselect" @click="addCondition">+ {:lang('添加筛选条件')}</span>
+		</div>
+		<div class="filters-bottom">
+			<el-button type="primary" size="small" @click="handleConfirm">{:lang('确定')}</el-button>
+		</div>
+	</el-dialog>
+</div>
+<form id="searchData" action="" method="post">
+	<input type="hidden" name="params" id="sear" value="{$table_data}" >
+	<input type="hidden"  id="searData" value="{$map_data}" >
+</form>
+<script>
+    new Vue({
+      el: '#app',
+      data: function() {
+          var jsonStr = document.querySelector('#sear').value;
+          var tagStr = document.querySelector('#searData').value;
+          var arrs = JSON.parse(jsonStr);
+          console.log(tagStr)
+          console.log(arrs)
+		  let tagArr = [];
+		  if(tagStr){
+              tagArr = JSON.parse(tagStr);
+          }
+          console.log(tagArr)
+        return {
+			goods_cid_list:[], // 商品分类id的多级信息
+			goods_cid:'',  //商品分类id
+			goodsOptions:[], // 商品分类
+			timer:null, // 定时器
+            tags: tagArr,
+			handleRow:{},
+			dialogVisible:false,
+            tableData: [],
+            filterDialogVisible: false,
+            selects: arrs,
+            filters: [
+                { id: '=', name: '等于' },
+                { id: '<>', name: '不等于' },
+                { id: '>', name: '大于' },
+                { id: '>=', name: '大于等于' },
+                { id: '<', name: '小于' },
+                { id: '<=', name: '小于等于' },
+            ],
+            form: [
+                {
+                    key: '',
+                    keyfil: '=',
+                    value: '',
+                    type: 'text',
+					selects: [],
+                }
+            ]
+        }
+      },
+	  
+	  created() {
+	
+	  	// console.log(document.querySelector('#searchHigh'),'5555555555555')
+	  	// document.querySelector('#searchHigh').style.display:='block'
+	  },
+	  mounted() {
+		  document.querySelector('#searchHigh').style.display='block'
+		  this.getGoodsOptions()
+		  let cid =this.getQueryVariable('cid')
+		  console.log(cid)
+		  if(cid){
+			this.goods_cid =cid
+		  }
+		  // 点击文字即选中
+		this.timer =  setInterval(function() {
+　　　　　　document.querySelectorAll(".el-cascader-node__label").forEach(el => {
+　　　　　　　　el.onclick = function() {
+　　　　　　　　　　if (this.previousElementSibling) this.previousElementSibling.click();
+　　　　　　　　};
+　　　　　　});
+　　　　}, 1000);
+	  },
+	  destroyed(){
+		clearInterval(this.timer)
+	  },
+      methods: {
+
+		  	// 处理cid在三级联动的位置,
+			  getCidList(val,id){
+						let cid_list =[]
+						val.forEach((item,index)=>{
+							if(item.id ==id){
+								cid_list = [item.id]
+								return false
+							}else{
+								if(item.children){
+									let newCid_list =[item.id]
+									let list = nodefun(item.children,id,newCid_list)
+									if(list) {
+										cid_list =list
+									}
+								}
+							}
+						})
+						// 递归函数
+						function nodefun(newVal,newId,newCid_list){
+							let flag =false
+							newVal.forEach(j=>{
+								// console.log(j)
+								if(j.id == newId){
+									newCid_list.push(j.id)
+									flag =true
+								}else{
+									if(j.children){
+										let	cid_list = JSON.parse(JSON.stringify(newCid_list))
+										cid_list.push(j.id)
+										let list =  nodefun(j.children,newId,cid_list)
+										if(list){
+											newCid_list =list 
+											flag =true
+										}
+									}
+
+								}
+							})
+							if(flag){
+								return	newCid_list						
+							}
+						}
+						return	cid_list
+			},
+		 getQueryVariable(variable){
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i=0;i<vars.length;i++) {
+					var pair = vars[i].split("=");
+					if(pair[0] == variable){return pair[1];}
+				}
+				return(false);
+			},
+
+		  // 获取分类接口数据
+		getGoodsOptions(){
+			let that =this
+			$.get("/admin.php/goods/category/getcategorylist",function(data,status){
+			   if(data.code == 1){
+				console.log('获取商品分类',data.data)
+				that.goodsOptions =data.data
+				// 递归获取cid的位置
+				if(that.goods_cid){
+					that.goods_cid_list = 	that.getCidList(that.goodsOptions,that.goods_cid)
+				}
+			   }else{
+				  that.$message({
+						message: data.msg,
+						type: 'warning'
+					});
+			   }
+			
+			})
+		},
+		// 商品分类选择改变时
+		goodsOptionsChange(e){
+			if(this.goods_cid_list.length>0){
+				this.goods_cid = this.goods_cid_list[this.goods_cid_list.length-1]
+			}else{
+				this.goods_cid =''
+			}
+			// this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+			// 监听是否为最后一级，如果为最后一级，面板收起
+			var children = this.$refs.cascaderHandle.getCheckedNodes();
+          if(children[0].children.length < 1){   //判断有没有下级
+            this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+		  }
+			console.log(this.goods_cid_list)
+			console.log(e,this.goods_cid)
+		},
+          removeTag(index){
+              this.tags.splice(index,1);
+              document.querySelector('#sear').value = JSON.stringify(this.tags);
+              document.querySelector('#searchData').submit();
+
+		  },
+          // 打开高级搜索
+		  openFilterDialog(){
+		      this.filterDialogVisible = true;
+		  },
+		  changeInitData(row,value){
+			  row[value] = row[value].replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
+			  row[value] = row[value].replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的   
+			  row[value] = row[value].replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+			  row[value] = row[value].replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数   
+			  if (row[value].indexOf(".") < 0 && row[value] != "") { //以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额  
+			        row[value] = parseFloat(row[value]);
+			   }
+		  },
+		  saveData(row,value){
+			const that=this
+			$.get("editGoodsSku?goods_id"+'='+that.handleRow.id+'&sku_id='+row.sku_id+'&'+value+'='+row[value],function(data,status){
+			   let query= JSON.parse(data)
+			   if(query.code===1){
+
+			   }else{
+				  that.$message({
+						message: '修改失败，请重新修改',
+						type: 'warning'
+					});
+					that.dialogVisible=false
+			   }
+				//  let tempData= JSON.parse(data)
+				// console.log('tempData',tempData)
+			})
+		},
+		getGoodsSkuData(row,id){
+			console.log(1111)
+			const that=this
+			console.log(row)
+			that.handleRow=row
+			$.get("getGoodsSku?goods_id"+'='+id,function(data,status){
+				let query= JSON.parse(data)
+				if(query.code===1){
+					that.tableData= query.data
+					that.dialogVisible=true
+				}else{
+					that.$message({
+						message: "{:lang('获取失败，请重新操作')}",
+						type: 'warning'
+					});
+				}
+
+			})
+		},
+          // 删除一条
+          removeCondition(index) {
+              if (this.form.length <= 1) return this.$message.warning("{:lang('不能再少啦')}");
+              this.form.splice(index, 1);
+          },
+          // 添加一条
+          addCondition() {
+              this.form.push({
+                  key: '',
+                  keyfil: '=',
+                  value: '',
+                  type: 'text',
+				  selects: [],
+              })
+          },
+          // 筛选字段改变
+          handleSelect(value, index) {
+              this.form[index].value = '';
+              this.form[index].type = this.selects.find(item => item.name.field === value).type;
+              if(this.form[index].type == 'select'){
+                  this.form[index].selects = this.selects.find(item => item.name.field === value).select;
+              }
+
+          },
+          // 确定
+          handleConfirm() {                      
+		       const params = this.form.map(item => {
+		           let obj = this.selects.find(ele => ele.name.field == item.key);
+		          let name = obj.name.value;
+		          console.log(obj)
+		          let value_key = '';
+		          if(obj.type == 'select'){
+                      value_key = obj.select.find(ele => ele.id == item.value).name;
+                  }
+		          return {
+		              key: item.key,
+					  name: name,
+                      expression: item.keyfil,
+                      value: item.value,
+					  value_key: value_key,
+				  };
+			  })
+			  console.log(params);
+			  this.ajaxData(params);
+			  this.filterDialogVisible = false;
+          },
+		  ajaxData(data){
+		      document.querySelector('#sear').value = JSON.stringify(data);
+              document.querySelector('#searchData').submit();
+              // $.post('index',data,(res) => {
+		      //     console.log(res);
+			  // })
+
+		  }
+      }
+    })
+
+  </script>
+
+{/block}
+{block name="script"}
+<style>
+	.bottom-select-all {
+		display: flex;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		align-items: center;
+		width: 250px;
+		margin-left: 9px;
+	}
+	.select-mian {
+		width: 120px;
+		height: 28px;
+		border-radius: 2px;
+		outline: none;
+	}
+	.select-btn {
+		height: 30px;
+		line-height: 28px;
+		padding: 0 15px;
+		color: #fff;
+		background: #409EFF;
+		font-size: 12px;
+		float: left;
+		margin-right: 10px;
+		outline: none;
+		border: none;
+		border-radius: 4px;
+	}
+</style>
+<script>
+	
+
+
+	$('#select-btn').click(function () {
+		let myselect = document.querySelector('.select-mian');
+		let index = myselect.selectedIndex;
+		let val = myselect.options[index].value
+
+		console.log(document.querySelector('.checkboxCtrl').getAttribute('data-group'))
+		var chk_value = [];
+		$('input[name="ids[]"]:checked').each(function () {
+			chk_value.push($(this).val());
+		});
+
+		if (val == -1 || chk_value.length < 1) {
+			layer.msg("{:lang('请选择操作')}");
+			return
+		}
+		var params = {
+			'ids': chk_value,
+			'type' : $(".select-mian").find("option:selected").attr("action")
+		};
+		$.post('/admin.php/goods/index/setstatus', params, function (res) {
+			console.log(res)
+			if (res.code == 1) {
+				layer.msg("{:lang('操作成功')}");
+				window.location.reload();
+			} else {
+				layer.msg("{:lang('操作失败')}");
+			}
+		})
+	})
+	
+	
+
+	function changeShopPrice () {
+		console.log(11)
+	};
+	// 开关组件
+	$(".choose-btn").each(function(){
+	  var texts = $(this).attr('data-toggle').split('|');
+	  $(this).siblings('.choose-text').text(this.checked?texts[0]:texts[1]);
+	});
+	$(".choose-btn").on("change", function(){
+		let chageId= $(this).attr('chageId')
+		let changeType =  $(this).attr('changeType')
+		  let query={
+			  value:$(this).is(':checked'),
+			  _t :"" ,
+			  name: changeType ,
+			  type :"switch" ,
+			  pk :chageId ,
+			  model: "goods" ,
+			  module :"goods" ,
+			  controller: "index"
+		  }
+	  //向后端请求
+	   $.post("/admin.php/goods/index/quickedit.html",query,function(data,status){
+		if(data.code==='1'){
+			// 成功不处理
+		} else{
+			layer.msg(data.msg);
+			// 失败提示 重新加载页面
+	        window.history.go(0)
+		}
+	  });
+	  var texts = $(this).attr('data-toggle').split('|');
+	  $(this).siblings('.choose-text').text(this.checked?texts[0]:texts[1]);
+	});
+
+
+//格式化数据
+let trim = function( text )
+{
+  if (typeof(text) == "string")
+  {
+    return text.replace(/^\s*|\s*$/g, "");
+  }
+  else
+  {
+    return text;
+  }
+}
+
+//判断事件
+let fixEvent = function(e)
+{
+  var evt = (typeof e == "undefined") ? window.event : e;
+  return evt;
+}
+
+ let srcElement = function(e)
+{
+  if (typeof e == "undefined") e = window.event;
+  var src = document.all ? e.srcElement : e.target;
+
+  return src;
+}
+
+
+	/**
+ * 创建一个可编辑区
+ */
+
+let listTable = function(obj, act, row,inputType){
+   let oldTxtVal=0
+	// console.log(obj,act,row)
+  var tag = obj.firstChild.tagName;
+
+  if (typeof(tag) != "undefined" && tag.toLowerCase() == "input")
+  {
+    return;
+  }
+  
+
+  /* 保存原始的内容 */
+  var org = obj.innerHTML;
+  var val =  obj.textContent;
+ 
+
+  /* 创建一个输入框 */
+
+  var txt = document.createElement("INPUT");
+  txt.value = (val == 'N/A') ? '' : val;
+  
+//   保留编辑前的老值
+  oldTxtVal = JSON.parse(JSON.stringify(txt.value)) 
+  console.log(oldTxtVal)
+  txt.className='text textpadd';
+  txt.type=inputType || 'text'
+  if(obj.offsetWidth>12){
+  	txt.style.width = (obj.offsetWidth+12) + "px";
+  }else{
+	txt.style.width = obj.offsetWidth + "px";
+  }
+  if(act==='shop_price'){
+	txt.style.width = (obj.offsetWidth+50)  + "px";
+  }
+
+  if($(obj).siblings(".edit_icon")){
+	 $(obj).siblings(".edit_icon").hide();
+  }
+  /* 隐藏对象中的内容，并将输入框加入到对象中 */
+  obj.innerHTML = "";
+  obj.appendChild(txt);
+  txt.focus();
+
+  /* 编辑区输入事件处理函数 */
+  txt.onkeypress = function(e)
+  {
+    var evt = fixEvent(e);
+    var obj = srcElement(e);
+
+    if (evt.keyCode == 13)
+    {
+      obj.blur();
+
+      return false;
+    }
+
+    if (evt.keyCode == 27)
+    {
+      obj.parentNode.innerHTML = org;
+    }
+  }
+ 
+  txt.oninput=function(e){
+	  if(act==='shop_price'){
+	  	      txt.value = txt.value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符   
+	  	      txt.value = txt.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的   
+	  	      txt.value = txt.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+	  	      txt.value = txt.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数   
+	  	      if (txt.value.indexOf(".") < 0 && txt.value != "") { //以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额  
+	  	            txt.value = parseFloat(txt.value);
+	  	       }
+	  }
+  }
+   /* 编辑区失去焦点的处理函数 */
+  txt.onblur = function(e)
+  {
+    if (trim(txt.value).length > 0)
+    {
+	let query={
+			  value:txt.value,
+			  _t :"" ,
+			  name: act ,
+			  pk :row.id ,
+			  model: "goods" ,
+			  module :"goods" ,
+			  controller: "index"
+		  }
+		  console.log(query,'quickEdit')
+	  //向后端请求
+	  //   获取编辑前的老值
+	  console.log(oldTxtVal)
+	  // 如果用户未做任何修改，不动态请求接口
+
+	  if(oldTxtVal == query.value){
+		       obj.innerHTML = org;
+		  return false
+	  }
+	  console.log(query)
+	   $.post("quickEdit",query,function(data,status){
+		if(status==='success'){
+			// 成功不处理
+			obj.innerHTML = (data.code===1) ? txt.value : org;
+		} else{
+			// 失败提示 重新加载页面
+	          window.history.go(0)
+			  alert("数据：" + data + "\n状态：" + status);
+		}
+	  });
+	  if($(obj).siblings(".edit_icon")){
+		 $(obj).siblings(".edit_icon").css({"display":""});
+	  }
+    }
+    else
+    {
+      obj.innerHTML = org;
+    }
+  }
+}
+
+	function clearinput(){
+		$(".marBtm").find('input').val('');
+		$(".marBtm").find(".select2").val(0).trigger('change');
+		$(".marBtm").find("select[name='is_sale']").val(-1).trigger('change');
+		window.location.href = '/admin.php/goods/index/index.html';
+	}
+</script>
+{/block}

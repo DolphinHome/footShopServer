@@ -1,0 +1,164 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<div class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box nav-tabs-custom">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{:lang('新增抽奖奖品')} <small style="color:red"> </small></h3>
+                    <button class="btn btn-default btn-flat btn-xs pull-right" type="button" onclick="javascript:history.back(-1);return false;">
+                        <i class="fa fa-mail-reply"></i> {:lang('返回')} </button>
+                </div>
+                <div class="box-body tab-content">
+                    <div class="tab-pane active">
+                        <div class="block-content" style="max-width: 600px;">
+                            <!-- 表单验证请保留id="form"，否则验证不起作用 -->
+                            <form class="form row" parent_reload="-1" name="form" id="form" onkeydown="if(event.keyCode==13){findinput();return false;}" autocomplete="on" action="/admin.php/goods/reward/add.html" method="post" data-validator-option="{timely:1, theme:'bootstrap'}">
+
+                                <input type="hidden" name="__token__" value="bd663300684d4e35b028218feb290066">
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_reward_id">
+                                    <div class="col-xs-12 label-title" for="reward_id">{:lang('奖品')}</div>
+                                    <div class="col-sm-12">
+                                        <select class="select2 form-control select2-hidden-accessible" id="reward_id" name="reward_id" data-select2-id="reward_id" tabindex="-1" aria-hidden="true">
+                                            <option value="1" data-select2-id="2">【京选好货】手办DC周边摆件 蝙蝠侠雕像1/6黑暗骑士造型GK老爷树脂模型摆件正义联盟 GK蝙蝠侠树脂雕像 全新现货【高约36CM】</option>
+                                            <option value="3">    【限时秒杀】大型拼装蝙蝠战车兼容乐高积木拼插男孩玩具英雄蝙蝠侠大电影绝版装甲车 【升级版】盒装现货</option>
+                                            <option value="4">斐纳（TOMEFON）扫地机器人 （4台整箱） 激光扫拖一体吸尘器TF-G85</option>
+                                            <option value="5">劳力士 rolex男表 迪通拿系列彩虹圈满天星116595RBOW 自动机械 腕表</option>
+                                            <option value="6">蒂尔士 脚蹬拉力器仰卧起坐辅助女多功能家用健身器材 四管拉力器紫色</option>
+                                            <option value="7">刘亦菲海报墙贴壁纸贴纸美女女神贴画寝室装饰挂画宿舍自粘定制大 刘亦菲01 大70*50厘米</option>
+                                            <option value="8">啄木鸟纯棉长袖t恤男秋季新款中年宽松翻领条纹上衣爸爸装2020商务休闲加绒加厚有领冰丝polo衫男 832黑色加绒 180/XL</option>
+                                            <option value="9">小米10至尊纪念版5g手机120倍变焦骁龙865智能游戏小米官方旗舰手机小米10</option>
+                                            <option value="10">花花公子长袖t恤男士秋冬新款圆领卫衣男装纯色棉T恤中青年印花休闲加大码打底衫体恤保暖上衣加绒加厚外套 21178黑色 190/4XL</option>
+                                            <option value="11">良品铺子 肉肉大满足纯肉零食大礼包 肉干肉脯牛肉干猪肉脯宵夜休闲零食送女友礼物1589g/1576g 【12款纯荤零食】肉肉大礼包1589g 1箱</option>
+                                            <option value="12">浪莎打底裤女加绒光腿一体裤外穿薄款春秋黑肉色显瘦裤袜黑色连裤</option>
+                                            <option value="13">Apple/苹果 iPhone 11 Pro Max 全网通4G智能手机苏宁易购官方旗舰店苹果11ProMax</option>
+                                            <option value="14">卡兰薇 帽子女冬天手套三件套围巾一体韩版圣诞鹿角可爱百搭保暖 红鹿角-米色</option>
+                                            <option value="15">Huawei/华为Mate 40 Pro 5G手机官方新款旗舰店mate30 正品40荣耀P30por直降nova7全网通8</option>
+                                            <option value="16">卡兰薇 帽子女冬天手套三件套围巾一体韩版圣诞鹿角可爱百搭保暖 红鹿角-米色</option>
+                                            <option value="19">浪莎打底裤女加绒光腿一体裤外穿薄款春秋黑肉色显瘦裤袜黑色连裤</option>
+                                            <option value="21">百草味 巨型零食大礼3039g30袋/3070g/30袋 休闲食品小吃果干糕点坚果送女友儿童节日礼物巨有好运</option>
+                                            <option value="22">HM</option>
+                                            <option value="23">测试</option>
+                                            <option value="25">手机大大</option>
+                                            <option value="26">大礼包</option>
+                                            <option value="27">京东京造 笔记本电脑 全面屏 全金属超薄本网课教育商务本 JDBook 14英寸(十代酷睿i3处理器 8G 256G高速固态 FHD Win10) 银色 轻薄本 京造</option>
+                                            <option value="28">111京东京造 笔记本电脑 全面屏 全金属超薄本网课教育商务本 JDBook 14英寸(十代酷睿i3处理器 8G 256G高速固态 FHD Win10) 银色 轻薄本 京造</option>
+                                            <option value="29">测试商品002</option>
+                                            <option value="30">测试商品005678</option>
+                                            <option value="31">测试</option>
+                                            <option value="32"></option>
+                                            <option value="34">测试呀</option>
+                                        </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="1" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-reward_id-container"><span class="select2-selection__rendered" id="select2-reward_id-container" role="textbox" aria-readonly="true" title="【京选好货】手办DC周边摆件 蝙蝠侠雕像1/6黑暗骑士造型GK老爷树脂模型摆件正义联盟 GK蝙蝠侠树脂雕像 全新现货【高约36CM】"><span class="select2-selection__clear" data-select2-id="3">×</span>【京选好货】手办DC周边摆件 蝙蝠侠雕像1/6黑暗骑士造型GK老爷树脂模型摆件正义联盟 GK蝙蝠侠树脂雕像 全新现货【高约36CM】</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group hidden " id="form_group_type">
+                                    <input type="hidden" name="type" value="1" class="form-control" id="type">
+                                </div>
+
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_chance">
+                                    <div class="col-xs-12 label-title" for="chance">{:lang('中奖概率')}</div>
+                                    <div class="col-sm-12">
+                                        <input class="form-control" autocomplete="off" type="text" id="chance" name="chance" value="" placeholder="{:lang('请输入中奖概率')}">
+                                        <div class="help-block">填1-100，20 {:lang('代表')}20%</div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_level_name">
+                                    <div class="col-xs-12 label-title" for="level_name">{:lang('图片上传')}</div>
+                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_thumb" style="margin-left: -30px;">
+                                        <div class="col-xs-12 js-upload-images">
+                                            <div id="file_list_thumb" class="uploader-list pull-left"></div>
+                                            <input type="hidden"  id="thumbVal" name="thumb" data-multiple="true" data-size="0" data-ext='' id="addimgcut" value="">
+                                            <div class="col-xs-12 js-upload-images webuploader-pick" id="add_picker_thumb">{:lang('上传图片')}</div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group col-md-12 col-xs-12">
+                                    <div class="col-xs-12">
+                                        <button class="btn btn-primary btn-flat" type="submit"> {:lang('提交')} </button>
+                                        <button class="btn btn-default btn-flat" type="button" onclick="javascript:history.back(-1);return false;">
+                                            {:lang('返回')} </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+	
+    $(function(){
+        let cutPicWidth = 400; // 裁剪图片的宽度
+        let cutPicHeight = 400; // 裁剪图片的高度
+    
+        let slideVal = ''; // 此属性是图片裁剪完之后给from表单的input的value赋值的,不可删除
+        let picNum = 0; // 上传的图片数量
+        let Html = []; // 空的模板字符串
+        // 商品主图（需要在用到这个功能的页面添加一个layer弹窗）
+        $('#add_picker_thumb').on('click', () => {
+            // 在这里修改裁剪图片的大小
+            let picSize = {
+                "width": cutPicWidth,
+                "height": cutPicHeight
+            }
+            localStorage.setItem('picSize',JSON.stringify(picSize))
+            layer.open({
+                title: "{:lang('裁切图片')}",
+                type: 2,
+                area: ['950px', '700px'],
+                fixed: false, //不固定
+                maxmin: true,
+                content: "{:url('/operation/ads/cut')}",
+                end: () => {
+                    let picData = localStorage.getItem('picBase64');
+                    localStorage.removeItem('picBase64')
+                    $.post('/admin.php/operation/ads/base64_upload',{'img_base64':picData})
+                    .then(res => {
+                        if(res.code == 1) {
+                            picNum++;
+                            slideVal = `${res.data.id}`;
+                            Html.length = 0;
+                            Html.push(`<div id="WU_FILE_${picNum}" style="width:40px;height:40px;" class="file-item js-gallery thumbnail">
+                                        <a data-magnify="gallery" id="iview" href="${res.data.path}">
+                                            <img src="${picData}" data-original="${res.data.path}"/>
+                                        </a>
+                                        <div class="info">xxxx</div>
+                                        <i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${res.data.id}"></i>
+                                        <div class="file-state img-state">
+                                            <div class="bg-success">上传成功</div>
+                                        </div>
+                                    </div>`);
+                            $('#thumbVal').attr({ 'value': slideVal });
+                            $("#file_list_thumb").html(Html.join(''));
+                        }
+                    })
+                }
+            });
+        })
+    
+                    // 删除图片
+        function removePic(ele) {
+            let tempId = ele.getAttribute("data-id");
+            for (let i = 0; i < Html.length; i++) {
+                if (Html[i].includes(`<i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${tempId}"></i>`)) {
+                    Html.splice(i, 1);
+                    $("#file_list_thumb").html(Html.join(''));
+                    return
+                }
+            }
+            slideVal.replace(`${tempId},`,'');
+            $('#thumbVal').attr({ 'value': slideVal });
+        }
+    })
+    
+    </script>
+{/block}

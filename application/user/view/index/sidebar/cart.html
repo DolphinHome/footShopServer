@@ -1,0 +1,52 @@
+<div>
+  <table class="table table-builder table-hover table-bordered table-striped">
+    <thead>
+       <tr>
+          <th>{:lang('商品名称')}</th>
+          <th>{:lang('商品图片')}</th>
+          <th>{:lang('商品')}sku{:lang('名称')}</th>
+          <th>{:lang('商品价格')}</th>
+          <th class="column-right_button text-center">{:lang('购买数量')}</th>
+       </tr>
+    </thead>
+    <tbody>
+    
+    {notempty name="cart"}
+    {volist name="cart" id="module"}
+    <tr>
+       <td title="{$module.goods_name}">{$module.goods_name|default='无标题'|mb_substr=0,5}</td>
+       <td><img style="width: 50px;height: 50px;" src="{$module.goods_thumb}" /></td>
+       <td>{$module.sku_name}</td>
+       <td>{$module.shop_price}</td>
+       <td class="text-center">{$module.num}</td>
+    </tr>
+    {/volist}
+    {else /}
+    <tr class="table-empty">
+       <td class="text-center empty-info" colspan="6"><i class="fa fa-database"></i> {:lang('暂无数据')} <br></td>
+    </tr>
+    {/notempty}
+       </tbody>
+    
+ </table>
+    <div class="data-table-toolbar">
+        <div class="row">
+            <div class="col-sm-12"> {// 分页 }
+                {notempty name="cart_pages"}
+                {$cart_pages|raw}
+                {/notempty}
+                {notempty name="cart"}
+
+                <div class="pagination-info pull-right">
+                    <div>
+                        <input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+                        <input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $cart->listRows() : input('param.list_rows');{/php}">
+                        / <strong>{$cart->lastPage()|raw}</strong> {:lang('页')}，{:lang('共')} <strong>{$cart->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+                    </div>
+                </div>
+                {/notempty}
+            </div>
+        </div>
+    </div>
+
+</div>

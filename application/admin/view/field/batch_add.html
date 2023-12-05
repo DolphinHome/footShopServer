@@ -1,0 +1,144 @@
+{extend name="layout" /}
+{block name="content"}
+<div class="row">
+	<div class="col-md-12">
+		<div class="box nav-tabs-custom">
+			<div class="box-header with-border">
+				<h3 class="box-title">{:lang('批量新增字段')}</h3>
+			</div>
+			<div class="box-body tab-content" id="app">
+				<div class="tab-pane active">
+					<div class="block-content"> 
+						<!-- {:lang('表单验证请保留')}id="form"，{:lang('否则验证不起作用')} -->
+						<form class="form" name="form1" id="goodsform" @submit.prevent="validateBeforeSubmit" action="{:url()}" method="post" data-validator-option="{timely:1, theme:'bootstrap'}">
+							{:token()}
+							<table class="table table-builder table-bordered mb10">
+								<thead>
+									<th class="">{:lang('字段标识')} </th>
+									<th class="">{:lang('字段名称')} </th>
+									<th class="">{:lang('字段类型')} </th>
+									<th class="">{:lang('字段定义')} </th>
+									<th class="">{:lang('字段默认值')} </th>
+									<th>{:lang('操作')}</th>
+								</tr>	
+								</thead>
+								<tbody>
+									<tr v-for="(field,key) in info">
+										<td class=""> <input class="form-control" type="text" id="name" v-model="field.name" placeholder="{:lang('字段标识')}" data-rule="required;name;" data-rule-name="[/^[a-zA-Z][a-zA-Z0-9_]*$/, '{:lang('请输入正确的标识')}，{:lang('只能使用英文和下划线')}，{:lang('必须以英文字母开头')}']" data-msg-required="{:lang('标识不能为空')}"> </td>
+										<td class=""> <input class="form-control" data-rule="required;" type="text" id="title" v-model="field.title" value="" placeholder="{:lang('请输入字段名称')}" > </td>
+										<td class=""> <select id="brand_id" v-model="field.type" class="form-control"  @change="selectVal(key)">
+											<option :value="index" v-for="(item,index) in fieldtype" :selected="field.type == index">{{item}}</option>
+										</select> </td>
+										<td class=""><input class="form-control" type="text" id="define" v-model="field.define" value="" placeholder="{:lang('请输入字段定义')}" ></td>
+										<td class=""><input class="form-control" type="text" id="value" v-model="field.value" value="" placeholder="{:lang('请输入字段默认值')}" ></td>
+										<td><a href="javascript:;" @click="field_delete(key)">{:lang('删除')}</a></td>
+									</tr>
+									<tr>
+										<td colspan="6" align="center"><a href="javascript:;" class="btn btn-success " @click="add()">{:lang('增加一行')}</a></td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="col-xs-12" style="margin-top:20px;">
+								<button class="btn btn-primary " type="submit">{:lang('提交')}</button>
+								<button class="btn btn-default " type="button" onClick="javascript:history.back(-1);return false;">{:lang('返回')}</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="script"} 
+<script type="text/javascript" src="__PLUG__/vue/vue.min.js"></script> 
+<script type="text/javascript" src="/static/admin/js/field.js"></script> 
+<script>
+		var $field_define_list = {
+			number: "int(11) UNSIGNED NOT NULL",
+	        text: "varchar(256) NOT NULL",
+	        textarea: "varchar(256) NOT NULL",
+	        password: "varchar(128) NOT NULL",
+	        checkbox: "varchar(256) NOT NULL",
+	        radio: "tinyint(1) NOT NULL",
+	        datetime: "int(11) UNSIGNED NOT NULL",
+	        array: "varchar(256) NOT NULL",
+	        select: "varchar(256) NOT NULL",
+	        linkage: "varchar(256) NOT NULL",
+	        linkages: "varchar(256) NOT NULL",
+	        image: "int(11) UNSIGNED NOT NULL",
+	        images: "varchar(256) NOT NULL",
+	        file: "int(11) UNSIGNED NOT NULL",
+	        files: "varchar(256) NOT NULL",
+	        wangeditor: "text NOT NULL",
+			ueditor: "text NOT NULL",
+			money: "decimal(10,2) NOT NULL",
+			alivideo: "int(11) UNSIGNED NOT NULL",
+			color: "varchar(256) NOT NULL",
+	    };
+        var vm = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+				 info:[],
+				 fieldtype:{$fieldtype|raw}
+				}
+            },
+			mounted: function() {
+				this.add();
+			},
+            methods: {
+                add() {
+                    this.info.push({
+                        name: '',
+						title: '',
+						type:'number',
+						define: "int(11) UNSIGNED NOT NULL",
+						value:0
+                    })
+                },
+				field_delete(index) {
+					console.log(this.info.length);
+					if(this.info.length > 1){
+						this.info.splice(index,1)
+					}else{
+						layer.msg("{:lang('只剩')}"+'1'+"{:lang('个了')}"+"{:lang('不能删除了')}");
+					}
+                },
+				selectVal(index,val){
+					this.info[index].define = $field_define_list[this.info[index].type];
+					if(this.info[index].type == 'number' || this.info[index].type == 'datetime' || this.info[index].type == 'image' || this.info[index].type == 'file' || this.info[index].type == 'money'){
+						this.info[index].value=0;
+					}else{
+						this.info[index].value='';
+					}
+				},
+				// 提交表单
+				validateBeforeSubmit() {
+					var that = this;
+					Stars.loading();
+					$('#goodsform').isValid(function(v) {
+						if(v) {
+							$.post('{:url()}', {info:that.info,model:{$model}}).then((response) =>{
+								Stars.loading('hide');
+								if (response.code == 1) {
+									Stars.notify(response.msg, 'success', 'fa fa-bell-slash');
+									setTimeout(function() {
+										location.href = response.url
+									},
+									1500)
+								} else {
+									Stars.notify(response.msg, 'danger', 'fa fa-bell-slash');
+								}
+							});
+							return;
+						}else{
+							Stars.loading('hide');
+							layer.msg("{:lang('请填写必填项')}");
+						}
+					});
+				},
+            }
+        })
+    </script> 
+{/block}

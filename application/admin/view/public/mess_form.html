@@ -1,0 +1,209 @@
+{:token()}
+{notempty name="form_items"}
+{volist name="form_items" id="form"}
+{php}
+if($form['type'] == 'linkages'){
+$form['token'] = createLinkagesToken($form['table'],$form['option'],$form['key']);
+}
+{/php}
+{switch name="form.type"}
+
+{case value="checkbox"}
+{// 多选 }
+{include file="../application/admin/view/public/items/checkbox.html" /}
+{/case}
+
+{case value="linkages"}
+{// 快速联动 }
+{include file="../application/admin/view/public/items/linkages.html" /}
+{/case}
+
+{case value="hidden"}
+{// 隐藏 }
+{include file="../application/admin/view/public/items/hidden.html" /}
+{/case}
+
+{case value="icon"}
+{// 图标选择器 }
+{include file="../application/admin/view/public/items/icon.html" /}
+{/case}
+
+{case value="date"}
+{// 日期 }
+{include file="../application/admin/view/public/items/date.html" /}
+{/case}
+
+{case value="datetime"}
+{// 日期时间 }
+{include file="../application/admin/view/public/items/datetime.html" /}
+{/case}
+
+{case value="daterange"}
+{// 日期 }
+{include file="../application/admin/view/public/items/daterange.html" /}
+{/case}
+
+{case value="image"}
+{// 单图片上传 }
+<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_{$form.name}">
+    <div class="col-xs-12 label-title" for="{$form.name}">{$form.title|htmlspecialchars}</div>
+    <div class="col-xs-12 js-upload-image">
+        <div id="file_list_{$form.name}" class="uploader-list" style="float:left">
+                {notempty name="form.value"}
+                <div class="file-item thumbnail">
+                    <a data-magnify="gallery" data-caption="" href="{$form['value']|get_file_url}">
+                        <img data-original="" src="{$form['value']|get_thumb}" width="100">
+                    </a>
+                </div>
+                {/notempty}
+        </div>
+    </div>
+</div>
+{/case}
+
+{case value="images"}
+{// 多图片上传 }
+{include file="../application/admin/view/public/items/images.html" /}
+{/case}
+
+{case value="file"}
+{// 单图片上传 }
+{include file="../application/admin/view/public/items/file.html" /}
+{/case}
+
+{case value="files"}
+{// 多图片上传 }
+{include file="../application/admin/view/public/items/files.html" /}
+{/case}
+
+{case value="number"}
+{// 数字 }
+{include file="../application/admin/view/public/items/number.html" /}
+{/case}
+
+{case value="money"}
+{// 数字|2位小数 }
+{include file="../application/admin/view/public/items/money.html" /}
+{/case}
+
+{case value="password"}
+{// 密码 }
+{include file="../application/admin/view/public/items/password.html" /}
+{/case}
+
+{case value="radio"}
+{// 单选 }
+{include file="../application/admin/view/public/items/radio.html" /}
+{/case}
+
+{case value="select"}
+{// 下拉菜单 }
+<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_{$form.name}">
+    <div class="col-xs-12 label-title" for="{$form.name}">{$form.title|htmlspecialchars}</div>
+    <div class="col-sm-12">
+        <select class="select2 form-control" disabled id="{$form.name}" name="{$form.name}" {$form.attr|default=''}>
+            {volist name="form.extra" id="option"}
+            <option value="{$key}" {if ((string)$form.value == (string)$key)}selected{/if}>{$option|raw}</option>
+            {/volist}
+        </select>
+
+    </div>
+</div>
+{/case}
+{case value="multistage_select"}
+{// 商品分类三级联动 }
+{include file="../application/admin/view/public/items/multistage_select.html" /}
+{/case}
+{case value="table"}
+{// 自定义表格|数组 }
+{include file="../application/admin/view/public/items/table.html" /}
+{/case}
+{case value="text"}
+{// 单行文本 }
+<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_{$form.name}">
+    <div class="col-xs-12 label-title" for="{$form.name}">{$form.title|htmlspecialchars}</div>
+    <div class="col-sm-12">
+        <input class="form-control" autocomplete="off" readonly type="text" id="{$form.name}" name="{$form.name}" value="{$form.value|default=''|raw}" placeholder="{$form.placeholder|default='请输入'.$form.title}" {$form.attr|default=''|raw}>
+    </div>
+</div>
+{/case}
+
+{case value="static"}
+{// 静态文本 }
+{include file="../application/admin/view/public/items/static.html" /}
+{/case}
+
+{case value="sort"}
+{// 文本框|排序 }
+{include file="../application/admin/view/public/items/sort.html" /}
+{/case}
+
+{case value="textarea|array"}
+{// 文本框|数组 }
+{include file="../application/admin/view/public/items/textarea.html" /}
+{/case}
+
+{case value="linkage|array"}
+{// 自定义联动|数组 }
+{include file="../application/admin/view/public/items/linkage.html" /}
+{/case}
+
+{case value="alivideo"}
+{// 阿里OSS单视频上传 }
+{include file="../application/admin/view/public/items/alivideo.html" /}
+{/case}
+
+{case value="color"}
+{// 颜色选择器 }
+{include file="../application/admin/view/public/items/color.html" /}
+{/case}
+
+{case value="wangeditor"}
+{// wang编辑器 }
+<?php
+//定义插件的JS,CSS和脚本
+$plugin_item_js['ueditor.1'] = "__STATIC__/plugins/ueditor/ueditor.config.js";
+$plugin_item_js['ueditor.2'] = "__STATIC__/plugins/ueditor/ueditor.all.js";
+$plugin_item_js['ueditor.3'] = "__STATIC__/plugins/ueditor/lang/zh-cn/zh-cn.js";
+$plugin_item_js['ueditor.4'] = "__STATIC__/plugins/ueditor/init.js";
+
+
+?>
+
+<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_{$form.name}" style="overflow:hiddden">
+    <div class="col-xs-12 label-title" for="{$form.name}">{$form.title|htmlspecialchars}</div>
+    <div class="col-xs-12 html_show" >
+        {$form.value|default=''|raw}
+<!--        <textarea class="js-ueditor" name="{$form.name}"  id="{$form.name}" rows="15" {$form.attr|default=''|raw}></textarea>-->
+
+    </div>
+</div>
+<style>
+    .html_show{
+        width:90%;
+        border:1px solid #eee;
+        padding:20px;
+        word-break:break-all;
+    }</style>
+{/case}
+{case value="ueditor"}
+{// ueditor编辑器 }
+{include file="../application/admin/view/public/items/ueditor.html" /}
+{/case}
+{case value="addimgcut"}
+{// ueditor新增页面图片裁剪器 }
+{include file="../application/admin/view/public/items/addimgcut.html" /}
+{/case}
+{case value="editimgcut"}
+{// ueditor编辑页面图片裁剪器 }
+{include file="../application/admin/view/public/items/editimgcut.html" /}
+{/case}
+{case value="callmap"}
+{// 高德地图唤起按钮 }
+{include file="../application/admin/view/public/items/callmap.html" /}
+{/case}
+{default/}
+{/switch}
+{/volist}
+{/notempty}
+								

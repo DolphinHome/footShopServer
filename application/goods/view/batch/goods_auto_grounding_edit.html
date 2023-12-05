@@ -1,0 +1,108 @@
+<!--
+ * @Descripttion: 
+ * @Version: 1.0
+ * @Author: wangph
+ * @Date: 2021-03-31 09:46:02
+ * @LastEditors: wangph
+ * @LastEditTime: 2021-04-27 10:46:47
+-->
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/main.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/iconfont.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/order-new.css?v=2">
+{/block}
+
+{block name="content"}
+<style type="text/css">
+    .select-list {
+        width:150px;
+        height:150px;
+        /*overflow: hidden;*/
+        overflow:scroll;
+    }
+    .select-container {
+        display: none;
+    }
+    .select2 {
+        width: 140px !important;
+    }
+</style>
+<div class="warpper">
+    <div class="title">{:lang('商品')} - {:lang('商品批量上下架')}</div>
+    <div class="content">
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{:lang('操作提示')}</h4><span id="explanationZoom" title="{:lang('收起提示')}"></span></div>
+            <ul>
+                <li>{:lang('标识')}“<em>*</em>”{:lang('的选项为必填项')}，{:lang('其余为选填项')}。</li>
+                <li>{:lang('可从管理平台手动添加一名新会员')}，{:lang('并填写相关信息')}。</li>
+                <li>{:lang('新增会员后可从会员列表中找到该条数据')}，{:lang('并再次进行编辑操作')}，{:lang('但该会员名称不可变')}。</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="common-head">
+               <!--  <div class="refresh ml0">
+                    <div class="refresh_tit" title="{:lang('刷新数据')}"><i class="icon icon-refresh"></i></div>
+                    <div class="refresh_span">{:lang('刷新')} - {:lang('共条记录')}</div>
+                </div> -->
+            </div>
+            <div class="common-content">
+                <form action="goods_auto_grounding_update" method="post" name="theForm">
+                    <div class="list-div" id="listDiv" style="width: 800px; word-wrap:break-word; ">
+                        <table cellpadding="0" cellspacing="0" border="0" >
+                            <thead>
+                            <tr>
+                                <th width="10%"><div class="tDiv">{:lang('货号')}</div></th>
+                                <th width="60%"><div class="tDiv">{:lang('商品名称')}</div></th>
+                                <th width="10%"><div class="tDiv">{:lang('状态')}</div></th>
+                                <th width="10%"><div class="tDiv">{:lang('上架时间')}</div></th>
+                                <th width="10%"><div class="tDiv">{:lang('下架时间')}</div></th>
+                            </tr>
+                            </thead>
+                            <tbody class="tbodyText">
+                                {volist name="data_list" id="g"}
+                                <tr class="">
+                                    <td><div class="tDiv">{$g.sn}</div></td>
+                                    <td><div class="tDiv" style="width:1100px;word-wrap:break-word;">{$g.name}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            {if condition="$g.is_sale eq 1"}是{else}否{/if}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <input name="grounding[{$g.sn}]" type="text" value="" size="20" autocomplete="off" class="text w120" placeholder="YYYY-mm-dd">
+                                        </div>
+                                    </td>
+                                    <td class="tc">
+                                        <div class="tDiv">
+                                            <input name="undercarriage[{$g.sn}]" type="text" value="" size="20" autocomplete="off" class="text w120" placeholder="YYYY-mm-dd">
+                                        </div>
+                                    </td>
+                                    
+                                </tr>
+                                {/volist}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="22">
+                                    <div class="tDiv tc info_btn" style="width:100px; margin:0 auto;">
+                                        <input type="submit" name="submit" value=" {:lang('确定')} " class="button">
+                                        <input type="hidden" name="edit_method" value="each">
+                                        {volist name="data_list" id="goods"}
+                                             <input type="hidden" name="goods_sn[]" value="{$goods.sn}">
+                                        {/volist}
+                                    </div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

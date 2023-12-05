@@ -1,0 +1,1997 @@
+{extend name="$admin_layout" /}
+{block name="style"}
+<!-- <link rel="stylesheet" href="__PLUG__/tags/css/tagsinput.css">
+<link rel="stylesheet" href="__PLUG__/tags/css/prism.css"> -->
+{/block}
+{block name="content"}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+
+	<!-- import Vue before Element -->
+  <script src="/static/plugins/vue/vue.min.js"></script>
+  <!-- import element ui  -->
+  <!-- import JavaScript -->
+  <script src="/static/plugins/element-ui/element-ui.js" ></script>
+  <!-- import CSS -->
+  <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+
+
+  <!-- import element ui  -->
+  <script src="/static/plugins/echarts/echarts.min.js"></script>
+  <!-- ajax请求 -->
+  <script src="/static/plugins/ajax/axios.js" ></script>
+  <link rel="stylesheet" href="/static/plugins/wang-editor/css/wangEditor.min.css?v=12221">
+  <script src="/static/plugins/wang-editor/js/wangEditor.min.js?v=12111"></script>
+  <!-- layui css -->
+  <link rel="stylesheet" href="/static/admin/js/layui/css/layui.css">
+
+  <style type="text/css">
+	.app{
+	  width: 100%;
+	  margin:0 auto;
+	}
+	.margin-top{
+		margin-top:10px;
+	} 
+	.box-width{
+       width:300px !important;
+	}
+	input[type=file]{
+		display: none;
+		height: 1px;
+	}
+	.explanation {
+		padding-right:15px;
+		font-size: 12px;
+		font-family: "Microsoft Yahei", "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+		padding: 11px 13px;
+		color: #707070;
+		border-radius: 5px;
+		background-color: #f5faff;
+		border: 1px dashed #62b3ff;
+		width:60%;
+		height: 100%;
+	}
+	.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 100px !important;
+    height: 100px !important;
+    line-height: 100px !important;
+    text-align: center;
+}
+	.el-upload--picture-card {
+		height:100px !important;
+		width:100px !important;
+		line-height: 100px !important;
+	}
+	.ex_tit {
+    color: #62b3ff;
+    position: relative;
+    line-height: 20px;
+    margin-bottom: 10px;
+	}
+   /* 缩略图 */
+   .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  /* 多张 */
+ .el-upload-list {
+	 display: flex;
+	 flex-direction: row;
+ }
+ .el-upload-list li:not(:first-child){
+	 margin-left:20px;
+ }
+  
+  .el-upload-list--picture .el-upload-list__item {
+	  display: flex;
+    overflow: hidden;
+    z-index: 0;
+   
+    float: left;
+    width: 100px;
+  }
+ 
+  .goods-basic-display {
+    margin-top: 20px;
+    margin-left: 120px;
+}
+.service-labels {
+    padding: 0;
+    margin-bottom: 0;
+}
+ .service-label {
+    display: inline-block;
+    height: 30px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: #eef7ff;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    line-height: 30px;
+    text-align: center;
+    color: #388ddd;
+}
+table td{
+	border:1px solid #EEEEEE;
+	padding-left:5px;
+	
+}
+.el-table td, .el-table th {
+    padding: 0px 0;
+}
+
+.el-table .cell {
+	padding-left:0 ;
+	padding-right:0 ;
+}
+.input_width{
+    padding: 0 !important;
+	padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.el-input__inner{
+	    height: 30px;
+		line-height: 30px;
+    outline: 0;
+    padding: 0 10px;
+}
+
+.el-form-item__content {
+    line-height: 36px;
+    position: relative;
+    font-size: 14px;
+	z-index: 0;
+}
+.el-form-item {
+    margin-bottom: 5px;
+}
+
+.el-form-item__error {
+    color: #F56C6C;
+    font-size: 12px;
+    line-height: 0.4;
+    padding-top: 0px;
+    position: absolute;
+    top: 95%;
+    left: 0;
+}
+.label-title{
+		line-height: 34px;
+		text-align: right;
+		padding-right: 0;
+	}
+.upVideo{
+		padding: 10px 10px;
+		background: #00b0f0;
+		color: #FFF;
+		border: none;
+		font-size:13px;
+		border-radius: 5px;
+		cursor:pointer;
+		box-shadow: 2px 2px 1px #ccc;
+
+	}
+	.el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
+	.el-form-item__label{
+		width: 150px;
+	}
+	.btn-success.focus, .btn-success:focus{
+		background-color:#409EFF;
+		border-color: #409EFF;
+	}
+	.btn-success.active.focus, .btn-success.active:focus, .btn-success.active:hover, .btn-success:active.focus, .btn-success:active:focus, .btn-success:active:hover, .open>.dropdown-toggle.btn-success.focus, .open>.dropdown-toggle.btn-success:focus, .open>.dropdown-toggle.btn-success:hover{
+		background-color:#0684e8!important;
+		border-color: #0684e8!important;
+	}
+
+	.el-input-number {
+    position: relative !important;
+    display: inline-block !important;
+    width: 180px !important;
+    line-height: 38px !important;
+}
+.cell{
+	padding-left: 0 !important; 
+}
+</style>
+</head>
+<body>
+  <div id="app" class="app">
+	  <div>
+		  <p ><i style="color:#409EFF;font-size:19px;" class="el-icon-circle-plus"></i> <span style="font-size:16px;display: inline;padding-left:5px;">{:lang('商品添加信息')}</span></p>
+		  <div class="explanation" id="explanation" style="width: 100%;">
+			<div class="ex_tit" style="margin-bottom: 10px;"><i class="sc_icon"></i><h4>{:lang('操作提示')}</h4><span id="explanationZoom" title="{:lang('收起提示')}" class=""></span></div>
+			<ul style="display: block;">
+				<li>{:lang('标识')}“<em style="color:#F59999;padding-right:3px;">*</em>”{:lang('的选项为必填项')}，{:lang('其余为选填项')}。</li>
+				<li>{:lang('请按提示栏信息进行商品添加')}。</li>
+				<li>{:lang('运费模式')}：{:lang('不包邮则使用运费模板计算运费')}</li>
+				<li>{:lang('图片上传时')}，{:lang('第一张为默认缩略图')}，{:lang('在产品展示时')}，{:lang('会选择该图片')}，{:lang('请注意')}！！！</li>
+			</ul>
+		</div>
+		
+      </div>
+      <el-form id="goodsform" @submit.prevent="validateBeforeSubmit" data-validator-option="{timely:1, theme:'bootstrap'}"    label-width="150px" label-position="right" class="demo-ruleForm">
+	  <el-card class="box-card" style="margin-top:20px;" >
+		<div slot="header" class="clearfix">
+			<i style="color:#409EFF;font-size:19px;" class="el-icon-paperclip"></i><span  style="color:#409EFF;font-size:16px;">{:lang('基本信息')}</span>
+		</div>
+		<div   style="margin-left:5%;">
+			
+			
+<!--				<el-form-item label="{:lang('添加抓取链接')}：" >-->
+<!--					<input type="text" id="curlurl"  name="curlurl" placeholder="{:lang('淘宝、京东、1688网站商品详情链接')}"  class="box-width" value="">-->
+<!--					<button class="btn btn-primary btn-flat" type="primary" id="getcurl" size='small'><span>抓取</span></button>-->
+<!--				</el-form-item>-->
+<!--				<el-form-item label="{:lang('添加登录cookie')}：" >-->
+<!--					<input type="text" id="curlcookie"  name="curlcookie"  placeholder="若获取不到详情，填写登录之后的cookie"  class="box-width" value="">-->
+<!--				</el-form-item>-->
+
+		
+                <el-form-item label="{:lang('商品名称')}："  :rules="[{ required: true, message: '请输入商品名称', trigger: 'blur' }]" >
+				   <el-input   type="text" name="name" v-model="productName"   placeholder="{:lang('请输入商品名称')}"  class="box-width" id="store_name"></el-input>
+				</el-form-item>
+				<el-form-item label="{:lang('商品货号')}：" >
+                    <input class="form-control box-width" type="text" name="sn" placeholder="{:lang('请输入商品货号')}，{:lang('为空则自动生成')}">
+				</el-form-item>
+
+<!--			<el-form-item label="{:lang('条形码')}：" >-->
+<!--				<input class="form-control box-width" type="text" name="bar_code" placeholder="{:lang('请输入条形码')}">-->
+<!--			</el-form-item>-->
+				<el-form-item label="{:lang('商品分类')}：" prop="goods_cid" :rules="[{ required: true, message: '请选择商品分类', trigger: 'blur' }]" >
+                    <!-- <select class="form-control box-width" name="cid"   >
+                        {volist name="category" id="cate"}
+                            <option value="{$key}" {eq name="cid" value="$key"}{/eq}>{$cate|raw}</option>
+                        {/volist}
+					</select> -->
+					<input type="hidden" name="cid" v-model='goods_cid'>
+					<el-cascader
+					size='small'
+					style="width:300px"
+					:options="goodsOptions"
+					v-model='goods_cid_list'
+					:props="{ checkStrictly: true,
+					value:'id',
+					label:'name',
+					children:'children'}"
+					clearable
+					@change='goodsOptionsChange'
+					ref="cascaderHandle" 
+					:show-all-levels="false" 
+					filterable></el-cascader>
+                 </el-form-item>
+				<el-form-item label="{:lang('商品标签')}：" :rules="[ { required: true, message: '请输入商品标签', trigger: 'blur' }]" >
+
+					<el-select
+							v-model="label_id"
+							multiple
+							collapse-tags
+							style="width:300px"
+							placeholder="请选择"
+							>
+						<el-option
+								v-for="item in goods_label"
+								:key="item.id"
+								:label="item.lable_name"
+								:value="item.id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="{:lang('推荐商品类型')}：" >
+                    <div style="display:flex;justify-content:flex-start;align-items:center;">
+						<label class="pr10" style="display:flex;justify-content:flex-start;align-items:center;"><input type="radio" name="goods_rem_type" id="web_site_status2" value="0" checked style="margin: 0 5px 0 0px;"> <div>男</div></label>
+						<label class="pr10" style="display:flex;justify-content:flex-start;align-items:center;"><input type="radio" name="goods_rem_type" id="web_site_status1" value="1" style="margin: 0 5px 0 0;"> <div>女</div></label>
+						<label class="pr10" style="display:flex;justify-content:flex-start;align-items:center;"><input type="radio" name="goods_rem_type" id="web_site_status1" value="3" style="margin: 0 5px 0 0;"> <div>儿童</div></label>
+					</div>
+				  </el-form-item>
+<!--				  		<el-form-item label="{:lang('活动标签')}：" >-->
+<!--							<el-checkbox-group v-model="checkedActivity" @change="handleCheckedActivity">-->
+<!--								 {volist name="goods_label_activity" id="ga"}-->
+<!--								<el-checkbox  label="{$ga.id}" key="{$key}">{$ga.name}</el-checkbox>-->
+<!--								{/volist}-->
+<!--							  </el-checkbox-group>-->
+
+<!--						</el-form-item>-->
+<!--						<el-form-item label="{:lang('服务标签')}：" >-->
+<!--							<el-checkbox-group v-model="checkedService" @change="handleCheckedService">-->
+<!--								 {volist name="goods_label_service" id="gs"}-->
+<!--								<el-checkbox  label="{$gs.id}" key="{$key}">{$gs.name}</el-checkbox>-->
+<!--								{/volist}-->
+<!--							  </el-checkbox-group>-->
+<!--						</el-form-item>-->
+<!--				<el-form-item label="{:lang('广告语')}：" >-->
+<!--                    <input class="form-control box-width"  type="text" name="adslogan" placeholder="{:lang('请输入商品广告语')}">-->
+<!--                </el-form-item>-->
+                <el-form-item label="{:lang('关键词')}：" >
+                    <input class="form-control box-width" type="text" name="keywords" placeholder="{:lang('请认真填写')}，{:lang('前台可根据用户搜索关键词展示产品')}">
+				</el-form-item>
+<!--				<el-form-item label="{:lang('是否支持积分兑换')}：" >-->
+<!--					<div style="display:flex;justify-content:flex-start;align-items:center;">-->
+<!--						<input type="radio" name="is_integral"  class="custom-control-input" value="1" style="margin: 0 5px 0 0;"><div>是</div>-->
+<!--						<input type="radio" name="is_integral"  checked class="custom-control-input"  value="0" style="margin-left:10px;margin:0 5px 0 10px;" ><div>否</div>-->
+<!--					</div>-->
+<!--				</el-form-item>-->
+<!--				<el-form-item label="{:lang('商品标签')}：" >-->
+<!--					<el-tag :key="tag" v-for="tag in dynamicTags" closable :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>-->
+<!--				  <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" maxlength="8" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"></el-input>-->
+<!--				  <el-button v-else class="button-new-tag" size="small" @click="showInput">+ {:lang('新增标签')}</el-button>-->
+<!--				</el-form-item>-->
+				<el-form-item :rules="[{ required: true, message: '商品主图', trigger: 'blur' }]" label="{:lang('商品主图')}：">
+
+					<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_thumb" style="margin-left: -30px;">
+						<div class="col-xs-12 js-upload-images">
+							<div id="file_list_thumb" class="uploader-list pull-left"></div>
+							<input type="hidden"  id="thumbVal" name="thumb" data-multiple="true" data-size="0" data-ext='' id="addimgcut" value="">
+							<div class="col-xs-12 js-upload-images webuploader-pick" id="add_picker_thumb">{:lang('上传图片')}</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<p  style="line-height: 16px;height:16px;width: 300px;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('只能上传一张')}，{:lang('建议')}:400x400</span> </p>
+				</el-form-item>
+				<!-- <el-form-item label="{:lang('视频介绍')}：" style="margin-top: 30px;">
+					<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_thumb" style="margin-left: -30px;">
+						<div class="col-xs-12 js-upload-images">
+							<div id="file_list_video" class="uploader-list pull-left"></div>
+							<input type="hidden"  id="videoVal" name="video" data-multiple="true" data-size="0" data-ext=''  value="">
+							<div class="col-xs-12 js-upload-images webuploader-pick" id="add_picker_video">{:lang('上传视频')}</div>
+							<div class="clearfix"></div>
+							<div class="layui-progress layui-progress-big layui_progress_wrap" lay-showpercent="true" lay-filter="demo" style="margin-top: 10px;display: none;" >
+								<div class="layui-progress-bar layui-bg-red layui_progress" lay-percent="0%"></div>
+						</div>
+						</div>
+						
+					</div>
+					<p  style="line-height: 16px;height:16px;width: 300px;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('只能上传一个视频')}</span> </p>
+				</el-form-item>
+				<el-form-item label="{:lang('视频封面图')}：" style="margin-top: 30px;">
+					<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_thumb" style="margin-left: -30px;">
+						<div class="col-xs-12 js-upload-images">
+							<div id="file_list_video_thumb" class="uploader-list pull-left"></div>
+							<input type="hidden"  id="videoThumbVal" name="video_img" data-multiple="true" data-size="0" data-ext=''  value="">
+							<div class="col-xs-12 js-upload-images webuploader-pick" id="add_picker_video_thumb">{:lang('上传视频封面图')}</div>
+							<div class="clearfix"></div>
+						</div>
+						
+					</div>
+					<p  style="line-height: 16px;height:16px;width: 300px;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('只能上传一个视频封面图')}</span> </p>
+				</el-form-item> -->
+			   <el-form-item :rules="[{ required: true, message: '商品展示列表图', trigger: 'blur' }]" label="{:lang('商品展示列表图')}：" style="margin-top: 30px;">
+					 <!-- <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_images" style="margin-top:20px;">
+							<div class="col-xs-12 js-upload-images">
+									<div id="file_list_images" class="uploader-list pull-left"></div>
+									<input type="hidden"   id="slideVal" name="images" data-multiple="true" data-size="0" data-ext='' id="images" value="">
+									<div id="picker_images" class="pull-left">{:lang('载入中')}...</div>
+									<div class="clearfix"></div>
+							</div>
+					</div>-->
+					<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_images" style="margin-left: -30px;">
+						<div class="col-xs-12 js-upload-images">
+							<div id="file_list_images" class="uploader-list pull-left"></div>
+							<input type="hidden"  id="slideVal" name="images" data-multiple="true" data-size="0" data-ext='' id="images" value="" onchange="onChange(this)">
+							<div class="col-xs-12 js-upload-images webuploader-pick" id="add_picker_images">{:lang('上传图片')}</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					
+					<p  style="line-height: 20px;height:20px;width:300px;margin-bottom: 20px;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('可以上传多张')}，{:lang('建议')}:400x400</span> </p>
+				</el-form-item>
+<!-- 
+				<el-form-item label="{:lang('视频上传')}" >
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_thumb"  style="margin-top:20px;">
+						<video style="height:auto;width:300px;height:200px;" src="" id="video0"   controls="controls"></video>
+						<div >
+                            <label for="video" >
+								<span class="upVideo">{:lang('请选择要上传的视频')}</span><input type="file" name="video"  id="video">
+							</label>
+							<el-button type="success"   id="uploadVideo" style="margin-left:30px;" >{:lang('上传到服务器')}</el-button>
+
+						</div>
+						<div style="color:red;" id="videoTip"></div>
+                    </div>
+					<p  style="line-height: 16px;height:16px;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('视频上传')}，{:lang('建议')}:10M{:lang('以下')}</span> </p>
+				</el-form-item> -->
+		</div>
+	  </el-card>
+<!--	  <el-card class="box-card margin-top">-->
+<!--		<div slot="header" class="clearfix">-->
+<!--		   <i style="color:#409EFF;font-size:19px;" class="el-icon-paperclip"></i><span style="color:#409EFF;font-size:16px;">{:lang('会员设置')}</span>-->
+<!--	   </div>-->
+<!--	   <div style="margin-left:5%;">-->
+<!--		   <el-form-item label="{:lang('分享奖励')}：" >-->
+<!--			   <input class="form-control box-width" type="number" name="share_award_money"  data-msg-required="{:lang('请设置奖励余额')}" placeholder="{:lang('请设置奖励余额')}">-->
+<!--			   <p  style="margin:0; padding:0;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('凡是分享出去的商品被其他人下单则奖励该余额')}，{:lang('在下单人确认收货后返还到余额')}</span> </p>-->
+<!--		   </el-form-item>-->
+<!--		   <el-form-item label="{:lang('自购省钱')}：" >-->
+<!--			   <input class="form-control box-width" type="number" name="discounts"  data-msg-required="{:lang('请设置要回馈的额度')}" placeholder="{:lang('请设置要回馈的额度')}">-->
+<!--			   <p  style="margin:0; padding:0;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('该金额为会员自己购买下单')}，{:lang('确认后返还的金额')}，{:lang('在确认收货后返还到余额')}</span> </p>-->
+<!--		   </el-form-item>-->
+<!--	   </div>-->
+<!--	 </el-card>-->
+	  <el-card class="box-card margin-top">
+     	<div slot="header" class="clearfix">
+			<i style="color:#409EFF;font-size:19px;" class="el-icon-paperclip"></i><span style="color:#409EFF;font-size:16px;">{:lang('商品详情')}</span>
+		</div>
+        <div style="margin-left:5%;">
+			<el-form-item label="{:lang('划线价')}："  :rules="[{ required: true }]" >
+				<input class="form-control box-width" type="number" name="market_price" value="" data-rule="required;" data-msg-required="{:lang('请填写划线价')}" placeholder="{:lang('请输入划线价')}">
+			</el-form-item>
+			<el-form-item label="{:lang('本店价')}："   :rules="[{ required: true }]">
+				<input class="form-control box-width" type="number" name="shop_price" @input="info_input" @blur="info_blur" data-rule="required;" data-msg-required="{:lang('请输入本店价')}" placeholder="{:lang('请输入本店价')}">
+				<p  style="margin:0; padding:0;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('开启多规格后')}，{:lang('此项仅做展示使用')}，{:lang('实际普通非会员销售价')}</span> </p>
+			</el-form-item>
+<!--			<el-form-item label="{:lang('会员价')}：" :rules="[{ required: true, message: '请输入会员价', trigger: 'blur' }]" >-->
+<!--				<input class="form-control box-width" type="number" name="member_price" @input="vip_input" data-rule="required;" data-msg-required="{:lang('请输入会员价')}" placeholder="{:lang('请输入会员价')}">-->
+<!--				<p  style="margin:0; padding:0;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">VIP{:lang('会员价')}，{:lang('开启多规格后')}，{:lang('此项仅做展示使用')}，{:lang('如不填写')}，{:lang('则默认和本店价同价')}</span> </p>-->
+<!--			</el-form-item>-->
+			<el-form-item label="{:lang('成本价')}：" style="margin-top:30px;">
+				<input class="form-control box-width"  type="number" name="cost_price" value="" placeholder="{:lang('请输入成本价')}">
+				<p  style="margin:0; padding:0;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('开启多规格后')}，{:lang('此项仅做展示使用')}</span> </p>
+			</el-form-item>
+            <el-form-item label="{:lang('商品重量')}：" >
+                <input class="form-control box-width" type="number" name="weight" value="{$goods.weight}" placeholder="{:lang('请输入商品重量')}，{:lang('请勿输入单位')}，{:lang('默认单位')}：g(克)">
+                <p  style="margin:0; padding:0;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('开启多规格后')}，{:lang('此项仅做展示使用')}，{:lang('请勿输入单位')}，{:lang('默认单位')}：g(克)</span> </p>
+            </el-form-item>
+            <el-form-item label="{:lang('总库存')}："  >
+                <input class="form-control box-width" type="number" name="stock" value="{$goods.stock}" placeholder="{:lang('请输入总库存')}" @input='total_input'>
+                <p  style="margin:0; padding:0;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('开启多规格后')}，{:lang('此项仅做展示使用')}</span> </p>
+            </el-form-item>
+			<el-form-item label="{:lang('库存预警')}："  >
+			    <input class="form-control box-width" type="number" name="stock_warning" value="{$goods.stock_warning}" placeholder="{:lang('请输入库存预警')}">
+			</el-form-item>
+			<el-form-item label="{:lang('商品简介')}：" prop="desc">
+				<textarea class="form-control box-width"  type="text" name="description" placeholder="{:lang('请输入商品简介')}" style="min-height: 50px;"> {$goods.description} </textarea>
+			 </el-form-item>
+			
+			 <el-form-item label="{:lang('虚拟销量')}：" prop="name">
+				<input class="form-control box-width" type="number" name="sales_sum" value="0" placeholder="{:lang('请输入虚拟销量')}" oninput="if(value.length > 8)value = value.slice(0, 8)">
+			</el-form-item>
+	    </div>
+	  </el-card>
+	  <!-- 商品规格  -->
+	  <el-card class="box-card margin-top">
+		<div slot="header" class="clearfix">
+			<i style="color:#409EFF;font-size:19px;" class="el-icon-paperclip"></i><span style="color:#409EFF;font-size:16px;">{:lang('商品规格')}</span>
+        </div>
+        <div style="margin-left:5%;"  >
+            <el-form-item label="{:lang('是否开启规格属性')}："  :rules="[{ required: true }]">
+                <div style="display:flex;justify-content:flex-start;align-items:center;">
+					<label class="pr10" style="display:flex;justify-content:flex-start;align-items:center;"><input type="radio" @click="getRadioValue(true)"  name="is_spec" id="web_site_status2" value="1" v-model="form.is_spec" style="margin: 0 5px 0 0;"> <div>是</div></label>
+					<label class="pr10" style="display:flex;justify-content:flex-start;align-items:center;"><input type="radio" @click="getRadioValue(false)"   name="is_spec" id="web_site_status1" value="0" v-model="form.is_spec" style="margin: 0 5px 0 0px;"> <div>否</div></label>
+				</div>
+                <p  style="margin:0; padding:0;position: relative;left: -130px;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('开启多规格后')}，{:lang('基础数据中的库存为多规格的库存总和')}</span> </p>       
+            </el-form-item>
+        </div>
+         <div style="margin-left:5%;"  id="ajax_spec_data" class="col-xs-11" :class="form.is_spec == 0 ? 'hidden' : ''">
+                <table class="table table-bordered" id="goods_spec_table1">
+                    <tr>
+                        <td style="width:150px">
+                            <select class="form-control" id="spectypeid" name="spectypeid" @change="selectVal1" size='small'>
+                                <option value="0">{:lang('请选择规格')}</option>
+                                <option :value="item.id" v-for="(item,index) in spectype" :selected="actviespec == item.id">{{item.name}}</option>
+							</select>
+                        </td>
+                        <td>
+                            <el-button type="primary" @click="add_spec()" size='small'>{:lang('新增规格')}</el-button>
+                            <el-button type="success"@click="edit_spec()"  size='small' >{:lang('编辑规格')}</el-button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><b>{:lang('商品规格')}({:lang('通过点击选择下方规格来生成子商品')}SKU):</b></td>
+										</tr>
+                    <tr v-for='(list,index) in specs'>
+                        <td width="100">{{list.name}}</td>
+                        <td>
+                            <div style="display:inline-block;margin-right:10px;" v-for='(item, it_index) in list.spec_item'>
+                                <button type="button" :data-spec_id="list.id" :data-item_id='item.id' class="btn btn-xs btn-flat" :class="item.active ? 'btn-success' :''">{{item.item}}</button>
+                                <span v-if="list.is_upload_image">
+																		<label :for="'uploadImg'+it_index" style="cursor: pointer;">
+																			<i class="fa fa-fw fa-cloud-upload" :id="'icon_item_img'+it_index"></i>
+																			<img src="" :id="'item_img'+it_index" class="img-circle img-bordered-sm" style="width:50px;height:50px;display: none"/>
+																		</label>
+                                    <span :id="'btn_item_img'+it_index" style="display:none" @click="deleteItemImage(it_index)"><i class="fa fa-fw fa-close"></i></span>
+                                    <input :id="'uploadImg'+it_index" :data-item-id="it_index" type="file" name="files" accept="image/*" style="display: none">
+                                    <input :id="'input_item_img'+it_index" type="hidden" :name="'item_img['+it_index+']'" value="" />
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+				</table>
+				<div v-if="showLoseMoneyTips" style="margin-bottom: 10px;color: red;">tips：{:lang('您选择的价格可能会导致您的店铺亏损')}</div>
+                <div id="goods_spec_table2">
+                    <table class="table table-builder table-bordered mb10" id="spec_input_tab">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%" v-for='(list,index) in specs'><b>{{list.name}}</b></td>
+                                <td width="9%"><b>SKU{:lang('货号')}</b></td>
+                                <td width="9%"><b style="vertical-align: middle;">{:lang('成本价')}</b><span @click="stuffCostPrice" class="layui-icon btn btn-xs ml5 btn-default" style="transform: rotate(-90deg);height: 28px;width: 20px;position: relative;left: 5px;right: 5px;padding: 1px 0 0 0;">&#xe65c;</span></td>
+                                <td width="9%"><b style="vertical-align: middle;">{:lang('市场价')}</b><span @click="stuffMarketPrice" class="layui-icon btn btn-xs ml5 btn-default" style="transform: rotate(-90deg);height: 28px;width: 20px;position: relative;left: 5px;right: 5px;padding: 1px 0 0 0;">&#xe65c;</span></td>
+                                <td width="9%"><b style="vertical-align: middle;">{:lang('本店价')}</b><span @click="stuffShopPrice" class="layui-icon btn btn-xs ml5 btn-default" style="transform: rotate(-90deg);height: 28px;width: 20px;position: relative;left: 5px;right: 5px;padding: 1px 0 0 0;">&#xe65c;</span></td>
+<!--                                <td width="9%"><b style="vertical-align: middle;">{:lang('会员价')}</b><span @click="stuffMemberPrice" class="layui-icon btn btn-xs ml5 btn-default" style="transform: rotate(-90deg);height: 28px;width: 20px;position: relative;left: 5px;right: 5px;padding: 1px 0 0 0;">&#xe65c;</span></td>-->
+                                <!-- <td width="9%"><b style="vertical-align: middle;">{:lang('佣金')}</b><span @click="stuffCommission" class="layui-icon btn btn-xs ml5 btn-default" style="transform: rotate(-90deg);height: 28px;width: 20px;position: relative;left: 5px;right: 5px;padding: 1px 0 0 0;">&#xe65c;</span></td> -->
+                                <td width="9%"><b style="vertical-align: middle;">{:lang('库存')}</b><span @click="stuffStock" class="layui-icon btn btn-xs ml5 btn-default" style="transform: rotate(-90deg);height: 28px;width: 20px;position: relative;left: 5px;right: 5px;padding: 1px 0 0 0;">&#xe65c;</span></td>
+							    <td width="9%"><b style="vertical-align: middle;">{:lang('库存预警')}</b><span @click="stuffStockWarn" class="layui-icon btn btn-xs ml5 btn-default" style="transform: rotate(-90deg);height: 28px;width: 20px;position: relative;left: 5px;right: 5px;padding: 1px 0 0 0;">&#xe65c;</span></td>
+                                <td width="9%"><b style="vertical-align: middle;">{:lang('重量')}(g)</b><span @click="stuffWeight" class="layui-icon btn btn-xs ml5 btn-default" style="transform: rotate(-90deg);height: 28px;width: 20px;position: relative;left: 5px;right: 5px;padding: 1px 0 0 0;">&#xe65c;</span></td>
+                                
+								<!-- 批发 start-->
+								<td width="9%"  v-if="form.is_spec == 1 && form.is_wholesale == 1" >{:lang('批发')}</td>
+								<!-- 批发 end-->
+								<td width="10%"><b>{:lang('操作')}</b></td>
+                            </tr>
+                            <tr>
+                                <td style="width:100px" v-for='(list,index) in specs'></td>
+                                <td>{:lang('不填则自动生成')}<br />{:lang('保存后不能修改')}</td>
+                                <td><input class="form-control" @blur="costPriceBlur" id="cost_price" style="width:100%;" value="0"></td>
+                                <td><input class="form-control" @blur="marketPriceBlur" id="market_price" value="0" style="width:100%;"></td>
+                                <td><input class="form-control" @blur="shopPriceBlur" id="shop_price" value="0" style="width:100%;"></td>
+<!--                                <td><input class="form-control" @blur="memberPriceBlur" id="member_price" value="0" style="width:100%;"></td>-->
+                                <!-- <td><input class="form-control" id="commission" value="0" style="width:100%;"></td> -->
+                                <td><input class="form-control" id="stock" value="0" style="width:100%;"></td>
+								<td><input class="form-control" id="stock_warning" value="0" style="width:100%;"></td>
+                                <td><input class="form-control" id="sku_weight" value="0.00" style="width:100%;"></td>
+
+                                 <!-- 批发start -->
+								 <td width="9%"  v-if="form.is_spec == 1 && form.is_wholesale == 1" > </td>
+								 <!-- 批发 end -->
+
+                                <td><el-button id="filling" type="primary" size='small'>{:lang('填充')}</el-button></td>
+                            </tr>
+                            <tr v-for="(list,index) in form.spec">
+                                <template v-if="list.length > 1"><td v-for="(itemid,keys) in list" :key="keys">{{ form.spec_title[index][keys] }}</td></template>
+                                <template v-else><td>{{ form.spec_title[index] }}</td></template>
+                                <td><input type="hidden" v-if="list.length > 1" class="form-control" :name="'item['+list.join('_')+'][key_name]'" :value="form.spec_title[index].join('-')"><input type="hidden" v-else class="form-control" :name="'item['+list+'][key_name]'" :value="form.spec_title[index]"><input v-if="list.length > 1" class="form-control" :name="'item['+list.join('_')+'][sku_sn]'"><input v-else class="form-control" :name="'item['+list+'][sku_sn]'"></td>
+                                <td><input v-if="list.length > 1" class="form-control stuff_cost_price" :name="'item['+list.join('_')+'][cost_price]'" value="0"><input v-else class="form-control" :name="'item['+list+'][cost_price]'"></td>
+                                <td><input v-if="list.length > 1" class="form-control stuff_market_price" :name="'item['+list.join('_')+'][market_price]'" value="0"><input v-else class="form-control" :name="'item['+list+'][market_price]'"></td>
+                                <td><input v-if="list.length > 1" class="form-control stuff_shop_price" :name="'item['+list.join('_')+'][shop_price]'" value="0"><input v-else class="form-control" @input="price_input($event,index)" :name="'item['+list+'][shop_price]'"></td>
+<!--                                <td><input v-if="list.length > 1" class="form-control stuff_member_price" :name="'item['+list.join('_')+'][member_price]'" value="0"><input v-else class="form-control" :name="'item['+list+'][member_price]'"></td>-->
+                                <!-- <td><input v-if="list.length > 1" class="form-control stuff_commission" :name="'item['+list.join('_')+'][commission]'" value="0"><input v-else class="form-control" :name="'item['+list+'][commission]'"></td> -->
+                                <td><input v-if="list.length > 1" class="form-control stuff_stock" :name="'item['+list.join('_')+'][stock]'" value="0"><input v-else class="form-control" :name="'item['+list+'][stock]'"></td>
+								<td><input v-if="list.length > 1" class="form-control stuff_stock_warning" :name="'item['+list.join('_')+'][stock_warning]'" value="0"><input v-else class="form-control" :name="'item['+list+'][stock_warning]'"></td>
+                                <td><input v-if="list.length > 1" class="form-control stuff_sku_weight" :name="'item['+list.join('_')+'][sku_weight]'" value="0"><input v-else class="form-control" :name="'item['+list+'][sku_weight]'"></td>
+                                 <!-- 批发 start -->
+								<td v-if="form.is_spec == 1 && form.is_wholesale == 1">
+									<el-button   @click="handlePiFa(list,index)"  type="warning" size='small'>{:lang('设置参数')}</el-button>
+									<span v-if="list.length > 1">
+										<input type='hidden' :name="'item['+list.join('_')+'][wholesale]'" :value="setList[list.join('_')]">
+									</span>
+									<span v-else>
+										<input type='hidden' :name="'item['+list+'][wholesale]'"  :value="setList[list]">
+									</span>
+								</td>
+								<!-- 批发 end -->
+								<td>
+                                    <input v-if="list.length>1" type="hidden" :name="'item['+list.join('_')+'][status]'" id="status" value="1">
+                                    <input v-else type="hidden" :name="'item['+list+'][status]'" id="status" value="1">
+                                    <button   @click="handleOpenOrClose(list,form.is_spec)"  type="button" class="btn btn-danger delete_item btn-flat">{:lang('禁用')}</button>
+							    </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+         </div>
+        <!-- 是否开启批发 start -->
+		<div style="margin-left:5%;"   :class="form.is_wholesale == 0 ? 'hidden' : ''">
+			<div style="display: flex;"  v-if="form.is_spec == 0 && form.is_wholesale == 1">
+				<input type='hidden' name="wholesale"  :value="JSON.stringify(setWholesaleList)">
+				<div style="width:600px;">
+					<el-table   :data="setWholesaleList"		border	>
+					<el-table-column  prop="start_batch" :min-width="200" align="center"	  label="{:lang('购买数量')}" >
+						<template slot-scope="scope">
+							{:lang('起订量')}<el-input	placeholder="{:lang('请输入购买数量')}"  @blur="blurCheckVaue"  style="width:150px;" :min="0" v-model="scope.row.start_batch"   type="number"	clearable> </el-input>{:lang('及以上')}
+						</template>
+					</el-table-column>
+					<el-table-column  prop="trade_price"	 align="center"   :min-width="150"  label="{:lang('产品单价')}" >
+						<template slot-scope="scope">
+						<el-input	placeholder="{:lang('请输入产品单价')}"  @blur="blurCheckVaue" style="width:100px;"   :min="0"  v-model="scope.row.trade_price"   type="number"	clearable> </el-input>元/个
+						</template>
+					</el-table-column>
+					<el-table-column   align="center" label="{:lang('操作')}" >
+							<template slot-scope="scope">
+								<el-button @click="handleRemove(scope.row,scope.$index)" type="text" size="small">{:lang('删除')}</el-button>
+								<el-button @click="handleAddPi" type="text" size="small">{:lang('新增')}</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+				</div>
+		    </div>
+		</div>
+		 <!-- 是否开启批发 end -->
+
+
+	  </el-card>
+	  <el-card class="box-card margin-top">
+	 	<div slot="header" class="clearfix">
+			<i style="color:#409EFF;font-size:19px;" class="el-icon-paperclip"></i> <span style="color:#409EFF;font-size:16px;">{:lang('服务与承诺')}</span>
+		</div>
+		<div style="margin-left:5%;">
+			<!-- <div class="goods-basic-display">
+				<ul class="service-labels">
+					<li class="service-label">{:lang('普通商品')}</li>
+					<li class="service-label">{:lang('非预售')}</li>
+					<li class="service-label">{:lang('承诺发货时间')}48{:lang('小时')}</li>
+				</ul>
+			</div> -->
+				<el-form-item label="{:lang('是否包邮')}：" >
+                    <div style="display:flex;justify-content:flex-start;align-items:center;">
+						<label class="pr10" style="display:flex;justify-content:flex-start;align-items:center;"><input type="radio" name="is_shipping" id="web_site_status2" value="1" checked style="margin: 0 5px 0 0px;"> <div>是</div></label>
+						<label class="pr10" style="display:flex;justify-content:flex-start;align-items:center;"><input type="radio" name="is_shipping" id="web_site_status1" value="0" style="margin: 0 5px 0 0;"> <div>否</div></label>
+					</div>
+<!--					<p  style="margin:0; padding:0;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('默认不包邮')}</span> </p>-->
+				  </el-form-item>
+	
+				<el-form-item label="{:lang('运费模板')}：" >
+                      <div style="width:300px;">
+                        <select class="select2 form-control box-width"  id="freight_template_id" name="freight_template_id">
+                            {volist name="freight_template" id="f"}
+                          		<option   style="width:300px !important;" value="{$key}" {eq name="key" value="$goods['freight_template_id']"}selected{/eq}>{$f|raw}</option>
+							{/volist}
+                          </select>
+                      </div>
+				</el-form-item>
+				<el-form-item label="{:lang('满多少包邮')}：" >
+                    <input class="form-control box-width" type="text" name="amount_condition" value="0" placeholder="{:lang('填写满足的金额')}">
+                    <p  style="margin:0; padding:0;"><span style="color:rgb(243, 101, 101);">{:lang('注意')}：</span><span style="color:#909399;">{:lang('填写')}0{:lang('则不考虑该条件')}</span> </p>
+				</el-form-item>
+
+				
+				<el-form-item label="{:lang('商品详情')}：" :rules="[{ required: true, message: '请输入商品详情', trigger: 'blur' }]" >
+					<div class="js-wangeditor" name="body2"  style="width:60%;" data-img-ext="{:config('upload_image_ext')}"  id="body2" ></div>
+					<!-- <textarea style="min-height:100px;"  class="form-control js-wangeditor box-width"  placeholder="{:lang('请本商品简单的描述一下')}" id="body" type="text" name="body" data-img-ext="{:config('upload_image_ext')}">{$goods.body} </textarea> -->
+					<textarea name="body" id="body" style="min-height:100px;width:60%;"  hidden>{$goods.body} </textarea> 
+				</el-form-item>
+
+				<el-form-item>
+                  <el-button type="primary"  class="btn btn-primary btn-flat"  @click="validateBeforeSubmit" type="submit">{:lang('立即创建')}</el-button>
+                  <el-button  class="btn btn-default btn-flat" @click="javascript:history.back(-1);return false;">{:lang('取消')}</el-button>
+				</el-form-item>
+				
+		</div>
+      </el-card>
+    </el-form>
+	  <div style="height:50px;"></div>
+
+		<!-- 设置批发规则 -->
+		<el-dialog title="{:lang('设置批发规则')}" :visible.sync="isShowWholesale" :close-on-click-modal="false"	 :modal-append-to-body="true" width="600">
+			<el-table   :data="setWholesaleList"	height="350"	border	style="width: 100%">
+
+				<el-table-column  prop="start_batch" :min-width="200"	align="center"  label="{:lang('购买数量')}" >
+					 <template slot-scope="scope">
+						{:lang('起订量')}<el-input  	placeholder="{:lang('请输入购买数量')}"  style="width:150px;" :min="0" v-model="scope.row.start_batch"   type="number"	clearable> </el-input>{:lang('及以上')}
+					 </template>
+				</el-table-column>
+			   <el-table-column  prop="trade_price"	 align="center"   :min-width="150"  label="{:lang('产品单价')}" >
+				<template slot-scope="scope">
+				   <el-input 	placeholder="{:lang('请输入产品单价')}"  style="width:100px;"   :min="0"  v-model="scope.row.trade_price"   type="number"	clearable> </el-input>元/个
+				</template>
+		       </el-table-column>
+
+			   <el-table-column   align="center" label="{:lang('操作')}" >
+					<template slot-scope="scope">
+						<el-button @click="handleRemove(scope.row,scope.$index)" type="text" size="small">{:lang('删除')}</el-button>
+						<el-button @click="handleAddPi" type="text" size="small">{:lang('新增')}</el-button>
+					</template>
+			    </el-table-column>
+			</el-table>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="handleCancle">{:lang('取消')}</el-button>
+				<el-button type="primary" @click="handeleSumbit">{:lang('确定')}</el-button>
+			</span>
+		</el-dialog>
+      
+
+
+
+  </div>
+</body>
+ <!-- layui js -->
+ <script src="/static/admin/js/layui/layui.js"></script>
+  <script>
+
+
+
+// 上传视频
+function removeV(ele) {
+		$('#file_list_video').html('')
+		$('#videoVal').attr({ 'value': '' });
+	}
+layui.use('upload', function(){
+		var $ = layui.jquery,
+		 element = layui.element
+		,upload = layui.upload;
+		upload.render({
+			elem: '#add_picker_video'
+			,url: '/api/v1/5fc615f7da92b' //改成您自己的上传接口
+			,accept: 'video' //视频
+			, progress: function (n, elem) {
+				console.log(n,element)
+				var percent = n + '%' //获取进度百分比
+				// element.progress('demo', percent); //可配合 layui 进度条元素使用
+				$('.layui_progress_wrap').show()
+				$('.layui_progress').css('width',percent)
+				//以下系 layui 2.5.6 新增
+				// console.log(elem); //得到当前触发的元素 DOM 对象。可通过该元素定义的属性值匹配到对应的进度条。
+			}
+			,done: function(res){
+				$('.layui_progress_wrap').hide()
+			layer.msg('上传成功');
+			console.log(res)
+			$('#videoVal').attr({ 'value':res.data.data.fileId });
+			var NewHtml =`
+			<div style=' position: relative;'>
+			<video src="${res.data.data.file}" width="221" height="121" controls="controls" id="video" >
+				</video>
+				<span  onclick="removeV(this)" style='   width:20px; height: 20px;text-align: center;line-height: 12px;position: absolute;top: 0;right: 0;margin-right: 1px;fonst-size:24px;border:1px solid #EC6767;border-radius: 50%;padding: 2px 5px;cursor: pointer; color: #fff;background: #EC6767;font-weight: bold;'>x</span>
+			</div>`
+				$('#file_list_video').html(NewHtml)
+			}
+		});
+	})
+	let limitPicNum = 8;
+	function onChange(e){
+		  let picNum = e.value.split(",").length;
+		  if(picNum < limitPicNum){
+			  $("#add_picker_images").show();
+		  }
+	}
+	$(function(){
+		let defPicNum = $('[name="images"]').attr('value').split(",").length;
+		if(defPicNum >= limitPicNum){
+			$("#add_picker_images").hide();
+		}
+		
+		let cutPicWidth = 400; // 裁剪图片的宽度
+		let cutPicHeight = 400; // 裁剪图片的高度
+
+		let slideVal = ''; // 此属性是图片裁剪完之后给from表单的input的value赋值的,不可删除
+		let picNum = 0; // 上传的图片数量
+		let Html = []; // 空的模板字符串
+		// 商品主图（需要在用到这个功能的页面添加一个layer弹窗）
+		$('#add_picker_thumb').on('click', () => {
+			// 在这里修改裁剪图片的大小
+			let picSize = {
+				"width": cutPicWidth,
+				"height": cutPicHeight
+			}
+			localStorage.setItem('picSize',JSON.stringify(picSize))
+			layer.open({
+				title: "{:lang('裁切图片')}",
+				type: 2,
+				area: ['950px', '700px'],
+				fixed: false, //不固定
+				maxmin: true,
+				content: "{:url('/operation/ads/cut')}",
+				end: () => {
+					let picData = localStorage.getItem('picBase64');
+					localStorage.removeItem('picBase64')
+					$.post('/admin.php/operation/ads/base64_upload',{'img_base64':picData})
+					.then(res => {
+						if(res.code == 1) {
+							picNum++;
+							slideVal = `${res.data.id}`;
+							Html.length = 0;
+							Html.push(`<div id="WU_FILE_${picNum}" style="width:107px;" class="file-item js-gallery thumbnail">
+										<a data-magnify="gallery" id="iview" href="${res.data.path}">
+											<img src="${picData}" data-original="${res.data.path}"/>
+										</a>
+										<div class="info">xxxx</div>
+										<i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${res.data.id}"></i>
+										<div class="file-state img-state">
+											<div class="bg-success">上传成功</div>
+										</div>
+									</div>`);
+							$('#thumbVal').attr({ 'value': slideVal });
+							$("#file_list_thumb").html(Html.join(''));
+						}
+					})
+				}
+			});
+		})
+
+			 let vIHtml =[];
+			 let vISlideVal = ''; // 此属性是图片裁剪完之后给from表单的input的value赋值的,不可删除
+			// 商品封面图（需要在用到这个功能的页面添加一个layer弹窗）
+			$('#add_picker_video_thumb').on('click', () => {
+			// 在这里修改裁剪图片的大小
+			let picSize = {
+				"width": cutPicWidth,
+				"height": cutPicHeight
+			}
+			localStorage.setItem('picSize',JSON.stringify(picSize))
+			layer.open({
+				title: "{:lang('裁切图片')}",
+				type: 2,
+				area: ['950px', '700px'],
+				fixed: false, //不固定
+				maxmin: true,
+				content: "{:url('/operation/ads/cut')}",
+				end: () => {
+					let picData = localStorage.getItem('picBase64');
+					localStorage.removeItem('picBase64')
+					$.post('/admin.php/operation/ads/base64_upload',{'img_base64':picData})
+					.then(res => {
+						if(res.code == 1) {
+							picNum++;
+							vISlideVal = `${res.data.id}`;
+							vIHtml.length = 0;
+							vIHtml.push(`<div id="WU_FILE_${picNum}" style="width:107px;" class="file-item js-gallery thumbnail">
+										<a data-magnify="gallery" id="iview" href="${res.data.path}">
+											<img src="${picData}" data-original="${res.data.path}"/>
+										</a>
+										<div class="info">xxxx</div>
+										<i class="fa fa-times-circle remove-picture removeVideoPic"  data-id="${res.data.id}"></i>
+										<div class="file-state img-state">
+											<div class="bg-success">上传成功</div>
+										</div>
+									</div>`);
+							$('#videoThumbVal').attr({ 'value': vISlideVal });
+							$("#file_list_video_thumb").html(vIHtml.join(''));
+							$('.removeVideoPic').click((e)=>{
+								removeVideoPic(e.currentTarget)
+							})
+							
+						}
+					})
+					
+				}
+			});
+		})
+			// 删除封面图片
+		function removeVideoPic(ele) {
+			let tempId = ele.getAttribute("data-id");
+			for (let i = 0; i < vIHtml.length; i++) {
+				if (vIHtml[i].includes(`<i class="fa fa-times-circle remove-picture removeVideoPic"  data-id="${tempId}"></i>`)) {
+					vIHtml.splice(i, 1);
+					$("#file_list_video_thumb").html(vIHtml.join(''));
+					return
+				}
+			}
+			vISlideVal.replace(`${tempId},`,'');
+			$('#videoThumbVal').attr({ 'value': vISlideVal });
+		}
+			// 删除图片
+		function removePic(ele) {
+			let tempId = ele.getAttribute("data-id");
+			for (let i = 0; i < Html.length; i++) {
+				if (Html[i].includes(`<i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${tempId}"></i>`)) {
+					Html.splice(i, 1);
+					$("#file_list_thumb").html(Html.join(''));
+					return
+				}
+			}
+			slideVal.replace(`${tempId},`,'');
+			$('#thumbVal').attr({ 'value': slideVal });
+		}
+		// 商品展示列表图
+		let listSlideVal = ''; // 此属性是图片裁剪完之后给from表单的input的value赋值的,不可删除
+		let listPicNum = 0; // 上传的图片数量
+		let listHtml = []; // 空的模板字符串
+		$('#add_picker_images').on('click', () => {
+			// 在这里修改裁剪图片的大小
+			let picSize = {
+				"width": cutPicWidth,
+				"height": cutPicHeight
+			}
+			localStorage.setItem('picSize',JSON.stringify(picSize))
+			layer.open({
+				title: "{:lang('裁切图片')}",
+				type: 2,
+				area: ['950px', '700px'],
+				fixed: false, //不固定
+				maxmin: true,
+				content: "{:url('/operation/ads/cut')}",
+				end: () => {
+					let picData = localStorage.getItem('picBase64');
+					localStorage.removeItem('picBase64')
+					$.post('/admin.php/operation/ads/base64_upload',{'img_base64':picData})
+					.then(res => {
+						if(res.code == 1) {
+							listPicNum++;
+							listSlideVal = $('#slideVal').attr('value')
+							if(listSlideVal == '') {
+								listSlideVal += `${res.data.id}`;
+							} else {
+								listSlideVal += `,${res.data.id}`;
+							}
+							let tempDOM = $(`<div id="WU_FILE_${listPicNum}" style="width:107px;" class="file-item js-gallery thumbnail">
+										<a data-magnify="gallery" id="iview" href="${res.data.path}">
+											<img src="${picData}" data-original="${res.data.path}"/>
+										</a>
+										<div class="info">xxxx</div>
+										<i class="fa fa-times-circle remove-picture" data-tag="remove" data-id="${res.data.id}"></i>
+										<div class="file-state img-state">
+											<div class="bg-success">上传成功</div>
+										</div>
+									</div>`);
+							$('#slideVal').attr({ 'value': listSlideVal });
+							$("#file_list_images").append(tempDOM);
+							let picNum = listSlideVal.split(",").length;
+							if(picNum >= limitPicNum){
+								$("#add_picker_images").hide();
+							}
+						}
+					})
+				}
+			});
+		})
+		// 商品列表图删除
+		$('[data-tag="remove"]').on('click',(ele) => {
+			let tempId = ele.getAttribute("data-id");
+			for (let i = 0; i < listHtml.length; i++) {
+				if (listHtml[i].includes(`<i class="fa fa-times-circle remove-picture" onclick="listRemovePic(this)" data-id="${tempId}"></i>`)) {
+					listHtml.splice(i, 1);
+					console.log(listHtml)
+					$("#file_list_images").html(listHtml.join(''));
+					return
+				}
+			}
+			listSlideVal.replace(`${tempId},`,'');
+			$('#slideVal"]').attr({ 'value': listSlideVal });
+		
+		}) 
+	})
+
+
+
+
+	const cityOptions = [];
+	const cityOptions2 = [];
+
+     var GOODS_ADD = new Vue({
+      el: '#app',
+      data: function() {
+        return {
+			remberId:'',
+			setList:{},
+			setWholesaleList:[{
+				trade_price:0,//批发价格
+				start_batch:0,//  数量
+			}],
+			isShowWholesale:false,
+			goods_cid_list:[], // 商品分类id的多级信息
+			goods_cid:'',  //商品分类id
+			goodsOptions:[], // 商品分类
+			timer:null, // 定时器
+			cityOptionsService:cityOptions2,
+			cityOptionsActivity:cityOptions,
+			checkAllService:false,
+			checkAllActivity:false,
+			isIndeterminateActivity: false,
+			isIndeterminateService: false,
+			checkedService:[],
+			checkedActivity:[],
+			goods_label:[],
+			label_id:[],
+			dynamicTags: [],
+        	inputVisible: false,
+        	inputValue: '',
+			tempChangeValue:{},
+            nav_active:'base',
+            form: {cid:{$cid|default=0},is_spec:0,spec:[],is_wholesale:0, trade_price:1,start_batch:0},
+            specs: [],
+            attrs: [],
+            spectype:[],
+            actviespec:0,
+            info_value:null,
+            price_value:null,
+            spec_0_value:null,
+            spec_1_value:null,
+            vip_price:'',
+            shop_price:'',
+            //linkType:'0',//链接类型  淘宝/京东
+            //linkTypeArr:['淘宝','京东'],
+            linkVal:'',//链接地址
+            productName:'',//商品名称
+            thumbSrc:'',//缩略图
+            thumbId:'',
+            slideImg:[],
+            slideId:'',
+            textContent:'',//富文本编辑器
+			showLoseMoneyTips: false, // 店铺亏损提示
+        }
+      },
+      mounted () {
+        if(this.form.cid){
+			this.getGoodsSpec(this.form.cid)
+			this.getGoodsAttr(this.form.cid)
+		}
+        this.getGoodsLabel()
+        // this.get_spec_type()
+        if($('#thumbVal').val()) this.thumbId=$('#thumbVal').val()
+		if($('#slideVal').val()) this.slideId=$('#slideVal').val()
+
+		this.getGoodsOptions()
+		// 点击文字即选中
+		this.timer =  setInterval(function() {
+　　　　　　document.querySelectorAll(".el-cascader-node__label").forEach(el => {
+　　　　　　　　el.onclick = function() {
+　　　　　　　　　　if (this.previousElementSibling) this.previousElementSibling.click();
+　　　　　　　　};
+　　　　　　});
+　　　　}, 1000);
+      },
+      methods: {
+		   //调用接口启用或者禁用
+		handleOpenOrClose(item,spec){
+	          let typeValue = $('#status').val();
+			  console.log(typeValue,88888)
+			 let sku_id=''
+			if(item.length>0){
+				sku_id = item[0]
+			}
+			$.post('{:url("index/setSkuInfo")}',{sku_id: sku_id,status: typeValue ==1 ? 0 : 1   }).then((response) => {
+				response = JSON.parse(response)
+			  if(response.code == 1){
+				this.$message({
+					message:  "{:lang('修改成功')}",
+					type: 'success'
+				});
+			  }
+			})
+		},
+		getGoodsLabel(){
+			$.post('{:url("index/get_label")}',{}).then((response) => {
+				response = JSON.parse(response)
+				console.log(response)
+				if(response.code == 1){
+					this.goods_label = response.data
+				}
+			})
+		},
+
+		blurCheckVaue(){
+			let noIndex = 0
+			let noItem  = this.setWholesaleList.filter((item,index)=>{
+				if(item.trade_price == 0 ||   item.start_batch == 0){
+					noIndex = index
+					return item
+				}
+			})
+			if(noItem.length == 0){
+			 this.checkValueRules(this.setWholesaleList)
+
+			}
+
+		}, 
+		compare(property){
+				return function(a,b){
+					var value1 = a[property];
+					var value2 = b[property];
+					return value1 - value2;
+				}
+		},
+		checkValueRules(wholesale){
+			let tempArray = JSON.parse(JSON.stringify(wholesale))
+			    tempArray = tempArray.sort(this.compare('start_batch'))
+				console.log('排序后的数据：',tempArray)
+				
+				let validIndex = 0
+			    tempArray.forEach(function(item,index){
+					
+					if(index < (tempArray.length-1) && (Number( tempArray[index].trade_price) < Number( tempArray[index+1].trade_price )) ){
+						console.log(index,'111',tempArray.length-1)
+						console.log(tempArray[index] ,'9999',tempArray[index+1])
+						if(validIndex == 0){
+							validIndex = index+1
+						}
+                        return	 item				  
+					}
+				})
+				console.log('结果：',tempArray[validIndex])
+				if(validIndex >0){
+					this.$message({
+						message:  '当购买数量为：'+tempArray[validIndex].start_batch+'以上时，价格定为：'+tempArray[validIndex].trade_price +'，不合理，请重新设置',
+						type: 'warning'
+					});
+					return validIndex >0 ? true :false
+				}
+			
+		},
+		//批发
+		handleAddPi (row) {
+			let noIndex = 0
+	 	   let noItem  =	this.setWholesaleList.filter((item,index)=>{
+				if(item.trade_price == 0 ||   item.start_batch == 0){
+					noIndex = index
+					return item
+				}
+                
+
+			})
+
+			if(noItem.length>0){
+				this.$message({
+					message: "{:lang('请补全第')}"+(noIndex+1)+"{:lang('行的数据')}",
+					type: 'warning'
+				});
+			
+			} else {
+				this.setWholesaleList.push({
+					trade_price:0,//批发价格
+					start_batch:0,//  数量
+				})
+
+			}
+
+         
+
+		
+		},
+		handleCancle(){
+			this.isShowWholesale = false
+		},
+		handeleSumbit(){
+			let repeatArray =   this.isRepeat(this.setWholesaleList,'start_batch')
+		   console.log(repeatArray,777)
+		   if(!repeatArray ){
+		    	this.$message({
+					message: '请不要重复设置起订量',
+					type: 'warning'
+				});
+
+			   return
+		   }
+
+
+			let noIndex = 0
+	 	   let noItem  =	this.setWholesaleList.filter((item,index)=>{
+				if(item.trade_price == 0 ||   item.start_batch == 0){
+					noIndex = index
+					return item
+				}
+                
+
+			})
+
+			if(noItem.length>0){
+				this.$message({
+					message: "{:lang('请补全第')}"+(noIndex+1)+"{:lang('行的数据')}",
+					type: 'warning'
+				});
+			
+			} else {
+
+				let valueChect = this.checkValueRules(this.setWholesaleList)
+				if(valueChect){
+					return
+				}
+
+				this.isShowWholesale = false
+				this.setList[this.remberId]=  JSON.stringify(this.setWholesaleList) 
+				this.setWholesaleList = [{
+					trade_price:0,//批发价格
+					start_batch:0,//  数量
+				}]
+
+			}
+
+
+
+			
+		},
+		handleRemove (row, index) {
+			if(this.setWholesaleList.length == 1){
+				this.$message({
+					message: "{:lang('最后一个无法删除')}",
+					type: 'warning'
+				});
+
+			}else{
+				this.setWholesaleList.splice(index, 1) 
+			}
+		  
+		},
+		handlePiFa(item,index){
+			this.remberId=''
+			let id = item
+			if(item.length>0){
+		     id = item.join('_')
+			}
+			this.remberId = id
+          
+			if(this.setList[this.remberId]){
+				this.setWholesaleList =  JSON.parse(this.setList[this.remberId])
+			}else{ 
+				this.setWholesaleList = [{
+			    	trade_price:0,//批发价格
+				     start_batch:0,//  数量
+			   }]
+
+			}
+
+		  console.log(item,888888)
+		  this.isShowWholesale = true
+		},
+		handleChange(value) {
+            console.log(value);
+        },
+		//   是否开启批发
+		getkaiqiValue(value){
+			if(value && this.form.is_spec == 0){
+				this.setWholesaleList = [{
+					trade_price:0,//批发价格
+					start_batch:0,//  数量
+				}]
+			}
+		},
+		 getRadioValue(value){
+				if (value) {
+					// $('[name="cost_price"]').value; // 成本价
+					// $('[name="market_price"]').value; // 成本价
+					// $('[name="shop_price"]').value; // 本店价
+					// $('[name="member_price"]').value; // 会员价
+					// $('[name="weight"]').value; // 商品重量
+					// $('[name="sn"]').value; // sku货号
+			
+		
+					if(!this.goods_cid){
+						this.get_spec_type()
+					}
+					$('#cost_price').val($('[name="cost_price"]').val());
+					$('#market_price').val($('[name="market_price"]').val());
+					$('#shop_price').val($('[name="shop_price"]').val());
+					$('#member_price').val($('[name="member_price"]').val());
+					$('#sku_weight').val($('[name="weight"]').val());
+					$('#stock').val($('[name="stock"]').val());
+					$('#stock_warning').val($('[name="stock_warning"]').val());
+				} else {
+					$('#cost_price').val(0);
+					$('#market_price').val(0);
+					$('#shop_price').val(0);
+					$('#member_price').val(0);
+					$('#sku_weight').val(0);
+					$('#stock').val(0);
+					$('#stock_warning').val(0);
+				}
+			},
+				// 重量填充事件
+				stuffWeight() {
+					var item_sku_weight_fill = $("#sku_weight").val();
+					if (item_sku_weight_fill > 0) {
+						$("input[name$='[sku_weight]']").val(item_sku_weight_fill);
+					}
+				},
+
+
+				// 库存预警填充事件
+				stuffStockWarn() {
+					var item_stock_warning=$("#stock_warning").val();
+					if (item_stock_warning > 0) {
+						$("input[name$='[stock_warning]']").val(item_stock_warning);
+					}
+				},
+				// 库存填充事件
+				stuffStock() {
+					var item_stock_fill = $("#stock").val();
+					if (item_stock_fill > 0) {
+						$("input[name$='[stock]']").val(item_stock_fill);
+					}
+				},
+				// 佣金填充事件
+				stuffCommission() {
+					var item_commission_fill = $("#commission").val();
+					if (item_commission_fill > 0) {
+						$("input[name$='[commission]']").val(item_commission_fill);
+					}
+				},
+				// 会员价填充事件
+				stuffMemberPrice() {
+					var item_member_price_fill = $("#member_price").val();
+					if (item_member_price_fill > 0) {
+						$("input[name$='[member_price]']").val(item_member_price_fill);
+					}
+				},
+				// 本店价填充事件
+				stuffShopPrice() {
+					var item_shop_price_fill = $("#shop_price").val();
+					if (item_shop_price_fill > 0) {
+						$("input[name$='[shop_price]']").val(item_shop_price_fill);
+					}
+				},
+				// 市场价填充事件
+				stuffMarketPrice() {
+					var item_market_price_fill = $("#market_price").val();
+					if (item_market_price_fill > 0) {
+						$("input[name$='[market_price]']").val(item_market_price_fill);
+					}
+				},
+				// 成本价填充事件
+				stuffCostPrice(){
+					var item_cost_price_fill = $("#cost_price").val();
+					if (item_cost_price_fill > 0) {
+            $("input[name$='[cost_price]']").val(item_cost_price_fill);
+       	 	}
+				},
+				// 成本价失焦事件
+				costPriceBlur() {
+					if (Number($('#cost_price').val()) > Number($('#market_price').val()) || Number($('#cost_price').val()) > Number($('#shop_price').val()) || Number($('#cost_price').val()) > Number($('#member_price').val())) {
+						this.showLoseMoneyTips = true
+					} else {
+						this.showLoseMoneyTips = false
+					}
+				},
+				// 市场价失焦事件
+				marketPriceBlur() {
+					if (Number($('#market_price').val()) < Number($('#cost_price').val()) || Number($('#market_price').val()) < Number($('#shop_price').val()) || Number($('#market_price').val()) < Number($('#member_price').val())) {
+						this.showLoseMoneyTips = true
+					} else {
+						this.showLoseMoneyTips = false
+					}
+					console.log(Number($('#market_price').val()),this.showLoseMoneyTips)
+				},
+				// 本店价失焦事件
+				shopPriceBlur() {
+					if (Number($('#shop_price').val()) < Number($('#cost_price').val()) || Number($('#shop_price').val()) > Number($('#market_price').val()) || Number($('#shop_price').val()) > Number($('#member_price').val())) {
+						this.showLoseMoneyTips = true
+					} else {
+						this.showLoseMoneyTips = false
+					}
+					console.log(Number($('#shop_price').val()),Number($('#cost_price').val()),Number($('#shop_price').val()) < Number($('#cost_price').val()),this.showLoseMoneyTips)
+				},
+				// 会员价失焦事件
+				memberPriceBlur() {
+					if (Number($('#member_price').val()) < Number($('#cost_price').val()) || Number($('#member_price').val()) > Number($('#market_price').val()) || Number($('#member_price').val()) > Number($('#shop_price').val())) {
+						this.showLoseMoneyTips = true
+					} else {
+						this.showLoseMoneyTips = false
+					}
+				},
+		destroyed(){
+		clearInterval(this.timer)
+		},
+		
+		getQueryVariable(variable){
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i=0;i<vars.length;i++) {
+					var pair = vars[i].split("=");
+					if(pair[0] == variable){return pair[1];}
+				}
+				return(false);
+			},
+
+		  // 获取分类接口数据
+		getGoodsOptions(){
+			let that =this
+			$.get("/admin.php/goods/category/getcategorylist",function(data,status){
+			   if(data.code == 1){
+				console.log('获取商品分类',data.data)
+				that.goodsOptions =data.data
+			   }else{
+				  that.$message({
+						message: data.msg,
+						type: 'warning'
+					});
+			   }
+			
+			})
+		},
+		// 商品分类选择改变时
+		goodsOptionsChange(e){
+			if(this.goods_cid_list.length>0){
+				this.goods_cid = this.goods_cid_list[this.goods_cid_list.length-1]
+			}else{
+				this.goods_cid =''
+			}
+			// this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+			// 监听是否为最后一级，如果为最后一级，面板收起
+			var children = this.$refs.cascaderHandle.getCheckedNodes();
+          if(children[0].children.length < 1){   //判断有没有下级
+            this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+		  }
+			console.log(e,this.goods_cid,777777,this.goods_cid_list)
+			this.get_spec_type_by_type(1)
+		},
+		
+
+
+		handleCheckAllChangeActivity(val){
+			this.checkedActivity = val ? cityOptions : [];
+        	this.isIndeterminateActivity = false;
+		},
+		handleCheckAllChangeService(val){
+			this.checkedService = val ? cityOptions2 : [];
+        	this.isIndeterminateService = false;
+		},
+		handleCheckedService(value){
+			let checkedCount = value.length;
+			this.checkAllService = checkedCount === this.cityOptionsService.length;
+			this.isIndeterminateService = checkedCount > 0 && checkedCount < this.cityOptionsService.length;
+			console.log(value)
+			// this.checkedService =value
+		},
+		handleCheckedActivity(value){
+			console.log(value)
+			let checkedCount = value.length;
+        	this.checkAllActivity = checkedCount === this.cityOptionsActivity.length;
+        	this.isIndeterminateActivity = checkedCount > 0 && checkedCount < this.cityOptionsActivity.length;
+			// this.checkedActivity =value
+		},
+		handleClose(tag) {
+        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      },
+
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+      	// console.log(this.inputValue)
+		if (this.inputValue.trim() == '') {
+			// layer.msg('不能输入空值')
+			this.inputVisible = false;
+			this.inputValue = '';
+			return
+		}
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.dynamicTags.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
+      },
+        toNext(){
+			let index=this.navTab.findIndex((item)=>{
+			    return item.href==this.nav_active;
+			})
+			this.nav_active=this.navTab[index+1].href;
+		},
+		info_input(e){
+			this.info_value=e.target.value;
+			this.formula_award_mode==0?this.spec_0_value=this.formula_award_mode:((this.info_value/this.formula_award_mode)<0.01?this.spec_0_value=0.01:this.spec_0_value=(this.info_value/this.formula_award_mode).toFixed(2));
+			if(Number(this.vip_price)>Number(e.target.value)){
+				this.vip_price=e.target.value
+			}
+
+			Math.formatFloat = function (f, digit) {
+				var m = Math.pow(10, digit);
+				return Math.round(f * m, 10) / m;
+			}
+			// 成本价默认为本店价的80%
+			$('input[name=cost_price]').val(  Math.formatFloat( Number(e.target.value)*0.8 ,2)  )
+		},
+		total_input(e){
+			console.log(e.target.value)
+			Math.formatFloat = function (f, digit) {
+				var m = Math.pow(10, digit);
+				return Math.round(f * m, 10) / m;
+			}
+			// 预警库存默认为总库存的10% 且为整数
+			$('input[name=stock_warning]').val(  Math.formatFloat( Number(e.target.value)*0.1 ,0)  )
+		},
+		info_blur(e){
+			if(this.vip_price==''){
+				this.vip_price=e.target.value
+			}
+		},
+		price_input(e,index){
+			if(index==0){
+				this.price_value=e.target.value;
+				this.formula_award_mode==0?this.spec_1_value=this.formula_award_mode:((this.price_value/this.formula_award_mode)<0.01?this.spec_1_value=0.01:this.spec_1_value=(this.price_value/this.formula_award_mode).toFixed(2));
+				return;
+			}
+		},
+		vip_input(e){
+			if(Number(this.shop_price)<Number(e.target.value)){
+				this.shop_price=e.target.value;
+			}
+		},
+        edit_spec(){
+			const that=this
+            layer.open({
+              title:"{:lang('编辑规格')}",
+              type: 2,
+              area: ['1000px', '600px'],
+              fixed: false, //不固定
+              maxmin: true,
+			  content: '/admin.php/goods/type/edit.html?id='+this.actviespec+'&layer=1',
+			  end:()=>{
+				that.get_spec_type()
+				that.selectVal1(that.tempChangeValue)
+			  }
+            });
+        },
+        add_spec(){
+			let is_cancle = true
+            layer.open({
+              title:"{:lang('新增规格')}",
+              type: 2,
+              area: ['1000px', '600px'],
+              fixed: false, //不固定
+              maxmin: true,
+              content: '/admin.php/goods/type/add.html?layer=1',
+			  cancel:(item,index) =>{
+				  is_cancle=false
+			  },
+                end: () => {
+                    console.log('弹窗销毁')
+					if(is_cancle){
+						this.get_spec_type_by_type(2)
+					} else {
+						is_cancle = true
+					}
+                }
+            });
+			
+        },
+		//获取所有规格
+        get_spec_type(val){
+			console.log(val,'所有规格')
+		
+            var that = this;
+            $.get('{:url("getAllSpec")}').then((response) => {
+            	if(response.code == 1){
+                    that.spectype = response.data;
+					console.log('所有规格', that.spectype)
+					if(val == 1 ){
+						this.getGoodsSpec(0, that.spectype[0].id);
+				    	this.getGoodsAttr(0, that.spectype[0].id);
+				    	this.actviespec = that.spectype[0].id;
+					}
+            	}
+            })
+        },
+
+	   //获取部分规格
+		get_spec_type_by_type(val){
+		     //    val ：1 重置 2 显示已经新增的
+			const that = this
+			$.post('{:url("index/getSpecByCid")}',{cid: this.goods_cid}).then((response) => {
+				    // that.form.is_spec = 0
+					that.spectype =  JSON.parse(response) 
+					if(val == 1){
+					    // 重置 已经选择的规格
+						this.getGoodsSpec(0, 0);
+						this.getGoodsAttr(0, 0);
+						this.actviespec = 0;
+					}
+					if(val == 2){
+						this.getGoodsSpec(0, that.spectype[0].id);
+				    	this.getGoodsAttr(0, that.spectype[0].id);
+				    	this.actviespec = that.spectype[0].id;
+					}
+				
+			})
+	    },
+		isRepeat(arr,key){
+			var obj = {};
+			for(let i=0;i<arr.length;i++){
+				if(obj[arr[i][key]]){
+					return false;
+				}else{
+					obj[arr[i][key]] = arr[i];
+				}
+			}
+			return obj;
+		},
+        // 提交表单
+		validateBeforeSubmit() {
+		  let repeatArray =   this.isRepeat(this.setWholesaleList,'start_batch')
+		   console.log(repeatArray,777)
+		   if(!repeatArray ){
+		    	this.$message({
+					message: "{:lang('请不要重复设置起订量')}",
+					type: 'warning'
+				});
+
+			   return
+		   }
+
+             let  valueChect = ''
+			if(this.form.is_spec == 0 && this.form.is_wholesale == 1){
+				valueChect = this.checkValueRules(this.setWholesaleList)
+			}
+			if(valueChect){
+				return
+			}
+			
+			if(!this.goods_cid){
+				layer.msg('请填写商品分类');
+			 	return
+			}
+			if($('#thumbVal').val() == ''){
+				layer.msg("{:lang('请上传商品主图')}");
+				return
+			}
+			if($('#slideVal').val() == ''){
+				layer.msg("{:lang('请上传商品列表图')}");re
+				return
+			}
+			var that = this;
+			Stars.loading();
+			$('#goodsform').isValid(function(v) {
+			    console.log(v);
+				var form_data = $('#goodsform').serialize()
+				var activityBabel =that.checkedActivity.join(',')
+				var serviceBabel =that.checkedService.join(',')
+				var newTags =that.dynamicTags.join(',')
+				console.log(that.label_id)
+				var goodsLabel = that.label_id.join(',')
+				form_data =  form_data +'&goods_label='+newTags+'&goods_label_service='+serviceBabel+'&goods_label_activity='+activityBabel+'&lable_id='+goodsLabel
+				that.thumbId=$('#thumbVal').val();
+				that.slideId=$('#slideVal').val();
+				console.log(form_data,121111111)
+				if(v) {
+					$.post('{:url()}', form_data).then((response) =>{
+						Stars.loading('hide');
+						if (response.code == 1) {
+							Stars.notify(response.msg, 'success', 'fa fa-bell-slash');
+							setTimeout(function() {
+								location.href = response.url
+							},
+							1500)
+						} else {
+							Stars.notify(response.msg, 'danger', 'fa fa-bell-slash');
+						}
+					});
+					return;
+				}else{
+					Stars.loading('hide');
+					layer.msg("{:lang('请填写必填项')}");
+				}
+			});
+		},
+        // 选择栏目触发规格
+        selectVal(v){
+            //v.target.value是分类id
+			this.getGoodsSpec(v.target.value, 0);
+			this.getGoodsAttr(v.target.value, 0);
+		},
+          // 选择规格触发更新
+        selectVal1(val){
+			let selectId=''
+			this.tempChangeValue=val
+			if(val.target && val.target.value){
+				selectId=val.target.value
+			} else {
+				selectId=this.actviespec
+			}
+			
+			this.tempChangeValue=val
+					// 
+          //v.target.value是规格属性id
+        	this.getGoodsSpec(0, selectId);
+        	this.getGoodsAttr(0, selectId);
+		    this.actviespec = selectId;
+        },
+        // 获取规格
+		getGoodsSpec(cid, aid){
+			var that = this;
+			$.post('{:url("getGoodsSpec")}',{cid:cid, aid:aid}).then((response) => {
+				if(response.code == 1){
+					that.specs = response.data.specList;
+                    that.actviespec = response.data.typeid;
+					if(that.specs.length == 0){
+						that.form.is_spec = 0;
+					}else{
+						that.form.is_spec = 1;
+					}
+					this.comGoodsSpec();
+				}
+			})
+		},
+		// 获取属性
+		getGoodsAttr(cid, aid){
+			var that = this;
+			$.post('{:url("getGoodsAttr")}',{cid:cid, aid:aid}).then((response) => {
+				if(response.code == 1){
+					that.attrs = response.data;
+				}
+			})
+		},
+		// 点击规格按钮
+		/*ajaxButton(index,index1){
+			if(this.specs[index].spec_item[index1].active == 0 || this.specs[index].spec_item[index1].active == undefined){
+				this.specs[index].spec_item[index1].active = 1;
+			}else{
+				this.specs[index].spec_item[index1].active = 0;
+			}
+			this.comGoodsSpec();
+		},*/
+		// 组合规格
+		comGoodsSpec(){
+			var spec_arr = [];
+			var spec_title = [];
+			for(var i in this.specs) {
+				var spec_id = this.specs[i].id;
+				if(spec_arr[spec_id] == undefined){
+					spec_arr[spec_id] = [];
+					spec_title[spec_id] = [];
+				}
+				 for(var j in this.specs[i].spec_item) {
+					 if(this.specs[i].spec_item[j].active == 1){
+						var item_id = this.specs[i].spec_item[j].id;
+						var item_name = this.specs[i].spec_item[j].item;
+						spec_arr[spec_id].push(item_id);
+						spec_title[spec_id].push(item_name);
+					}
+				 }
+			}
+			this.setGoodsSpec(spec_arr, spec_title);
+		},
+		// 设置规格
+		setGoodsSpec(spec_arr, spec_title){
+			this.form.spec = this.calcDescartes(spec_arr);
+			console.log(this.form.spec);
+			this.form.spec_title = this.calcDescartes(spec_title);
+			const SKU_NUM = $('[name="sn"]').val();
+			if (SKU_NUM) {
+				this.form.spec.forEach((item,index) => {
+					let tempVal = `${SKU_NUM}-${index + 1}`;
+					this.$nextTick(() => {
+						$(`[name="item[${item}][sku_sn]"]`).val(tempVal)
+					})
+				})
+			}
+		},
+		// 笛卡尔积算法
+		calcDescartes (array) {
+			if (array.length < 2) return array[0] || [];
+			return [].reduce.call(array, function (col, set) {
+				var res = [];
+				col.forEach(function (c) {
+					set.forEach(function (s) {
+						var t = [].concat(Array.isArray(c) ? c : [c]);
+						t.push(s);
+						res.push(t);
+					})
+				});
+				return res;
+			});
+		},
+		// 删除图片
+		deleteItemImage(item_id){
+			$('#item_img'+item_id).attr("src", '');
+			$('#item_img'+item_id).hide();
+			$('#input_item_img'+item_id).val(0);
+			$('#icon_item_img'+item_id).show();
+			$('#btn_item_img'+item_id).hide();
+		}
+      }
+	})
+    //图片裁剪
+
+
+
+	// 视频上传
+	   let TempUrl=''
+	   let videoFile={}
+
+		$("#uploadVideo").click(function(){
+			if(TempUrl===''){
+				$("#videoTip").html("{:lang('请选择要上传的视频')}")
+
+			}else{
+				$("#videoTip").html('')
+				console.log(TempUrl,121221,videoFile)
+			// ajax 请求
+			}
+		
+		})
+	    $("#video").change(function(){
+			$("#videoTip").html('')
+			 var objUrl = getObjectURL(this.files[0]) ;
+			 videoFile=this.files[0]
+             console.log("objUrl = "+objUrl) ;
+             if (objUrl) {
+				// $("#video0").style.display="block" 
+				$("#video0").attr("src", objUrl) ;
+			
+             }
+         }) ;
+         //建立一个可存取到该file的url
+         function getObjectURL(file) {
+             var url = null ;
+             if (window.createObjectURL!=undefined) { // basic
+                 url = window.createObjectURL(file) ;
+             } else if (window.URL!=undefined) { // mozilla(firefox)
+                 url = window.URL.createObjectURL(file) ;
+             } else if (window.webkitURL!=undefined) { // webkit or chrome
+                 url = window.webkitURL.createObjectURL(file) ;
+			 }
+			 TempUrl=url
+             return url ;
+		 }
+		 
+
+        $(document).on("change","#goods_spec_table1 input[type='file']",function(e) {
+			console.log(4444)
+		if ($(this).val() == "") {
+			return;
+		}
+		var item_id = $(this).data('item-id');
+		var _this = this;
+		var formData = new FormData();
+        var file = this.files[0];
+        formData.append("file", file);
+		$.ajax({
+				url: lwwan.image_upload_url,
+				cache:false,
+				type: 'POST',
+				data: formData,
+                processData: false,
+                contentType: false,
+				dataType: 'json',
+				success : function(rs){
+					console.log(4444,rs)
+					$('#item_img'+item_id).attr("src", rs.path);
+					$('#item_img'+item_id).show();
+					$('#input_item_img'+item_id).val(rs.id);
+					$('#icon_item_img'+item_id).hide();
+					$('#btn_item_img'+item_id).show();
+				}
+		});
+	})
+
+//规格批量填充
+$(function () {
+       //禁用单条规格
+	$(document).on("click", '.delete_item', function (e) {
+		if($(this).text() == '禁用'){
+            //$(this).parent().parent().find('input').attr('disabled','disabled');
+            $(this).text('启用');
+			$(this).addClass('btn-success');
+			$(this).removeClass('btn-danger');
+			$(this).parent().parent().find('#status').val(0);
+			//$(this).parent().parent().find('#status').removeAttr('disabled');
+		}else{
+            $(this).text('禁用');
+			$(this).removeClass('btn-success');
+			$(this).addClass('btn-danger');
+			$(this).parent().parent().find('#status').val(1);
+            //$(this).parent().parent().find('input').removeAttr('disabled');
+        }
+    })
+	
+	$(document).on("change","select[name='cid']",function(){
+	    $.ajax({
+				url: "{:url('index/getSpecByCid')}",
+				cache:false,
+				type: 'POST',
+				data: "cid="+$(this).val(),
+                processData: false,
+                contentType: false,
+				dataType: 'json',
+				success : function(rs){
+				    var html='<option value="0">请选择规格</option>';
+				    for(var i in rs){
+					   html+='<option value="'+rs[i].id+'">'+rs[i].name+'</option>';
+					}
+					$('#spectypeid').html(html);
+				}
+		});
+	 
+	})
+	//批量设置
+	$(document).on("click", '#filling',function() {
+    	  var item_cost_price_fill = $("#cost_price").val();
+        var item_shop_price_fill = $("#shop_price").val();
+		var item_market_price_fill = $("#market_price").val();
+		var item_member_price_fill = $("#member_price").val();
+		// var item_commission_fill = $("#commission").val();
+		var item_stock_fill = $("#stock").val();
+		var item_stock_warning=$("#stock_warning").val();
+		var item_sku_weight_fill = $("#sku_weight").val();
+		var item_sku_fill = $("#sku_sn").val();
+		console.log('item_cost_price_fill',item_cost_price_fill)
+        if (item_cost_price_fill > 0) {
+            $("input[name$='[cost_price]']").val(item_cost_price_fill);
+        }
+		if (item_shop_price_fill > 0) {
+			$("input[name$='[shop_price]']").val(item_shop_price_fill);
+		}
+		if (item_market_price_fill > 0) {
+			$("input[name$='[market_price]']").val(item_market_price_fill);
+		}
+		if (item_member_price_fill > 0) {
+			$("input[name$='[member_price]']").val(item_member_price_fill);
+		}
+		// if (item_commission_fill > 0) {
+		// 	$("input[name$='[commission]']").val(item_commission_fill);
+		// }
+		if (item_stock_fill > 0) {
+			$("input[name$='[stock]']").val(item_stock_fill);
+		}
+		if (item_sku_weight_fill > 0) {
+			$("input[name$='[sku_weight]']").val(item_sku_weight_fill);
+		}
+		if (item_stock_warning > 0) {
+			$("input[name$='[stock_warning]']").val(item_stock_warning);
+		}
+	})
+})
+
+//抓取结果补充form显示
+$(document).on("click", '#getcurl',function() {	
+	var loading = layer.msg('正在获取', {icon: 16, shade: 0.3, time:0})
+	$.ajax({
+		url: "/admin.php/goods/copytaobao/get_request_contents.html",
+		type: 'POST',
+		data: {curl:$('#curlurl').val(),cookie:$('#curlcookie').val()},
+		dataType: 'json',
+		success : function(rs){
+			layer.close(loading);
+			console.log(rs);
+			if (rs.code !=200) {
+				layer.alert(rs.msg, {icon: 2,time: 2000});
+			}
+			if (rs.data.store_name) {
+				$("#store_name").val(rs.data.store_name);
+			}
+			if (rs.data.image) {
+				thumb_html = '<div class="file-item thumbnail"><a data-magnify="gallery" data-caption="" href=""><img data-original="" src="'+rs.data.image+'" width="100"></a><i class="fa fa-times-circle remove-picture"></i></div>';
+				$('#file_list_thumb').html(thumb_html);
+				$('#thumbVal').val(rs.data.image_id);
+			}
+			if (rs.data.slider_image) {
+				imgae_list_html = '';
+				$.each(rs.data.slider_image,function(index,value){
+					imgae_list_html += '<div class="file-item thumbnail"><a data-magnify="gallery" data-caption="" href=""><img data-original="" src="'+value+'" width="100"></a><i class="fa fa-times-circle remove-picture" data-id="{$img}"></i><i class="fa fa-fw fa-arrows move-picture"></i></div>';
+				});
+				$('#file_list_images').html(imgae_list_html);
+				$('#slideVal').val(rs.data.slider_image_id.join());
+			}
+			
+			if (rs.data.description_images) {
+				content_html = '<p>';
+				$.each(rs.data.description_images,function(index,value){
+					content_html += '<img src="'+value+'" style="max-width:100%;" width="100%">';
+				});
+				content_html += '</p>';
+				$('.w-e-text').html(content_html);
+				$('#body').text(content_html);
+			}
+
+		}
+		
+}).fail(function (result) {
+	layer.alert(result, {icon: 2,time: 2000});
+	})
+})
+
+
+  </script>
+</html>
+
+
+{/block}

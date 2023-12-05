@@ -1,0 +1,420 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<script src="__PLUG__/layer/laydate/laydate.js?v={:config('asset_version')}"></script>
+<style type="text/css">
+	.p_box{
+		border:1px solid #B3B3B3;
+		color:black;
+		text-align: center;
+		line-height: 20px;
+		padding:4px 6px;
+		margin-left:20px;
+	}
+	.header_quickly p:not(:first-child):hover{
+		border:1px solid #1198EC;
+		color:#1198EC;
+		cursor: pointer;
+	}
+	.list-tb-div {
+		margin-top:6px;
+	}
+	.list-tb-div td {
+	    border: 1px solid #ECECEC;
+/* 		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis; */
+	}
+	.img_pic{
+		height:90px;
+		width:85px;
+		margin-top:5px;
+	}
+	.desc_product{
+	     line-height: 20px;
+		 word-wrap:break-word;
+		 text-align: left;
+	}
+	.receiver_info{
+		text-align: left;
+		margin-left:10px;
+		margin-top:10px;
+	}
+	.receiver_info p{
+		line-height: 15px;
+		color:#737373;
+	}
+</style>
+<div class="row">
+    <div class="col-md-12">
+		<div class="box nav-tabs-custom" >
+			<div class="box-body">
+				<div class="tab-pane active">
+					<!-- 未对应接口 -->
+<!--					<div class="row header_quickly"  style="display: flex;padding-left:15px;">
+						<p style="font-size:16px;font-weight: 600;padding-top: 4px;">{:lang('快速筛选订单')}：</p>
+						<p class="p_box">近90天待发货</p>
+						<p class="p_box">近90天即将延迟发货</p>
+						<p class="p_box">近90天已延发货</p>
+						<p class="p_box">近30天已发货未签收</p>
+					</div>-->
+					<div class="row">
+						<form action="" method="get" class="marBtm" id="order_manage_from" style="padding-left:15px;">
+                            <input type="hidden" value="" name="export" />
+
+
+							<div class="row" style="display: flex;flex-wrap: wrap">
+								<div class="col-md-2 col-xs-6">
+									<span class="txt">{:lang('订单号')}：</span>
+									<input type="text" class="form-control" name="order_sn" placeholder="{:lang('请输入订单号')}" value="{$Think.get.order_sn}">
+								</div>
+								<div class="col-md-2 col-xs-6">
+									<span class="txt">{:lang('用户名')}：</span>
+									<input type="text" class="form-control" name="nickname" placeholder="{:lang('请输入用户名')}" value="{$Think.get.nickname}">
+								</div>
+								<div class="col-md-2 col-xs-6">
+									<span class="txt">{:lang('发货单号')}：</span>
+									<input type="text" class="form-control" name="express_serial_number" placeholder="{:lang('请输入发货单号')}" value="{$Think.get.express_serial_number}">
+								</div>
+								<div class="col-md-2 col-xs-6">
+									<span class="txt">{:lang('收货人信息')}：</span>
+									<input type="text" class="form-control" name="receiver_name" placeholder="{:lang('请输入收货人')}" value="{$Think.get.receiver_name}">
+								</div>
+								<div class="col-md-2 col-xs-6">
+									<span class="txt">{:lang('订单状态')}：</span>
+									<select name="status" class="select2">
+										<option {if condition="$status eq '' or $status eq 'all'"}selected{/if} value="">{:lang('选择订单状态')}</option>
+										{volist name="order_status" id="vo"}
+										<option {if condition="$status eq $key"}selected{/if} value="{$key}">{$vo}</option>
+										{/volist}
+
+									</select>
+								</div>
+								<div class="col-md-2 col-xs-6">
+									<span class="txt">{:lang('支付类型')}：</span>
+									<select name="pay_type" class="select2">
+										<option {if condition="$pay_type eq 'all'"}selected{/if} value="all">{:lang('选择支付类型')}</option>
+										{volist name="list_pay_type" id="vo"}
+										<option {if condition='$pay_type eq $vo[code]'}selected{/if} value="{$vo[code]}">{$vo['name']}</option>
+										{/volist}
+									</select>
+								</div>
+<!--								<div class="col-md-2 col-xs-6">-->
+<!--									<span class="txt">{:lang('订单类型')}：</span>-->
+<!--									<select name="order_type" class="select2">-->
+<!--										<option value="">{:lang('全部订单')}</option>-->
+<!--										<option {if condition="$order_type eq 'all'"}selected{/if} value="all">{:lang('全部订单')}</option>-->
+<!--										<?php foreach($order_typeArr as $k=>$v):?>-->
+<!--										<?php if($order_type == $k):?>-->
+<!--										<option selected value="{$k}">{$v['name']}</option>-->
+<!--										<?php else:?>-->
+<!--										<option value="{$k}">{$v['name']}</option>-->
+<!--										<?php endif;?>-->
+<!--										<?php endforeach;?>-->
+<!--									</select>-->
+<!--								</div>-->
+<!--								&lt;!&ndash; 2021-04-19 wangph 新增配送类型筛选&ndash;&gt;-->
+<!--								<div class="col-md-2 col-xs-6">-->
+<!--									<span class="txt">{:lang('配送类型')}：</span>-->
+<!--									<select name="send_type" class="select2">-->
+<!--										<option {if condition="$send_type eq ''"}selected{/if} value="">{:lang('选择配送类型')}</option>-->
+<!--										{volist name="send_typeArr" id="vo"}-->
+<!--										<option {if condition="$send_type neq '' and  $send_type eq $vo[key]"}selected{/if} value="{$vo[key]}">{$vo['name']}</option>-->
+<!--										{/volist}-->
+<!--									</select>-->
+<!--								</div>-->
+
+								<div class="col-md-2 col-xs-6">
+									<span class="txt">{:lang('下单时间')} ：</span>
+									<input type="text" readonly="" class="form-control js-date-range" name="create_time" placeholder="{:lang('请选择下单时间')}" value="{$Think.get.create_time}">
+								</div>
+								<div class="col-md-4 col-xs-10" style="padding-top: 18px;">
+									<button class="btn btn-primary btn-flat" onclick="btn_out_search()" type="button">{:lang('搜索')}</button> 
+									<button class="btn btn-danger btn-flat" type="button" onclick="clearinput()">{:lang('重置')}</button>
+	<!--								{if condition="$status eq 1"}
+									<button class="btn btn-success btn-flat" onclick="print_out()" type="button">{:lang('打印配货单')}</button>
+									{/if}-->
+									<button class="btn btn-success btn-flat" onclick="btn_out()" type="button">{:lang('导出订单')}</button>
+								</div>
+								
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+        <div class="nav-tabs-custom table-sroll">	    
+<!--			<ul class="nav nav-tabs">
+				&lt;!&ndash; <li {if condition="!isset($status)&&!isset($pay_status)"}class="active"{/if} > <a href="{:url('goods/order/index')}">{:lang('全部')}</a> </li> &ndash;&gt;
+				{volist name="tab_list" id="tab"}
+				<li {if condition="(isset($status) and $status==$tab['val']) or (isset($pay_status) and $pay_status==$tab['val'])"}class="active"{/if}> <a href="{$tab.url}">{$tab.title}</a> </li>
+				{/volist}
+		    </ul>-->
+            <div class="box-body ">
+                <div class="tab-pane active">
+<!--                    <div class="pb10">
+                        <a title="{:lang('导出订单')}" href="{:url('goods/order/index')}" class="btn btn-sm mr5 btn-primary btn-flat"><i class="fa fa-plus pr5"></i>{:lang('导出订单')}</a>
+                    </div>-->
+					<div class="table-responsive">
+                    <table style="min-width: 1400px;" class="table table-builder table-hover table-bordered table-striped mb10 " cellpadding="0" cellspacing="0" border="0">
+                        <thead  >
+                            <th class="text-center" width="3%">
+                                <input class="minimal-red checkboxCtrl" data-group="ids[]" data-toggle="icheck" type="checkbox">
+                            </th>
+                            <th class="text-center" width="25%">{:lang('订单号')}</th>
+                            <th class="text-center" width="5%">{:lang('下单人')}</th>
+							<th class="text-center" width="10%">{:lang('订单类型')}</th>
+                            <th class="text-center" width="5%">{:lang('订单金额')}</th>
+                            <th class="text-center" width="5%">{:lang('应付金额')}</th>
+                            <th class="text-center" width="5%">{:lang('实付金额')}</th>
+                            <th class="text-center" width="6%">{:lang('抵扣积分')}</th>
+                            <th class="text-center" width="10%">{:lang('支付状态')}</th>
+							<!-- {:lang('支付类型')} -->
+                            <th class="text-center" width="10%" >{:lang('收货人信息')}</th>
+                            <th class="text-center" width="10%">{:lang('订单状态')}</th>
+                            <th class="text-center" width="5%" style="min-width: 120px;">{:lang('操作')}</th>
+                        </thead>
+				     </table>
+					
+					{volist name="list" id="o"}
+					 <table class=" list-tb-div " style="min-width: 1400px;"  cellpadding="0" cellspacing="0" border="0">
+						 <colgroup>
+							 <col width="28%">
+							 <col width="5%">
+							 <col width="10%">
+							 <col width="5%">
+							 <col width="5%">
+							 <col width="5%">
+							 <col width="6%">
+							 <col width="10%">
+							 <col width="10%">
+							 <col width="10%">
+							 <col width="5%">
+<!--							 <col width="10%" style="min-width: 120px;">-->
+						 </colgroup>
+                         <tbody>
+							 <tr>
+								 <td colspan="11" width="28%">
+									 <div style="background-color:#EAF8FF;height:40px;">
+										   <div  style="background-color: white;display: inline-block;margin-left:10px;">
+											   <input  class="ids minimal-red" data-toggle="icheck"  type="checkbox" name="ids[]" value="{$o.aid}">
+										   </div>
+									 		<span style="display:inline-block;line-height: 40px;letter-spacing: 1;">{:lang('订单号码')}： <a ident="edit" title="{:lang('详情')}" href="{:url('detail',['order_sn'=>$o['order_sn']])}" class="mr5">{$o.order_sn}</a> </span> 
+											<span style="display:inline-block;line-height: 40px;letter-spacing: 1;padding-left:20px;">{:lang('下单时间')}： {$o.create_time}</span> 
+									 </div>
+								 </td>
+							 </tr>
+                            <tr>
+                             <!--   <td class="text-center" width="3%" ><input class="ids minimal-red" data-toggle="icheck"
+                                        type="checkbox" name="ids[]" value="{$o.aid}"></td> -->
+                                <td class="text-center" >
+							      <div style="width:100%;min-height:100px;display: flex;">
+									  <!--<img src="http://shop.cshyk.com/images/201703/thumb_img/0_thumb_G_1490915538739.jpg" class="img_pic" />-->
+									  <img src="{$o.goods_thumb|get_file_url}" class="img_pic" />
+									  <div style="margin-top:15px;padding-left:20px;" >
+										  <!--<p class="desc_product">正品直邮Hermes爱马仕2017新款男鞋 时尚真皮休闲鞋H171325ZH02 7495 [ 阿玛尼 ]</p>-->
+										  <p class="desc_product" style="word-break: break-all;">{$o.goods_name}</p>
+										  <!--<p class="desc_product">商品编号：ECS000903[交易快照]</p>-->
+										  <!--<p style='color:red;' class="desc_product">《此区间为测试数据》</p>-->
+									  </div>
+
+									  
+								  </div>
+								
+                                </td>
+                                <td class="text-center" > {$o.user_id|get_nickname}
+                                </td>
+								<td class="text-center" > <span class="label label-flat label-success">{$o.order_type_arr}</span>
+                                </td>
+                                <td class="text-center"> {$o.order_money}
+                                </td>
+                                <td class="text-center" > {$o.payable_money}
+                                </td>
+                                <td class="text-center" > {$o.real_money}
+                                </td>
+								<td class="text-center" > {$o.cost_integral}
+								</td>
+                                <td class="text-center" >
+                                    {if condition="$o['order_type'] == 7"}
+	                                    {if condition="$o['pay_status'] == 2"}
+										 <span class="label label-flat label-success">{:lang('定金已付')}</span>
+										 <span class="label label-flat label-success">{:lang('尾款已付')}</span>
+		                                 {elseif condition="$o['pay_status'] == 1"/}
+										 <span class="label label-flat label-success">{:lang('定金已付')}</span>
+										 <span class="label label-flat label-warning">{:lang('尾款未付')}</span>
+										 {elseif condition="$o['pay_status'] == 0"/}
+										 <span class="label label-flat label-warning">{:lang('定金未付')}</span> 
+										 <span class="label label-flat label-warning">{:lang('尾款未付')}</span>
+										 {/if}
+									{else /}
+										<span class="label label-flat {if condition='$o.pay_status==0'}label-warning{else/}label-success{/if}">{$o.pay_status_name}</span>
+									{/if}
+
+                                </td>
+                                <td class="text-center" >
+								{if condition="$o['send_type'] == 1"}
+									<div class="receiver_info" >
+										 <p>{$o.pick_info.pickup_user_name}</p> <!-- 提货人 -->
+										 <p>TEL {$o.pick_info.pickup_user_mobile}</p>    <!-- 提货人手机号 --> 
+									</div>
+								{else /}
+									<div class="receiver_info" >
+										<p>{$o.receiver_name}</p> <!-- 收货人 -->
+										<p>TEL {$o.receiver_mobile}</p>    <!-- 手机号 --> 
+										<p  style="min-width: 100px;">{$o.province} {$o.city} {$o.district} {$o.receiver_address} </p> <!-- 收货地址 -->
+								    </div>
+								{/if}
+                              <!--  {if condition="$o['pay_status'] == 1"}
+									{switch $o['pay_type']}
+										{case alipay}<span class="label label-flat label-success"> {:lang('支付宝')} </span>{/case}
+										{case wxpay}<span class="label label-flat label-success"> {:lang('微信')} </span>{/case}
+										{case minipay}<span class="label label-flat label-success"> {:lang('微信支付')} </span>{/case}
+										{case appleiap}<span class="label label-flat label-success"> {:lang('苹果')} </span>{/case}
+										{case balance}<span class="label label-flat label-success"> {:lang('余额支付')} </span>{/case}
+                                        {case xx_pay}<span class="label label-flat label-success"> {:lang('后台下单')} </span>{/case}
+                                        {case minipay_mix}<span class="label label-flat label-success"> {:lang('组合支付')} </span>{/case}
+									{/switch}
+                                {/if} -->
+                                </td>
+                                <td class="text-center" >
+                                    <span class="label label-flat {if condition='$o.status==0 or $o.status==-1'}label-warning{else/}label-success{/if}">{$o.status_name}</span>
+                                </td>
+                     <!--           <td class="text-center" width="5%"> {$o.create_time} 
+					 
+                                </td> -->
+                                <td class="text-center font12"  style="min-width: 120px;">
+                                <!--<a ident="download" title="{:lang('打印')}" href="{:url('download',['order_sn'=>$o['order_sn']])}" class="mr5">{:lang('打印')}</a>-->
+                                <!--&nbsp;|&nbsp;-->
+                                <a ident="edit" title="{:lang('详情')}" href="{:url('detail',['order_sn'=>$o['order_sn']])}" class="mr5">{:lang('详情')}</a>
+                                    {if condition="$o.express_status == 0 && !is_null($o.express_status) && $o.is_find ==true"}
+                                    | <a ident="shipping" title="{:lang('发货')}" href="{:url('goods/order/express_index',['order_sn'=>$o['order_sn']])}"  class="mr5"></i>{:lang('发货')}</a>
+
+									{/if}
+                                <!---<a ident="delete" title="{:lang('删除')}" icon="fa fa-times pr5" class="btn btn-xs mr5 btn-default btn-flat ajax-get confirm"><i class="fa fa-times pr5"></i>{:lang('删除')}</a>-->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+					   {/volist}
+					</div>
+                    <div class="data-table-toolbar">
+                        <div class="row">
+							<div class="pagination-info pull-right">
+								<div>
+									{$pages|raw}
+
+									<input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+									<input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $list->listRows() : input('param.list_rows');{/php}">
+									/ <strong>{$list->lastPage()|raw}</strong> 页，共 <strong>{$list->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+//点击导出
+function btn_out(){
+    $("input[name='export']").val('1');
+    $("#order_manage_from").submit();
+    return false;
+}
+
+function print_out()
+{
+    var arrIds = [];
+    $("input:checkbox[name='ids[]']:checked").each(function(i){
+        arrIds.push($(this).val());
+    });
+
+    // 拼接获取的数据
+    var aids = arrIds.join(",");
+
+    // 判断数据是否为空
+    if(aids == "" || $.trim(aids).length == 0){
+        alert('请选择需要打印的数据!');
+    }
+
+    window.location.href = '/admin.php/goods/order/getPrintHtml?aids=' + aids;
+}
+
+//点击搜索
+function btn_out_search(){
+     $("input[name='export']").val('0');
+    $("#order_manage_from").submit();
+    return false;
+}
+function clearinput(){
+    $(".marBtm").find('input').val('');
+    $(".marBtm").find(".select2").val('all').trigger('change');
+    window.location.href = '/admin.php/goods/order/index.html';
+}
+</script>
+<script>
+    document.querySelector('#select-btn').addEventListener('click',() => {
+        let myselect = document.querySelector('.select-mian');
+        let index = myselect.selectedIndex;
+        let val = myselect.options[index].value
+
+        console.log(document.querySelector('.checkboxCtrl').getAttribute('data-group'))
+        var chk_value =[];
+        $('input[name="ids[]"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+
+        if(val == -1 || chk_value.length < 1) {
+            layer.msg('请选择操作');
+            return
+        }
+        var params={
+            'id':chk_value,
+            'action': $(".select-mian").find("option:selected").attr("action")
+        };
+
+        $.post(val,params,function (res) {
+            console.log(res)
+            if(res.code==1){
+                layer.msg('操作成功');
+                window.location.reload();
+            }else{
+                layer.msg('操作失败');
+            }
+        })
+    })
+</script>
+<style>
+	.bottom-select-all {
+		display: flex;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		align-items: center;
+		width: 250px;
+		margin-left: 9px;
+	}
+	.select-mian {
+		width: 120px;
+		height: 28px;
+		border-radius: 2px;
+		outline: none;
+	}
+	.select-btn {
+		height: 30px;
+		line-height: 28px;
+		padding: 0 15px;
+		color: #fff;
+		background: #31b4e1;
+		font-size: 12px;
+		float: left;
+		margin-right: 10px;
+		outline: none;
+		border: none;
+		border-radius: 4px;
+	}
+</style>
+{/block}
+

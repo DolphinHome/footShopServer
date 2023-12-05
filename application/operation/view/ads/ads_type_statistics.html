@@ -1,0 +1,197 @@
+{extend name="$admin_layout" /}
+{block name="style"}
+<style>
+    .table>tbody>tr>td{padding:15px;font-size:14px;}
+</style>
+{/block}
+{block name="content"}
+<form id="updateform">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box box-solid">
+                <div class="box-header with-border bg-gray-light">
+                    <a class="btn btn-default btn-flat pull-left" type="button" onclick="javascript:history.back(-1);return false;">
+                        <i class="fa fa-mail-reply"></i> {:lang('返回')} </a>
+                    <div class="pull-right ml5">
+                        <input type="text" name="page_traffic_input" id="page_traffic_input" readonly class="form-control" value="{$page_traffic_input}">
+                        <input type="hidden" name="typeid" value="{$typeid}">
+                        <input type="hidden" name="page_traffic_time" id="page_traffic_time" value="{$page_traffic_time}">
+                    </div>
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" onclick="time_click('page_traffic_input','-7','page_traffic_time')" class="btn btn-sm btn-flat btn-default">最近7天</button>
+                            <button type="button" onclick="time_click('page_traffic_input','-30','page_traffic_time')" class="btn btn-sm btn-flat btn-default">最近30天</button>
+                            <button type="button" onclick="time_click('page_traffic_input','-90','page_traffic_time')" class="btn btn-sm btn-flat btn-default">最近90天</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="col-lg-12" id="tongji2" style="height:400px;padding-bottom: 100px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box box-solid">
+                <div class="box-header with-border bg-gray-light">
+                    <h3 class="box-title" style="padding: 10px;">{:lang('各个端口浏览占比')}</h3>
+                    <div class="pull-right ml5">
+                        <input type="text" name="browse_input" id="browse_input" class="form-control" readonly value="{$browse_input}">
+                        <input type="hidden" name="browse_time" id="browse_time" value="{$page_traffic_time}">
+                    </div>
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" onclick="time_click('browse_input','-1','browse_time')" class="btn btn-sm btn-flat btn-default">{:lang('昨天')}</button>
+                            <button type="button" onclick="time_click('browse_input','-7','browse_time')" class="btn btn-sm btn-flat btn-default">最近7天</button>
+                            <button type="button" onclick="time_click('browse_input','-30','browse_time')" class="btn btn-sm btn-flat btn-default">最近30天</button>
+                            <button type="button" onclick="time_click('browse_input','-90','browse_time')" class="btn btn-sm btn-flat btn-default">最近90天</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="col-lg-12" id="tongji5" style="height:300px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="script"}
+<script src="__PLUG__/echarts/echarts.min.js"></script>
+<script src="__PLUG__/layer/laydate/laydate.js"></script>
+<script>
+    var dom2 = document.getElementById("tongji2");
+    var myChart2 = echarts.init(dom2);
+    var app2 = {};
+    option2 = null;
+    option2 = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['浏览次数（PV）'],
+            icon: 'circle'
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            data: [{$page_traffic_data['date']}],
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '浏览次数（PV）',
+                type: 'line',
+                data: [{$page_traffic_data['pv']}],
+                color: '#66BEB6',
+            }
+        ]
+    };
+
+    if (option2 && typeof option2 === "object") {
+        myChart2.setOption(option2, true);
+    }
+
+    var dom5 = document.getElementById("tongji5");
+    var myChart5 = echarts.init(dom5);
+    var app5 = {};
+    option5 = null;
+    option5 = {
+        color: ['#FF7978','#66BEB6','#FF7978','#66BEB6'],
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b} : {c} ({d}%)'
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        legend: {
+            // orient: 'vertical',
+            // top: 'middle',
+            bottom: 10,
+            left: 'center',
+            data: ['IOS', 'Android', 'Mini', 'PC']
+        },
+        series: [{
+            type: 'pie',
+            radius: '65%',
+            center: ['50%', '50%','50%', '50%'],
+            selectedMode: 'single',
+            data: [{
+                value: '{$browse.ios}',
+                name: 'IOS'
+            },
+                {
+                    value: '{$browse.android}',
+                    name: 'Android'
+                },
+                {
+                    value: '{$browse.mini}',
+                    name: 'Mini'
+                },
+                {
+                    value: '{$browse.pc}',
+                    name: 'PC'
+                },
+            ],
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    };
+    if (option5 && typeof option5 === "object") {
+        myChart5.setOption(option5, true);
+    }
+
+    function getDay(day){
+        var today = new Date();
+        var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;
+        today.setTime(targetday_milliseconds); //注意，这行是关键代码
+        var tYear = today.getFullYear();
+        var tMonth = today.getMonth();
+        var tDate = today.getDate();
+        tMonth = doHandleMonth(tMonth + 1);
+        tDate = doHandleMonth(tDate);
+        return tYear+"-"+tMonth+"-"+tDate;
+    }
+    function doHandleMonth(month){
+        var m = month;
+        if(month.toString().length === 1){
+            m = "0" + month;
+        }
+        return m;
+    }
+    function time_click(key,time,time_key) {
+        now = getDay(0);
+        past = getDay(time);
+        $('#'+key).val(past+'~'+now);
+        $('#'+time_key).val(time);
+        var formdata = $('#updateform').serialize();
+        location.href = '/admin.php/operation/ads/statistics.html?' + formdata;
+    }
+
+</script>
+{/block}

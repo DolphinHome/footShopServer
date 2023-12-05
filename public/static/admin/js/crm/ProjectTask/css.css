@@ -1,0 +1,443 @@
+html,
+body {
+	/*height: 100%;*/
+}
+
+ul,
+li {
+	list-style: none !important;
+}
+
+table tr td:nth-child(1) {
+	color: #999
+}
+
+table tr td:nth-child(2) {
+	color: #666
+}
+
+table tr td:nth-child(3) {
+	color: #999
+}
+
+table tr td:nth-child(4) {
+	color: #666
+}
+
+.btn {
+	border-radius: 0 !important;
+}
+
+.logger-item {
+	position: relative;
+}
+
+.logger-item::after {
+	content: "";
+	width: 14px;
+	height: 14px;
+	background-color: #00aaff;
+	border-radius: 100%;
+	position: absolute;
+	top: 13px;
+	left: -30px;
+}
+
+.logger-item::before {
+	content: "";
+	width: 2px;
+	height: 100%;
+	background-color: #00aaff;
+	position: absolute;
+	top: 0;
+	left: -24px;
+}
+
+.table-title {
+	height: 50px;
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.table-title-icon {
+	display: inline-block;
+	width: 4px;
+	height: 40%;
+	background-color: #00aaff;
+	border-radius: 2px;
+}
+
+.table-title-text {
+	display: inline-block;
+	margin-left: 20px;
+}
+
+.crm_set_bar {
+	overflow: hidden
+}
+
+.select2-container--default .select2-selection--single,
+.select2-selection .select2-selection--single {
+	padding: 6px 12px 6px 5px;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+	padding-left: 0px;
+}
+
+.crm_set_bar .header div span {
+	margin-right: 0px;
+}
+
+.btn-ucolor.btn-primary {
+	background-color: #1E9FFF !important;
+	border-color: #1E9FFF !important;
+}
+
+.list_bar {
+	background:00aaff;
+}
+
+.list_bar ul li {
+	padding: 10px 20px;
+}
+
+.list_bar ul li.act {
+	background: #fff;
+	border-top: 2px solid #00aaff;
+	padding: 8px 20px 10px;
+	color: #00aaff;
+}
+
+.projectBlockquote {
+	font-size: 14px;
+	border-left: 3px solid #00aaff;
+	padding: 5px 10px;
+}
+
+/* 计划任务 */
+.taskListDiv {
+	background-color: #EEEEEE;
+	padding: 10px;
+}
+
+.taskListUl {
+	background-color: #FFFFFF;
+	border-radius: 5px;
+	padding: 15px;
+}
+
+.taskListUl .firLi {
+	padding: 5px 0;
+	border-bottom: 1px solid #EEEEEE;
+}
+
+.taskListUl .firLi:last-child {
+	border-bottom: 0;
+}
+
+.taskListUl .firLi .firCheckbox {
+	width: 15px;
+	height: 15px;
+	position: relative;
+	top: 3px;
+	cursor: pointer;
+}
+
+.taskListUl .firLi .title {
+	display: inline-block;
+	height: 30px;
+	line-height: 30px;
+}
+
+.taskListUl .firLi label {
+	cursor: pointer;
+}
+
+.taskListUl .firLi.checked .title,
+.taskListUl .firLi.checked .title label {
+	color: #AAAAAA;
+	/* text-decoration: line-through; */
+}
+
+.taskListUl .firLi .right {
+	display: inline-block;
+	float: right;
+	font-size: 12px;
+	line-height: 30px;
+	color: #AAAAAA;
+}
+
+.taskListUl .firLi .right span {
+	margin-left: 5px;
+}
+
+.taskListUl .firLi .right .name {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	border-radius: 100%;
+	background-color: #8E79F5;
+	color: #fff;
+	font-size: 10px;
+}
+
+.taskListUl .firLi .right .button {
+	display: inline-block;
+	padding: 0 10px;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #CCCCCC;
+	border-radius: 5px;
+	color: #333333;
+}
+
+.taskListUl .firLi .right .del {
+	display: inline-block;
+	padding: 0 10px;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #f39c12;
+	border-radius: 5px;
+	color: #f39c12;
+	cursor: pointer;
+}
+
+.taskListUl .firLi .right .edit {
+	display: inline-block;
+	padding: 0 10px;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #1E9FFF;
+	border-radius: 5px;
+	color: #1E9FFF;
+	cursor: pointer;
+}
+
+.taskListUl .secUl {
+	margin-left: 20px;
+	margin-top: 5px;
+	padding: 5px 0;
+	border-top: 1px solid #EEEEEE;
+	display: none;
+}
+
+.taskListUl .firLi.checked .secUl {
+	display: block;
+}
+
+.taskListUl .secDiv {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.taskListUl .secDiv input {
+	width: 15px;
+	height: 15px;
+	position: relative;
+	top: 3px;
+}
+
+.taskListUl .secDiv input,
+.taskListUl .secDiv label {
+	cursor: pointer;
+}
+
+.taskFormDiv {
+	margin-bottom: 10px;
+}
+
+.taskFormDiv input {
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	border: 2px solid #FFFFFF;
+	border-radius: 5px;
+	box-sizing: border-box;
+	padding: 20px;
+}
+
+.taskFormDiv input:focus {
+	outline: none;
+	border: 2px solid #00aaff;
+}
+
+.taskListSubmitFixed {
+	position: fixed;
+	right: 15px;
+	top: 50%;
+}
+
+/* 计划任务 */
+
+.taskListLeft {
+	display: inline-block;
+	width: 150px;
+	background-color: #f2f3f7;
+	margin: 0;
+	padding: 10px 0;
+	text-align: center;
+	float: left;
+}
+
+.taskListLeft .firLi {
+	height: 36px;
+	line-height: 36px;
+	overflow: hidden;
+	cursor: pointer;
+	border-left: 2px solid #f2f3f7;
+}
+
+.taskListLeft .firLi.selected {
+	color: #1E9FFF;
+	background-color: #FFFFFF;
+	border-left: 2px solid #00aaff;
+}
+
+.taskListRight {
+	margin-left: 170px;
+}
+
+.taskListRight .taskFormDiv input {
+	border: 2px solid #f2f3f7;
+}
+
+.taskListRight .taskFormDiv input:focus {
+	outline: none;
+	border: 2px solid #00aaff;
+}
+
+.notesDivHover {
+	position: relative;
+}
+
+.notesUlFixed {
+	position: absolute;
+	text-align: left;
+	width: 260px;
+	padding: 0;
+	margin: 0;
+	background: #fff;
+	padding: 20px;
+	padding-left: 30px;
+	border: 1px solid #eee;
+	box-shadow: 0 0 5px #333;
+	border-radius: 5px;
+	right: 100%;
+	bottom: 0;
+	display: none;
+}
+
+.notesUlFixed li {
+	border-bottom: 1px solid #EEEEEE;
+	padding-top: 10px;
+}
+.notesUlFixed li:last-child{
+	border-bottom: 0;
+}
+
+.notesDivHover:hover .notesUlFixed {
+	display: block;
+}
+
+/* 参与人员 */
+.staffListDiv {}
+
+.staffListDiv .table {
+	background-color: #FFFFFF;
+}
+
+.staffListDiv .table thead {
+	background-color: #F3F3F3;
+}
+
+.staffListDiv .table th,
+.staffListDiv .table td {
+	text-align: center;
+}
+
+.staffListDiv .table .percent {
+	width: 250px;
+}
+
+.staffListDiv .table .percentage {
+	display: inline-block;
+	width: 150px;
+	height: 10px;
+	background-color: #EEEEEE;
+	border-radius: 5px;
+	position: relative;
+	overflow: hidden;
+}
+
+.staffListDiv .table .percentage i {
+	position: absolute;
+	height: 100%;
+	left: 0;
+	background-color: #00aaff;
+}
+
+.staffListDiv .table .percent .num {
+	display: inline-block;
+	width: 60px;
+	text-align: left;
+}
+
+.staffListDiv .bold {
+	font-weight: bold;
+}
+
+.staffListDiv .yellow {
+	color: #f39c12;
+}
+
+.staffListDiv .blue {
+	color: #00c0ef;
+}
+
+.staffListDiv .del {
+	display: inline-block;
+	padding: 0 10px;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #f39c12;
+	border-radius: 5px;
+	color: #f39c12;
+	cursor: pointer;
+}
+
+.staffListDiv .edit {
+	display: inline-block;
+	padding: 0 10px;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #00aaff;
+	border-radius: 5px;
+	color: #1E9FFF;
+	cursor: pointer;
+}
+
+.staffListDiv .editMini {
+	height: 20px;
+	line-height: 20px;
+	font-size: 12px;
+}
+
+.staffListDiv .sort {
+	outline: none;
+	height: 20px;
+	line-height: 20px;
+	width: 50px;
+	text-align: center;
+}
+
+/* 参与人员 */
+
+.staffListDiv .checkbox-inline {
+	margin-left: 0;
+	margin-right: 15px;
+	margin-bottom: 10px;
+}

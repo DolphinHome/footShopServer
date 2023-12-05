@@ -1,0 +1,315 @@
+{extend name="layout" /}
+{block name="content"}
+	<div class="box">
+		<div style="padding: 20px;">
+			<span style="color:red"><b>{$data['info']}</b>：</span> <a href="{:config('web_site_domain')}/index/api/index/hash/{$data['hash']}" target="_blank">{:config('web_site_domain')}/api/v1/{$data['hash']}</a> <span class="text-left label label-success">{$data['method_turn']}</span>
+			<span class="text-left label {if $data['status'] == 0 }label-danger{else /}{eq name="$data['isTest']" value='0'}label-success{else /}label-warning{/eq}{/if}">
+			        {eq name="$data['status']" value="0"}{$data['status_turn']}{else /}{$data['isTest_turn']}{/eq}
+			 </span>
+		</div>
+	</div>
+
+	<div class="block nav-tabs-custom mb0">
+        <ul class="nav nav-tabs">
+          	<li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('请求参数')}</a></li>
+          	<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">{:lang('返回参数')}</a></li>
+			<li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">{:lang('返回示例')}</a></li>
+			<li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">{:lang('自测')}</a></li>
+        </ul>
+        <div class="tab-content">
+          	<div class="tab-pane active block-content" id="tab_1">
+            	<h5 style="padding-bottom:10px;"><b>{:lang('公共Header请求参数')}</b></h5>
+				<div class="box no-header">
+				    <div class="box-body table-responsive no-padding">
+						<table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+						    <tbody>
+						    	<tr>
+						          	<th width="100">{:lang('参数名字')}</th>
+						          	<th width="120">{:lang('类型')}</th>
+						          	<th width="80">{:lang('是否必须')}</th>
+						          	<th width="70">{:lang('默认值')}</th>
+						          	<th>{:lang('其他')}</th>
+						          	<th>{:lang('说明')}</th>
+						       	</tr>
+						        <tr>
+						          	<td>appid</td>
+						          	<td><span class="label label-success">String[{:lang('字符串')}]</span></td>
+						          	<td class="text-center">
+						          		<span class="label {if $data['checkSign'] == 0 }label-success{else /}label-danger{/if}">
+						          			{if $data['checkSign'] == 0 }{:lang('选填')}{else /}{:lang('必填')}{/if}
+						          		</span>
+						          	</td>
+						          	<td></td>
+						          	<td></td>
+						          	<td>APP{:lang('请求标识')}</td>
+						        </tr>
+								
+								 <tr>
+						          	<td>signaturenonce</td>
+						          	<td><span class="label label-success">String[{:lang('字符串')}]</span></td>
+						          	<td class="text-center">
+						          		<span class="label {if $data['checkSign'] == 0 }label-success{else /}label-danger{/if}">
+						          			{if $data['checkSign'] == 0 }{:lang('选填')}{else /}{:lang('必填')}{/if}
+						          		</span>
+						          	</td>
+						          	<td></td>
+						          	<td></td>
+						          	<td>{:lang('随机字符串')},{:lang('可用')}UUID+{:lang('随机数')} {:lang('进行')}MD5{:lang('获得')}</td>
+						        </tr>
+								
+							   <tr>
+						          	<td>signature</td>
+						          	<td><span class="label label-success">String[{:lang('字符串')}]</span></td>
+						          	<td class="text-center">
+						          		<span class="label {if $data['checkSign'] == 0 }label-success{else /}label-danger{/if}">
+						          			{if $data['checkSign'] == 0 }{:lang('选填')}{else /}{:lang('必填')}{/if}
+						          		</span>
+						          	</td>
+						          	<td></td>
+						          	<td></td>
+						          	<td>{:lang('签名')},{:lang('参考签名算法')} <a href="{:url('check')}" target="_blank" class="label label-success">{:lang('查看签名算法')}<a></td>
+						        </tr>
+								
+								 <tr>
+						          	<td>timestamp</td>
+						          	<td><span class="label label-success">String[{:lang('字符串')}]</span></td>
+						          	<td class="text-center">
+						          		<span class="label {if $data['checkSign'] == 0 }label-success{else /}label-danger{/if}">
+						          			{if $data['checkSign'] == 0 }{:lang('选填')}{else /}{:lang('必填')}{/if}
+						          		</span>
+						          	</td>
+						          	<td></td>
+						          	<td></td>
+						          	<td>{:lang('请求时间戳')} （{:lang('北京时间')}）</td>
+						        </tr>
+						        <tr>
+						          	<td>user-token</td>
+						          	<td><span class="label label-success">String[{:lang('字符串')}]</span></td>
+						          	<td class="text-center">
+						          		<span class="label {if $data['needLogin'] == 0 }label-success{else /}label-danger{/if}">
+						          			{if $data['needLogin'] == 0 }{:lang('选填')}{else /}{:lang('必填')}{/if}
+						          		</span>
+						          	</td>
+						          	<td></td>
+						          	<td></td>
+						          	<td>user-token{:lang('用户认证秘钥')}【{:lang('请通过登录获取')}】</td>
+						        </tr>
+
+						    </tbody>
+						</table>
+				    </div>
+				</div>
+
+            	<h5 style="padding-bottom:10px;"><b>{:lang('请求参数')}</b></h5>
+				<div class="box no-header">
+				    <div class="box-body table-responsive no-padding">
+						<table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+						    <tbody>
+						    	<tr>
+						          	<th width="100">{:lang('参数名字')}</th>
+						          	<th width="120">{:lang('类型')}</th>
+						          	<th width="80">{:lang('是否必须')}</th>
+						          	<th width="70">{:lang('默认值')}</th>
+						          	<th>{:lang('其他')}</th>
+						          	<th>{:lang('说明')}</th>
+						       	</tr>
+						       	{volist name="$q_field" id="vo"}
+						        <tr>
+						          	<td>{$vo['fieldName']}</td>
+						          	<td><span class="label label-success">{$vo['dataType_turn']}</span></td>
+						          	<td class="text-center">
+						          		<span class="label {if $vo['isMust'] == 0 }label-success{else /}label-danger{/if}">
+						          			{$vo['isMust_turn']}
+						          		</span>
+						          	</td>
+						          	<td>{$vo['default']}</td>
+						          	<td></td>
+						          	<td>{$vo['info']}</td>
+						        </tr>
+								{/volist}
+						    </tbody>
+						</table>
+				    </div>
+				</div>
+          	</div>
+
+          	<div class="tab-pane block-content" id="tab_2">
+
+            	<h5 style="padding-bottom:10px;"><b>{:lang('公共返回参数')}</b></h5>
+				<div class="box no-header">
+				    <div class="box-body table-responsive no-padding">
+						<table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+						    <tbody>
+						    	<tr>
+						          	<th width="100">{:lang('返回字段')}</th>
+						          	<th width="">{:lang('类型')}</th>
+						          	<th>{:lang('说明')}</th>
+						       	</tr>
+						        <tr>
+						          	<td>code</td>
+						          	<td><span class="label label-success">Integer[{:lang('整数')}]</span></td>
+						          	<td>{:lang('返回码')}，{:lang('详情请参阅')}<a href="javascript:void(0);" data-url="{:url('errorlist')}" data-toggle="dialog">{:lang('状态码说明')}</a></td>
+						        </tr>
+						        <tr>
+						          	<td>msg</td>
+						          	<td><span class="label label-success">String[{:lang('字符串')}]</span></td>
+						          	<td>{:lang('返回中文状态描述')}，{:lang('详情请参阅')}<a href="javascript:void(0);" data-url="{:url('errorlist')}" data-toggle="dialog">{:lang('状态码说明')}</a></td>
+						        </tr>
+						        <tr>
+						          	<td>data</td>
+						          	<td><span class="label label-success">json</span></td>
+						          	<td>{:lang('返回')}json{:lang('类型数据')}</td>
+						        </tr>
+								
+								 <tr>
+						          	<td>user</td>
+						          	<td><span class="label label-success">json</span></td>
+						          	<td>
+									{:lang('返回')}json{:lang('类型数据')},{:lang('若你使用了')}UserToken{:lang('鉴权')}，{:lang('此处透传变动前的会员基础信息')}
+									{:lang('详情请参阅')}<a href="javascript:void(0);" data-url="{:url('userlist')}" data-toggle="dialog">{:lang('会员信息字段说明')}</a>
+									</td>
+						        </tr>
+						        <tr>
+						          	<td>page</td>
+						          	<td><span class="label label-success">json</span></td>
+						          	<td>
+									{:lang('返回')}json{:lang('类型数据')},{:lang('若此接口包含分页请求')}，{:lang('此处传递分页参数')}：
+									{total:{:lang('总数')},lastPage:{:lang('最后一页页码')},currentPage:{:lang('当前页码')},listRows:{:lang('每页数量')}}<br />
+									{:lang('客户端可传递')}list_rows{:lang('修改每页数量')}
+									</td>
+						        </tr>
+						    </tbody>
+						</table>
+				    </div>
+				</div>
+
+            	<h5 style="padding-bottom:10px;"><b>data{:lang('参数')}</b></h5>
+				<div class="box no-header">
+				    <div class="box-body table-responsive no-padding">
+						<table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+						    <tbody>
+						    	<tr>
+						          	<th width="100">{:lang('返回字段')}</th>
+						          	<th>{:lang('类型')}</th>
+						          	<th>{:lang('说明')}</th>
+						       	</tr>
+						       	{volist name="$f_field" id="vo"}
+						        <tr>
+						          	<td>{$vo['fieldName']}</td>
+						          	<td><span class="label label-success">{$vo['dataType_turn']}</span></td>
+						          	<td>{$vo['info']}</td>
+						        </tr>
+								{/volist}
+						    </tbody>
+						</table>
+				    </div>
+				</div>
+          	</div>
+			
+
+			<div class="tab-pane block-content" id="tab_3">
+				<pre>{$data.returnStr|raw}</pre>
+			</div>
+			
+			 <div class="tab-pane block-content" id="tab_4">
+                    <form id="form4" method="post" onsubmit="return false;">
+                         <h5 style="padding-bottom:10px;"><b>{:lang('公共请求参数')}</b></h5>
+                         <div class="box box-primary no-header">
+                              <div class="box-body table-responsive no-padding">
+                                   <table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+                                        <tbody>
+                                             <tr>
+                                                  <th width="100">{:lang('参数')}</th>
+                                                  <th width="200">{:lang('值')}</th>     
+                                                  <th width="80">{:lang('是否必须')}</th>                    
+                                                  <th>{:lang('说明')}</th>                                                  
+                                             </tr>  
+											<tr>
+                                                  <td>{:lang('版本号')}</td>
+                                                  <td><input id="version" value="v1" class="form-control"/></td>
+                                                  <td><span class="label label-danger">{:lang('必填')}</span></td>
+                                                  <td>{:lang('请填写接口版本号')}</td>
+                                             </tr>											 
+                                             <tr>
+                                                  <td>UserId</td>
+                                                  <td><input name="UserToken" value="" class="form-control"/></td>
+                                                  <td>
+                                                  <span class="label {if $data['needLogin'] == 0 }label-success{else /}label-danger{/if}">
+                                                       {if $data['needLogin'] == 0 }{:lang('选填')}{else /}{:lang('必填')}{/if}
+                                                  </span>
+                                                  </td>
+                                                  <td>{:lang('请填写会员')}ID，{:lang('用于模拟获取')}UserToken{:lang('用户认证秘钥')}</td>
+                                             </tr>
+                                        </tbody>
+                                   </table>
+                              </div>
+                         </div>
+
+                         <h5 style="padding-bottom:10px;"><b>{:lang('请求参数')}</b></h5>
+                         <div class="box box-primary no-header">
+                              <div class="box-body table-responsive no-padding">
+                                   <table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+                                        <tbody>
+                                             <tr>
+                                                  <th width="100">{:lang('参数名字')}</th>
+                                                  <th width="200">{:lang('值')}</th>
+                                                  <th width="80">{:lang('是否必须')}</th>                         
+                                     
+                                                  <th>{:lang('说明')}</th>
+                                             </tr>
+                                             {volist name="$q_field" id="vo"}
+                                             <tr>
+                                                  <td>{$vo['fieldName']}</td>
+                                                  <td>
+													{eq name="$vo.dataType" value="6"}
+													 <input data-name="{$vo['fieldName']}"  class="form-control" type="file"/>
+													{else /}
+													
+													<input name="{$vo['fieldName']}" value="{$vo['default']}" class="form-control"/>
+													
+													{/eq}
+												  </td>
+                                                  <td class="text-center">
+                                                       <span class="label {if $vo['isMust'] == 0 }label-success{else /}label-danger{/if}">
+                                                            {$vo['isMust_turn']}
+                                                       </span>
+                                                  </td>                         
+                                        
+                                                  <td>{$vo['info']}</td>
+                                             </tr>
+                                             {/volist}
+                                        </tbody>
+                                   </table>
+                              </div>
+                         </div>
+                         
+                         <button class="btn btn-info" id="submit" data-method="{$data['method_turn']}" data-url="{:url('test',['hash'=>$data['hash'],'version'=>'versionid' ])}">{:lang('模拟请求')}</button>
+                    </form>
+                    
+                    <div id="result">
+                    
+                    
+                    </div>
+               </div>
+        </div>
+    </div>
+{/block}
+{block name="script"}
+<script>
+(function($){
+     $("#submit").click(function(){	
+          var url= $(this).data("url");
+		  var version = $("#version").val()
+		  if(!version){
+			layer.msg("{:lang('请填写版本号')}");
+			return;
+		  }		  
+		  url = url.replace(/versionid/g,version)	
+          var formData = $('#form4').serialize();        
+          $.post(url,formData,function(result){
+                $("#result").html( "{:lang('返回参数')}"+':<pre>' + JSON.stringify(result, null, 4)+ '</pre>')         
+          },'json')
+     })
+})(jQuery)
+</script>
+{/block}

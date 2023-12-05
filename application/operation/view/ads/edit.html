@@ -1,0 +1,382 @@
+{extend name="$admin_layout" /}
+{block name="style"}
+<style>
+	.table>tbody>tr>td {
+		padding: 15px;
+		font-size: 14px;
+	}
+
+	.select-link {
+		display: inline-block;
+		width: 70px;
+		height: 34px;
+		line-height: 34px;
+		text-align: center;
+		border-radius: 0 16px 16px 0;
+		border: 1px solid #b6dafc;
+		color: #067fe0;
+		background-color: #ecf5ff;
+		cursor: pointer;
+	}
+</style>
+{/block}
+{block name="content"}
+  <!-- layui css -->
+  <link rel="stylesheet" href="/static/admin/js/layui/css/layui.css">
+<script src="/static/admin/js/layui/layui.js"></script>
+<div class="row">
+	<div class="col-md-12">
+		<div class="box nav-tabs-custom">
+			<div class="box-header with-border">
+				<h3 class="box-title">{:lang('编辑广告位')}</h3>
+			</div>
+			<div class="box-body tab-content">
+				<div class="tab-pane active">
+					<div class="block-content" style="margin: 20px auto;width: 700px;">
+
+						<!-- 表单验证请保留id="form"，否则验证不起作用 -->
+						<form class="form row" name="form" id="form" parent_reload="-1"
+							action="{:url('/operation/ads/edit',['id'=>1])}" method="post"
+							data-validator-option="{timely:1, theme:'bootstrap'}">
+							<input type="hidden" name="__token__" value="1bda4df7351d29a3d3eb08dd6db14071">
+							<div class="form-group hidden " id="form_group_id">
+								<input type="hidden" name="id" value="{$info.id}" class="form-control" id="id">
+							</div>
+
+							<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_name">
+								<div class="col-xs-12 label-title" for="name">{:lang('广告名称')}</div>
+								<div class="col-sm-12">
+									<input class="form-control" type="text" id="name" name="name" value="{$info.name}"
+										placeholder="{:lang('请输入广告名称')}">
+								</div>
+							</div>
+
+							<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_typeid">
+								<div class="col-xs-12 label-title" for="typeid">{:lang('所属广告位')}</div>
+								<div class="col-sm-12">
+									<select class="select2 form-control select2-hidden-accessible" id="typeid" name="typeid"
+										data-select2-id="typeid" tabindex="-1" aria-hidden="true">
+										{volist name="list_type" id="cate"}
+										<option value="{$cate.id}" {if strval($cate.id)==strval($info.typeid)}selected{/if}>{$cate.name}
+										</option>
+										{/volist}
+									</select>
+									<!--<span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr"
+										data-select2-id="1" style="width: 100%;"><span class="selection"><span
+												class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true"
+												aria-expanded="false" tabindex="0" aria-labelledby="select2-typeid-container"><span
+													class="select2-selection__rendered" id="select2-typeid-container" role="textbox"
+													aria-readonly="true" title="{:lang('引导图')}"><span class="select2-selection__clear"
+														data-select2-id="3">×</span>{:lang('引导图')}</span><span class="select2-selection__arrow"
+													role="presentation"><b role="presentation"></b></span></span></span><span
+											class="dropdown-wrapper" aria-hidden="true"></span></span>-->
+								</div>
+							</div>
+
+							<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_name">
+								<div class="col-xs-12 label-title" for="name">{:lang('宽度')}</div>
+								<div class="col-sm-12">
+									<input class="form-control" type="text" readonly="readonly" id="name" name="width" value="{$info.width}"
+										placeholder="{:lang('请输入宽度')}">
+								</div>
+							</div>
+
+							<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_name">
+								<div class="col-xs-12 label-title" for="name">{:lang('高度')}</div>
+								<div class="col-sm-12">
+									<input class="form-control" type="text" readonly="readonly" id="name" name="height" value="{$info.height}"
+										placeholder="{:lang('请输入高度')}">
+								</div>
+							</div>
+
+
+							<!-- <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_thumb">
+								<div class="col-xs-12 label-title" for="thumb" style="text-align: left;">{:lang('图片')}</div>
+								<div class="col-xs-12 js-upload-image">
+										<div id="file_list_thumb" class="uploader-list" style="float:left">
+												<div class="file-item thumbnail">
+														<a data-magnify="gallery" data-caption="" href=" ">
+																<img data-original="" src="{$info.thumb|get_file_url}" width="100">
+														</a>
+														<i class="fa fa-times-circle remove-picture"></i>
+												</div>
+										</div>
+										<input type="hidden" name="thumb"  value="{$info.thumb}" data-multiple="false" data-watermark='' data-thumb='' data-size="0" data-ext='' />
+										<div style="float:left" id="picker_thumb">{:lang('载入中')}...</div>
+										<div class="clearfix"></div>
+								</div>
+						</div> -->
+						<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_status" style="display: none;">
+							<div class="col-xs-12 label-title" for="statusInfo" style="margin-bottom: 14px;">{:lang('显示类型')}</div>
+							<div class="col-xs-12" id='block'>
+								<label class="pr10" id="imgInfo">
+									<div class="iradio_minimal-red imgI"  data-icheck="statusInfo" aria-checked="false" aria-disabled="false"
+										style="position: relative;"><input type="radio" data-toggle="icheck" name="type" 
+											value="1" 
+											checked
+											style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins
+											class="iCheck-helper"
+											style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+									</div>
+									{:lang('显示图片')}
+								</label>
+								<label class="pr10" id="videoInfo">
+									<div class="iradio_minimal-red imgV" data-icheck="statusInfo" aria-checked="false" aria-disabled="false"
+										style="position: relative;"><input type="radio" data-toggle="icheck" name="type"
+											value="2"
+											id='checkV'
+											style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins
+											class="iCheck-helper"
+											style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+									</div>
+									{:lang('显示视频')}
+								</label>
+							</div>
+						</div>
+							<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 imgInfo" id="form_group_thumb">
+								<div class="col-xs-12 label-title" for="thumb" style="text-align: left;">{:lang('图片')}</div>
+								<div class="col-xs-12 js-upload-image">
+									<div id="file_list_thumb" class="uploader-list" style="float:left">
+										<div class="file-item thumbnail">
+											<a data-magnify="gallery" data-caption="" href=" ">
+												<img data-original="" src="{$info.thumb|get_file_url}" width="100">
+											</a>
+											<i class="fa fa-times-circle remove-picture"></i>
+										</div>
+									</div>
+									<input type="hidden" name="thumb" value="{$info.thumb}" data-multiple="false" data-watermark=''
+										data-thumb='' data-size="0" data-ext='' />
+									<div class="col-xs-12 js-upload-images webuploader-pick" id="uploadPic">{:lang('上传图片')}</div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 videoInfo" id="form_group_images form_group_video" style="display: none;">
+								<div class="col-xs-12 label-title" for="images" style="text-align: left;">{:lang('视频')}</div>
+								<div class="col-xs-12 js-upload-images">
+									<div id="file_list_images2" class="uploader-list pull-left">
+										{if $info.type == 2}
+											<div style='position: relative;'>
+												<video src="{$info.video|get_file_url}" width="221" height="121" controls="controls" id="video" >
+													</video>
+													<span  onclick="removeV(this)" style='position: absolute;top: 0;right: 0;margin-right: 10px;fonst-size:24px;border:1px solid #000;border-radius: 3px;padding: 2px 5px;cursor: pointer;'>x</span>
+												</div>
+												{/if}
+									</div>
+									<input type="hidden"  id="video" name="video" data-multiple="true" data-size="0" data-ext='' id="videoI" value="{$info.video}">
+									<!-- <div id="picker_images" class="pull-left">{:lang('载入中')}...</div> -->
+									<div class="col-xs-12 js-upload-images webuploader-pick" id="uploadVideo" >{:lang('上传视频')}</div>
+									<div class="clearfixVideo"></div>
+								</div>
+							</div>
+							<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_href">
+								<div class="col-xs-12 label-title" for="href" id="myLink">{:lang('链接')}</div>
+								<div class="col-sm-12" style="display: flex;">
+									<input class="form-control" type="text" id="href" name="href" value="{$info.href}" placeholder="{:lang('请输入链接')}"
+										style="width: calc(100% - 72px);">
+									<span class="select-link">{:lang('点击选择')}</span>
+								</div>
+							</div>
+
+							<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_login">
+                                <div class="col-xs-12 label-title" for="is_login" style="margin-bottom: 14px;">{:lang('是否需要登录')}</div>
+                                <div class="col-xs-12">
+                                    <label class="pr10">
+                                        <div class="iradio_minimal-red " data-icheck="is_login" aria-checked="false" aria-disabled="false" style="position: relative;"><input {if $info.is_login == 0} checked="" {/if}type="radio"  data-toggle="icheck" name="is_login" id="status1" value="0" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+                                        否        </label>
+                                    <label class="pr10">
+                                        <div class="iradio_minimal-red " data-icheck="is_login" aria-checked="false" aria-disabled="false" style="position: relative;"><input {if $info.is_login == 1} checked="" {/if} type="radio"  data-toggle="icheck" name="is_login" id="status2" value="1"  style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+                                        是        </label>
+                                </div>
+                            </div>
+
+							<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_status">
+								<div class="col-xs-12 label-title" for="status" style="margin-bottom: 14px;">{:lang('立即启用')}</div>
+								<div class="col-xs-12">
+									<label class="pr10">
+										<div class="iradio_minimal-red" data-icheck="status" aria-checked="false" aria-disabled="false"
+											style="position: relative;"><input type="radio" data-toggle="icheck" name="status" id="status1"
+												value="0" {if $info.status==0} checked="" {/if}
+												style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins
+												class="iCheck-helper"
+												style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+										</div>
+										否
+									</label>
+									<label class="pr10">
+										<div class="iradio_minimal-red " data-icheck="status" aria-checked="false" aria-disabled="false"
+											style="position: relative;"><input type="radio" data-toggle="icheck" name="status" id="status2"
+												value="1" {if $info.status==1} checked="" {/if}
+												style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins
+												class="iCheck-helper"
+												style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+										</div>
+										是
+									</label>
+								</div>
+							</div>
+
+							<div class="form-group col-md-12 col-xs-12">
+								<div class="col-xs-12">
+									<button class="btn btn-primary" onclick="let index = parent.layer.getFrameIndex(window.name);
+									parent.layer.close(index);setTimeout(()=>{parent.layer.msg('编辑成功');parent.window.location.reload()},100);" type="submit"> {:lang('提交')} </button>
+									<button class="btn btn-default btn-flat" type="button"
+										onclick="javascript:history.back(-1);return false;"> {:lang('返回')} </button>
+								</div>
+
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<script src="__PLUG__/vue/vue.min.js"></script>
+<script src="__PLUG__/vue/vue-resource.min.js"></script>
+<script>
+	const _link = document.querySelector('.select-link')
+	_link.addEventListener('click', () => {
+		parent.window.selectLink((callData) => {
+			if(!callData){
+				return false;
+			}
+			document.querySelector('#href').value = callData;
+		})
+	})
+
+	$("#imgInfo").click(function(e){
+		console.log(11122,e)
+		$('.videoInfo').hide()
+		$('.imgInfo').show()
+		console.log(Html)
+	})
+	$("#videoInfo").click(function(e){
+		console.log(2333,e)
+		$('.imgInfo').hide()
+		$('.videoInfo').show()
+	})
+	let cutPicWidth = 0; // 裁剪图片的宽度
+	let cutPicHeight = 0; // 裁剪图片的高度
+	layui.use('upload', function(){
+		var $ = layui.jquery
+		,upload = layui.upload;
+		upload.render({
+			elem: '#uploadVideo'
+			,url: '/api/v1/5fc615f7da92b' //改成您自己的上传接口
+			,accept: 'video' //视频
+			,done: function(res){
+			layer.msg('上传成功');
+			console.log(res)
+			$('#video').attr({ 'value':res.data.data.fileId });
+			var NewHtml =`
+			<div style=' position: relative;'>
+			<video src="${res.data.data.file}" width="221" height="121" controls="controls" id="video" >
+				</video>
+				<span  onclick="removeV(this)" style='position: absolute;top: 0;right: 0;margin-right: 10px;fonst-size:24px;border:1px solid #000;border-radius: 3px;padding: 2px 5px;cursor: pointer;'>x</span>
+			</div>`
+				$('#file_list_images2').html(NewHtml)
+			}
+		});
+	})
+	function removeV(ele) {
+		$('#file_list_images2').html('')
+		$('#video').attr({ 'value': '' });
+	}
+	console.log({$info.type})
+	let type ={$info.type};
+	if(type ==2){
+		$('.imgInfo').hide()
+		$('.videoInfo').show()
+		$('#imgInfo .imgI >.iradio_minimal-red').removeClass('checked')
+		$('#imgInfo .imgI input').attr('checked',false)
+		$('#videoInfo .imgV >.iradio_minimal-red').addClass('checked')
+		$('#videoInfo .imgV input').attr('checked',true)
+	}else{
+		$('.videoInfo').hide()
+		$('.imgInfo').show()
+		$('#imgInfo .imgI >.iradio_minimal-red').addClass('checked')
+		$('#imgInfo .imgI input').attr('checked',true)
+		$('#videoInfo .imgV >.iradio_minimal-red').removeClass('checked')
+		$('#videoInfo .imgV input').attr('checked',false)
+	}
+	if($("#typeid").val() ==5 || $("#typeid").val() ==12){
+		$('#form_group_status').show()
+	  }else{
+		$('#form_group_status').hide()
+	  }
+	$('#typeid').on('change', () => {
+
+		$('#file_list_images2').html('')
+		$('#file_list_images').html('')
+		$('#video').attr({ 'value': '' });
+		$('#slideVal').attr({ 'value': '' });
+		if($("#typeid").val() ==5 || $("#typeid").val() ==12){
+			$('#form_group_status').show()
+		}else{
+			$('#form_group_status').hide()
+		}
+		   $('.videoInfo').hide()
+			$('.imgInfo').show()
+		$('#imgInfo .imgI >.iradio_minimal-red').addClass('checked')
+		$('#imgInfo .imgI input').attr('checked',true)
+		$('#videoInfo .imgV >.iradio_minimal-red').removeClass('checked')
+		$('#videoInfo .imgV input').attr('checked',false)
+		$.post('/admin.php/operation/ads_type/getSize', { "id": $("#typeid").val() })
+			.then(res => {
+				if (res.code == 1) {
+					cutPicWidth = res.data.width;
+					cutPicHeight = res.data.height;
+				}
+			})
+	})
+
+	let slideVal = ''; // 此属性是图片裁剪完之后给from表单的input的value赋值的,不可删除
+	let picNum = 0; // 上传的图片数量
+	let Html = []; // 空的模板字符串
+	document.querySelector('#uploadPic').addEventListener('click', async () => {
+		await new Promise((resolve, reject) => {
+			$.post('/admin.php/operation/ads_type/getSize', { "id": $("#typeid").val() })
+			.then(res => {
+				if (res.code == 1) {
+					cutPicWidth = res.data.width;
+					cutPicHeight = res.data.height;
+					resolve()
+				}
+			})
+		})
+		// 在这里修改裁剪图片的大小
+		let picSize = {
+			"width": cutPicWidth,
+			"height": cutPicHeight
+		}
+		// 调用父级页面的方法的参数
+		slideVal = $('[name="thumb"]').attr('value')
+		let data = {
+			slideVal,
+			picNum,
+			picSize
+		}
+		parent.window.editImgCov (data,(callData) => {
+			slideVal = callData.slideVal;
+			picNum = callData.picNum;
+			$('[name="thumb"]').attr({ 'value': callData.slideVal });
+			$("#file_list_thumb").empty();
+			$("#file_list_thumb").html(callData.tempDom)
+		})
+
+	})
+	// 删除图片
+	function removePic(ele) {
+		let tempId = ele.getAttribute("data-id");
+		for (let i = 0; i < Html.length; i++) {
+			if (Html[i].includes(`<i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${tempId}"></i>`)) {
+				Html.splice(i, 1);
+				return
+			}
+		}
+		slideVal.replace(`${tempId},`,'');
+		$('[name="thumb"]').attr({ 'value': slideVal });
+	}
+</script>
+{/block}

@@ -1,0 +1,38 @@
+<!--
+ * @Descripttion: 
+ * @Version: 1.0
+ * @Author: wangph
+ * @Date: 2021-03-31 09:46:02
+ * @LastEditors: wangph
+ * @LastEditTime: 2021-04-27 14:59:04
+-->
+<div class="btn-group dropup">
+
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    {:lang('查看')}
+  </button>  
+   <div class="dropdown-menu" style="width:400px;left:-340px;bolder:1px #dbdbdb solid;padding:2px !important">
+		<table class="table table-bordered table-condensed" style="margin:0px">
+			<tr>
+				<th>{:lang('消息标题')}</th>
+				<td>{$data.title}</td>
+			</tr>
+			<tr>
+				<th>{:lang('消息内容')}</th>
+				<td>{$data.text}</td>
+			</tr>
+			<tr>
+				<th>{:lang('消息类型')}</th>
+				<td>{$umtype[$data.msg_type]}</td>
+			</tr>
+			<tr>
+				<th>{:lang('主播')}ID</th>
+				<td>{$data.user_id}</td>
+			</tr>
+			<tr>
+				<th>{:lang('房间')}ID</th>
+				<td>{$data.room_id}</td>
+			</tr>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,177 @@
+<blockquote class="layui-elem-quote" style="border-left: 5px solid #1E9FFF;padding: 5px 15px;">
+	{:lang('计划日期')}
+</blockquote>
+
+<?php if($data['is_product']):?>
+<div class="layui-form-item">
+	<?php if($leaderType['isLeaderTop'] || $leaderType['isLeaderUe']):?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('产品计划确认')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_ue_plan" readonly="readonly" placeholder="{:lang('产品计划确认日期')}" class="layui-input lInputDateAjax"
+		 id="lInputDateTime_ue_plan" data-date="Time_ue_plan" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="time_ue_plan"
+		 value="<?php echo $data['time_ue_plan'] ? date('Y-m-d',$data['time_ue_plan']) : ''?>">
+	</div>
+
+	<label class="layui-form-label layui-form-labelLeft">{:lang('产品确认日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_ue" readonly="readonly" placeholder="{:lang('产品确认日期')}" class="layui-input lInputDateAjax" id="lInputDateTime_ue"
+		 data-date="Time_ue" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="time_ue" value="<?php echo $data['time_ue'] ? date('Y-m-d',$data['time_ue']) : ''?>">
+	</div>
+	<?php else:?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('产品计划确认')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_ue_plan" readonly="readonly" style="background-color: #F2F2F2;" placeholder="{:lang('产品计划确认日期')}" class="layui-input" value="<?php echo $data['time_ue_plan'] ? date('Y-m-d',$data['time_ue_plan']) : ''?>">
+	</div>
+	
+	<label class="layui-form-label layui-form-labelLeft">{:lang('产品确认日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_ue" readonly="readonly" style="background-color: #F2F2F2;" placeholder="{:lang('产品确认日期')}" class="layui-input" value="<?php echo $data['time_ue'] ? date('Y-m-d',$data['time_ue']) : ''?>">
+	</div>
+	<?php endif;?>
+</div>
+<?php endif;?>
+
+<?php if($data['is_devise']):?>
+<div class="layui-form-item">
+	<?php if($leaderType['isLeaderTop'] || $leaderType['isLeaderUi']):?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('设计计划确认')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_ui_plan" readonly="readonly" placeholder="{:lang('设计计划确认日期')}" class="layui-input lInputDateAjax"
+		 id="lInputDateTime_ui_plan" data-date="Time_ui_plan" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="time_ui_plan"
+		 value="<?php echo $data['time_ui_plan'] ? date('Y-m-d',$data['time_ui_plan']) : ''?>">
+	</div>
+
+	<label class="layui-form-label layui-form-labelLeft">{:lang('设计确认日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_ui" readonly="readonly" placeholder="{:lang('设计确认日期')}" class="layui-input lInputDateAjax" id="lInputDateTime_ui"
+		 data-date="Time_ui" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="time_ui" value="<?php echo $data['time_ui'] ? date('Y-m-d',$data['time_ui']) : ''?>">
+	</div>
+	<?php else:?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('设计计划确认')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_ui_plan" readonly="readonly" style="background-color: #F2F2F2;" placeholder="{:lang('设计计划确认日期')}" class="layui-input" value="<?php echo $data['time_ui_plan'] ? date('Y-m-d',$data['time_ui_plan']) : ''?>">
+	</div>
+	
+	<label class="layui-form-label layui-form-labelLeft">{:lang('设计确认日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_ui" readonly="readonly" style="background-color: #F2F2F2;" placeholder="{:lang('设计确认日期')}" class="layui-input" value="<?php echo $data['time_ui'] ? date('Y-m-d',$data['time_ui']) : ''?>">
+	</div>
+	<?php endif;?>
+</div>
+<?php endif;?>
+
+<div class="layui-form-item">
+	<?php if($leaderType['isLeaderTop'] || $leaderType['isLeaderJs']):?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术开始日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_start" readonly="readonly" placeholder="{:lang('技术开始日期')}" class="layui-input lInputDateAjax" id="lInputDateTime_start"
+		 data-date="Time_start" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="time_start" value="<?php echo $data['time_start'] ? date('Y-m-d',$data['time_start']) : ''?>">
+	</div>
+	<?php else:?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术开始日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_start" readonly="readonly" style="background-color: #F2F2F2;" placeholder="{:lang('技术开始日期')}" class="layui-input" value="<?php echo $data['time_start'] ? date('Y-m-d',$data['time_start']) : ''?>">
+	</div>
+	<?php endif;?>
+	
+	<label class="layui-form-label layui-form-labelLeft">{:lang('延期天数')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" value="{$data.postpone_day}" class="layui-input lInputEnter"  placeholder="{:lang('请输入延期天数')}" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="postpone_day" />
+	</div>
+</div>
+
+<div class="layui-form-item">
+	<?php if($leaderType['isLeaderTop'] || $leaderType['isLeaderJs']):?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术计划提测')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_test_plan" readonly="readonly" placeholder="{:lang('技术计划提测时间')}" class="layui-input lInputDateAjax"
+		 id="lInputDateTime_test_plan" data-date="Time_test_plan" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+		 data-db="time_test_plan" value="<?php echo $data['time_test_plan'] ? date('Y-m-d',$data['time_test_plan']) : ''?>">
+	</div>
+
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术提测日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_test" readonly="readonly" placeholder="{:lang('技术提测时间')}" class="layui-input lInputDateAjax" id="lInputDateTime_test"
+		 data-date="Time_test" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="time_test" value="<?php echo $data['time_test'] ? date('Y-m-d',$data['time_test']) : ''?>">
+	</div>
+	<?php else:?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术计划提测')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_test_plan" readonly="readonly" style="background-color: #F2F2F2;" placeholder="{:lang('技术计划提测时间')}" class="layui-input" value="<?php echo $data['time_test_plan'] ? date('Y-m-d',$data['time_test_plan']) : ''?>">
+	</div>
+	
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术提测日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_test" readonly="readonly" style="background-color: #F2F2F2;" placeholder="{:lang('技术提测时间')}" class="layui-input" value="<?php echo $data['time_test'] ? date('Y-m-d',$data['time_test']) : ''?>">
+	</div>
+	<?php endif;?>
+</div>
+
+<div class="layui-form-item">
+	<?php if($leaderType['isLeaderTop'] || $leaderType['isLeaderJs']):?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术计划交付')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_end_plan" readonly="readonly" placeholder="{:lang('技术计划交付日期')}" class="layui-input lInputDateAjax"
+		 id="lInputDateTime_end_plan" data-date="Time_end_plan" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="time_end_plan"
+		 value="<?php echo $data['time_end_plan'] ? date('Y-m-d',$data['time_end_plan']) : ''?>">
+	</div>
+
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术交付日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_end" readonly="readonly" placeholder="{:lang('技术交付日期')}" class="layui-input lInputDateAjax" id="lInputDateTime_end"
+		 data-date="Time_end" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="time_end" value="<?php echo $data['time_end'] ? date('Y-m-d',$data['time_end']) : ''?>">
+	</div>
+	<?php else:?>
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术计划交付')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_end_plan" readonly="readonly" style="background-color: #F2F2F2;" placeholder="{:lang('技术计划交付日期')}" class="layui-input" value="<?php echo $data['time_end_plan'] ? date('Y-m-d',$data['time_end_plan']) : ''?>">
+	</div>
+	
+	<label class="layui-form-label layui-form-labelLeft">{:lang('技术交付日期')}:</label>
+	<div class="layui-input-inline">
+		<input type="text" name="time_end" readonly="readonly" style="background-color: #F2F2F2;" placeholder="{:lang('技术交付日期')}" class="layui-input" value="<?php echo $data['time_end'] ? date('Y-m-d',$data['time_end']) : ''?>">
+	</div>
+	<?php endif;?>
+</div>
+
+<?php if($leaderType['isLeaderTop'] || $leaderType['isLeaderJs']):?>
+<blockquote class="layui-elem-quote" style="border-left: 5px solid #1E9FFF;padding: 5px 15px;">
+	{:lang('计划附件')}
+</blockquote>
+<table class="layui-table">
+	<thead>
+		<tr>
+			<th>{:lang('项目附件')}</th>
+			<th>{:lang('附件名称')}</th>
+			<th>{:lang('上传人')}</th>
+			<th>{:lang('下载')}</th>
+			<th>{:lang('操作')}</th>
+		</tr>
+	</thead>
+	<tbody id="projectPlanFileTbody">
+		<?php foreach($data['plan_filesArr'] as $k=>$v):?>
+		<tr class="projectFileDelSavePlan{$v['aid']}">
+			<td>
+				{:lang('计划附件')}
+			</td>
+			<td>
+				<a href="{$v['file']}" class="layerOpenBtnRT" target="_blank">{$v['file_name']}</a>
+			</td>
+			<td>{$v['staff_name']}</td>
+			<td><a href="{$v['file']}" target="_blank" style="color: #666;">{:lang('点击下载')}</a></td>
+			<td><span class="projectFileDelSave" data-id="{$v['aid']}">{:lang('删除')}</span></td>
+		</tr>
+		<?php endforeach;?>
+	</tbody>
+</table>
+
+<div class="layui-form-item">
+	<div class="layui-input-inline" style="width: auto;">
+		<button type="button" class="layui-btn layui-btn-primary LAY_imageUploadProjectPlan" data-id="{$data['aid']}">
+			<i class="layui-icon">&#xe67c;</i>{:lang('上传附件')}
+		</button>
+		
+		<p style="color: #999;margin-top: 10px;">{:lang('请上传')}PDF{:lang('格式或图片')}(jpg、png、gif、svg{:lang('等')}){:lang('格式文件')} [5{:lang('月')}20{:lang('日起不再支持其他文件格式上传')}]</p>
+	</div>
+</div>
+<?php endif;?>

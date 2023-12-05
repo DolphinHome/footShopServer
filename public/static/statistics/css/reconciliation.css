@@ -1,0 +1,65 @@
+
+.fu-balance-withdraw-list-new{
+    margin-bottom: 29px; 
+}
+.fu-balance-withdraw-list-new-title{
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 17px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.fu-balance-withdraw-list-new-title-tip-text{
+    color: rgba(0,0,0,.6);
+    border-bottom: 1px dotted rgba(0,0,0,.6);
+}
+.fu-balance-withdraw-list-new-title .fu-balance-withdraw-list-new-title-line{
+    height: 16px;
+    width: 2px;
+    display: inline-block;
+    margin-right: 8px;
+    background: rgb(17, 153, 238);
+}
+
+
+.fu-NTB_infoWrapper_4-90-1{
+    border: 1px solid #B5EDFF;
+    background: #E6F9FF;  
+    color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    padding: 6px 8px;
+    border-radius: 3px;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+.fu-NTB_item_4-90-1{
+    display: flex;
+    position: relative;
+    align-items: flex-start;
+    line-height: 1.5;
+    flex-direction: row;
+    justify-content: space-between; 
+}
+.fu-NTB_itemContentWrapper_4-90-1{
+    flex: 1;
+    display: flex;
+    font-size: 12px;
+    align-items: flex-start;
+    flex-direction: row; 
+    justify-content: flex-start;
+}
+.el-icon-info{
+    font-size: 16px;
+    margin-right: 8px;
+    color: #1199ee;
+}
+.fu-form-container{
+    background-color: #f7f7f7;
+    padding: 24px 0 12px 22px;
+    position: relative;
+    margin: 12px 0;
+}

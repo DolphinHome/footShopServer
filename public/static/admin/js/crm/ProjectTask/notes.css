@@ -1,0 +1,104 @@
+.notesFormDiv {
+	margin: 20px;
+}
+
+.notesFormDiv textarea {
+	width: 100%;
+	padding: 10px;
+	border-radius: 5px;
+	outline: none;
+	box-sizing: border-box;
+}
+
+.notesFormDiv button {
+	border: 0;
+	height: 34px;
+	line-height: 34px;
+	background-color: #00aaff;
+	cursor: pointer;
+	color: #FFFFFF;
+	padding: 0 20px;
+	border-radius: 5px;
+	font-size: 12px;
+	margin-top: 10px;
+}
+
+.notesListUL {
+	margin: 0 20px 20px 20px;
+	padding-left: 0;
+	color: #333;
+	font-size: 14px;
+	border-top: 1px solid #EEEEEE;
+	list-style: none;
+}
+
+.notesListUL ul,
+.notesListUL li {
+	list-style: none;
+}
+
+.notesListUL p{
+	margin: 0;
+}
+
+.notesListUL .firLi {
+	padding: 10px 0;
+	border-bottom: 1px solid #EEEEEE;
+}
+
+.notesListUL .firLi:last-child {
+	border-bottom: 0;
+}
+
+.notesListUL .title {
+	line-height: 40px;
+	overflow: hidden;
+}
+
+.notesListUL .header {
+	width: 40px;
+	height: 40px;
+	border-radius: 100%;
+	border: 1px solid #EEEEEE;
+	float: left;
+	margin-right: 10px;
+}
+
+.notesListUL .time {
+	display: inline-block;
+	color: #999999;
+	padding-left: 10px;
+	font-size: 12px;
+}
+
+.notesListUL .reply {
+	color: #00aaff;
+	float: right;
+	cursor: pointer;
+}
+
+.notesListUL .content {
+	padding: 0 30px 15px 52px;
+	min-height: auto;
+}
+
+.notesListUL .replyList {
+	background-color: #F2F3F7;
+	margin-left: 52px;
+	padding: 10px;
+	font-size: 12px;
+	border-radius: 5px;
+}
+
+.notesListUL .replyList li {
+	border-bottom: 1px dotted #FFFFFF;
+	padding-top: 10px;
+}
+
+.notesListUL .replyList li:last-child {
+	border-bottom: 0;
+}
+
+.notesListUL .replyList .content {
+	padding: 10px 0;
+}

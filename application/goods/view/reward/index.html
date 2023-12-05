@@ -1,0 +1,379 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <!-- import JavaScript -->
+    <script src="/static/plugins/element-ui/element-ui.js" ></script>
+    <!-- 引入echarts -->
+    <script src="/static/plugins/echarts/echarts.min.js"></script>
+
+    <!-- ajax请求 -->
+    <script src="/static/plugins/ajax/axios.js" ></script>
+    <link rel="stylesheet" href="/static/plugins/wang-editor/css/wangEditor.min.css?v=12221">
+    <script src="/static/plugins/wang-editor/js/wangEditor.min.js?v=12111"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+
+</head>
+<style>
+    .el-table td {
+        padding:0px 0 !important;
+    }
+    .el-table .cell{
+        padding:0 !important;
+    }
+    .add{
+        width:100%;
+        /*height:50px;*/
+        /*line-height: 50px;*/
+        text-align: center;
+        margin-top:20px;
+    }
+    .clssfiy-pic {
+		width: 30px;
+		height: 30px;
+	}
+    /* 图片上传 */
+    .avatar-uploader .el-upload {
+        width: 50px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader{
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+    }
+    .avatar {
+        width: 50px;
+        height: 45px;
+        display: block;
+    }
+    .el-upload__input {
+        display: none !important;
+    }
+    .up-pic {
+        color: #5a99f1;
+    }
+
+</style>
+
+<body>
+<div id="app">
+    <div class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box nav-tabs-custom">
+                    <div class="box-header with-border" >
+                        <h3 class="box-title">{:lang('新增抽奖奖品')} <small style="color:red"> </small></h3>
+<!--                        <button class="btn btn-primary btn-flat" style="display:inline-block;" type="button" onclick="javascript:history.back(-1);return false;">-->
+<!--                            <i class="fa fa-mail-reply"></i> {:lang('返回')} </button>-->
+                    </div>
+
+                    <div class="box-body tab-content">
+                        <button  @click="handleAdd" class="btn btn-primary btn-flat" style="width:100px;border-radius: 5px;margin:10px 0" type="submit"> {:lang('新增')} </button>
+
+                        <div class="tab-pane active">
+                            <div class="block-content" >
+                                <el-table :data="dataList" border   header-align="center" style="width: 100%" max-height="650"> 
+                                    <el-table-column header-align="center" prop="type"  label="{:lang('奖项类型')}" width="140">
+                                        <template scope="scope">
+                                            <el-select style="width:100%"  clearable v-model="scope.row.type" @change="getReward(scope.row)" placeholder="{:lang('请选择')}">
+                                                <el-option
+                                                        v-for="item in options"
+                                                        :key="item.type"
+                                                        :label="item.name"
+                                                        :value="item.type">
+
+                                                </el-option>
+                                            </el-select>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="name" label="{:lang('奖项名称')}" width="150" header-align="center">
+                                        <template scope="scope">
+                                            <el-input v-model="scope.row.name" clearable  placeholder="{:lang('请输入内容')}"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="chance" label="{:lang('中奖概率')}" width="120" header-align="center">
+                                        <template scope="scope">
+                                            <el-input v-model="scope.row.chance" clearable placeholder="{:lang('请输入内容')}"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="reward_id" label="{:lang('奖项值')}" width="" header-align="center">
+                                        <template scope="scope">
+                                            <el-select v-model="scope.row.reward_id"  clearable style="width:100%"  :disabled="!scope.row.type" placeholder="{:lang('请选择')}">
+                                                <el-option
+                                                        v-for="item in (selectOptions[scope.row.type] || [] )"
+                                                        :key="item.id"
+                                                        :label="item.name.length>15 ? item.name.substring(0,15) :item.name "
+                                                        :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="num" label="{:lang('图片上传')}" width="" header-align="center" align="center">
+                                        <template slot-scope="scope">
+                                            <el-upload
+                                                    class="avatar-uploader"
+                                                    action="/api/v1/5d5fa8984f0c2"
+                                                    :show-file-list="false"
+                                                    :on-success="handleAvatarSuccess">
+                                                <img @click="upPic(scope.row,scope.$index)" style="width:30px;height:30px;"  v-if="scope.row.thumb_img" class="clssfiy-pic" :src="scope.row.thumb_img"/>
+                                                <span @click="upPic(scope.row,scope.$index)" v-else class="up-pic">{:lang('上传')}</span>
+                                            </el-upload>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="address" width="120" header-align="center" align="center" label="{:lang('操作')}">
+                                        <template scope="scope">
+                                            <div v-if="scope.$index!=0" style="color:#409EFF;" @click="handleDelete(scope.$index, scope.row)" >
+                                                {:lang('删除')}
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                                <div class="add" style="display: flex;justify-content:flex-end;">
+<!--                                    <button  @click="handleAdd" class="btn btn-primary btn-flat" style="width:100px;border-radius: 5px;margin-right: 10px;" type="submit"> {:lang('新增')} </button>-->
+                                    <button class="btn btn-primary btn-flat"  style="width:100px;border-radius: 5px;"  @click="handleSubmit"> {:lang('提交')} </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+</body>
+<script>
+    const APP = new Vue({
+        el: '#app',
+        data() {
+            return {
+                selectIndex:null,
+                selectOptions:{},
+                dataList:[{
+                    type:'',
+                    name:'',
+                    chance:'',
+                    reward_id:'',
+                    thumb_img:'',
+                }],
+                options: [], //奖项类型
+
+            }
+        },
+        filters: {
+            filterMobile(type) {
+                let arr=[]
+    
+            // return val.substr(0, 3) + "****" + val.substr(-4);
+            },
+        },
+        mounted() {
+           
+            document.getElementById('app').style.display = 'block'
+            this.getReward()
+            this.getDataType()
+            this.getDataList()
+
+
+        },
+        methods: {
+            
+            getDataList(){
+                var that = this;
+                axios.post('/admin.php/goods/reward/getList.html').then(function (response) {
+                    console.log(2222,response,'getDataList')
+                    if (response.data.code == 1) {
+                        that.dataList=response.data.data
+                    } else {
+                        this.$message({
+                            message: response.msg,
+                            type: 'warning'
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    that.$message.error("{:lang('出了点小差错，请联系后台管理员')}");
+                });
+
+            },
+            // 奖项类型下拉值
+            getDataType(){
+                var that = this;
+                axios.post('/admin.php/goods/reward/typelist', {
+                    times: that.tradingDate
+                }).then(function (response) {
+                    console.log('奖品类别',response)
+                    if (response.data.code == 1) {
+                        that.options=response.data.data
+                    } else {
+                        this.$message({
+                            message: response.msg,
+                            type: 'warning'
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    that.$message.error("{:lang('出了点小差错，请联系后台管理员')}");
+                });
+            },
+            getReward(item,index){
+                var that = this;
+      
+                axios.post('/admin.php/goods/reward/getreward').then(function (response) {
+                    console.log('奖项值',response,77777)
+                    // loading.close()
+                    if (response.data.code == 1) {
+                        that.selectOptions=response.data.data
+                        console.log(11,that.selectOptions[0])
+                        console.log(22,that.selectOptions[1])
+                        console.log(1331,that.selectOptions[2])
+                        console.log('奖项值',response,that.selectOptions)
+                    } else {
+                        // loading.close()
+                        this.$message({
+                            message: response.msg,
+                            type: 'warning'
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    that.$message.error('出了点小差错，请联系后台管理员!');
+                });
+
+            },
+            handleSubmit(){
+                var that = this;
+                let sendData=[]
+                let SumNumber=0
+                let content=''
+                that.dataList.filter(function(item,index){
+                    if(!item.type){
+                        content="{:lang('请选择第')}"+(index+1)+"{:lang('行的奖项类型')}"
+                        return
+                    }
+                    if(!item.name){
+                        content="{:lang('请输入第')}"+(index+1)+"{:lang('行的奖项名称')}"
+                        return
+                    }
+                    if(!item.chance){
+                        content="{:lang('请输入第')}"+(index+1)+"{:lang('行的中奖概率')}"
+                        return
+                    }
+                    if(!item.thumb_img ){
+                        content="{:lang('请上传第')}"+(index+1)+"{:lang('行的图片')}"
+                        return
+                    }
+                })
+                if(content){
+                    this.$message({
+                        message: content,
+                        type: 'warning'
+                    });
+                    return
+
+                }
+                that.dataList.forEach(item => {
+                    sendData.push({
+                    type:item.type,
+                    name:item.name,
+                    chance:item.chance,
+                    reward_id:item.reward_id,
+                    id:item.id ? item.id : '',
+                    thumb_img:item.thumb_img,
+                    thumb:item.thumb,
+
+                })
+                SumNumber=SumNumber+Number(item.chance)
+            });
+                if(SumNumber!=100){
+                    this.$message({
+                        message: '所有中奖概率相加必须为100',
+                        type: 'warning'
+                    });
+                    return
+                }
+                axios.post('/admin.php/goods/reward/add',sendData).then(function (response) {
+                    console.log('奖项值',response)
+                    if (response.data.code == 1) {
+                        that.$message({
+                            message: "{:lang('新增成功')}",
+                            type:'success'
+                        });
+                        setTimeout(() => {
+                            window.location.href='/admin.php/goods/reward/index.html'
+                    }, 1000);
+                    } else {
+                        this.$message({
+                            message: response.msg,
+                            type: 'warning'
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    that.$message.error('出了点小差错，请联系后台管理员!');
+                });
+
+            },
+            handleAdd(){
+                this.dataList.push({
+                    type:'',
+                    name:'',
+                    chance:'',
+                    reward_id:'',
+                    thumb_img:'',
+
+                })
+            },
+            handleDelete(index,item){
+                console.log(index,item)
+                this.dataList.splice(index,1)
+            },
+            // 上传图片并预览
+            handleAvatarSuccess(res, file) {
+                console.log(res.file,8888)
+                const data = {
+                    "id" : res.data[0].id,
+                    "path" : res.data[0].path
+                }
+                this.$set(this.dataList[this.selectIndex],"thumb",data.id)
+                this.$set(this.dataList[this.selectIndex],"thumb_img",data.path)
+                this.$forceUpdate()
+            },
+            // 获取当前上传图片的行数据
+            upPic(val,index) {
+                this.selectIndex=index
+                console.log(val,index,555555, this.selectIndex)
+                // for(let i = 0; i < this.tableData.length; i++) {
+                // 	if(this.tableData[i].id == val.id) {
+                // 		this.temp = this.tableData[i]
+                // 		return
+                // 	}
+                // }
+                console.log('保存当前行数据',this.temp)
+            },
+
+        },
+    })
+</script>
+
+</html>
+{/block}

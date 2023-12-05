@@ -1,0 +1,112 @@
+{extend name="layout" /}
+
+{block name="style"}
+<style type="text/css">
+div{overflow:hidden;}
+</style>
+<link rel="stylesheet" href="__PLUG__/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+{/block}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box nav-tabs-custom" style="border-top:0">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab1" data-toggle="tab">{:lang('业务流程配置')}</a>
+                    </li>
+                </ul>
+                <form name="form" id="form" action="add" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="status" value="1"/>
+					{:token()}
+                    <div class="box-body tab-content">
+                        <div class="tab-pane active" id="tab1">
+							<div class="form-group">
+                                <label class="col-xs-12" for="pid">{:lang('配置名称')}</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="text" id="name" name="name" value="" data-rule="required;" data-msg-required="{:lang('请输入配置名称')}" placeholder="{:lang('请输入配置名称')}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12 label-title">{:lang('配置类型')}</div>
+                                <div class="col-xs-12">
+                                    <label class="pr10">
+                                        <input type="radio" name="type" id="show2" value="1" checked />
+                                        {:lang('图片')} </label>
+                                    <label class="pr10">
+                                        <input type="radio" name="type" id="show1" value="2" />
+                                        {:lang('列表')} </label>
+                                    <div class="help-block"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="col-xs-12 label-title">{:lang('配置内容')}(例：{:lang('标题')}1,内容1,{:lang('内容')}2,内容2;{:lang('标题')}2,{:lang('内容')}1,{:lang('内容')}2,{:lang('内容')}2;)</div>
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" id="detail" rows="7" name="detail" placeholder="{:lang('标题')}1,{:lang('内容')}1,{:lang('内容')}2,{:lang('内容')}2;{:lang('标题')}2,{:lang('内容')}1,{:lang('内容')}2,{:lang('内容')}2;"></textarea>
+                                </div>
+                            </div>
+							
+                            <div class="form-group">
+                                <label class="col-xs-12" for="pid">{:lang('内容路径')}</label>
+                                <!-- <div class="col-sm-12">
+                                    <input class="form-control" type="text" id="url" name="url" placeholder="{:lang('请输入内容路径')}">
+                                </div> -->
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_thumb" >
+                                    <div class="col-xs-12 js-upload-image">
+                                        <div id="file_list_thumb" class="uploader-list" style="float:left;"></div>
+                                        <input type="hidden" id="thumbVal"  name="thumb"  data-multiple="false" data-watermark='' data-thumb='' data-size="0" data-ext=''  />
+                                        <div style="float:left" id="picker_thumb">{:lang('载入中')}...</div> 
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12 label-title">{:lang('简介')}(例：{:lang('简介')}1,{:lang('简介')}2,{:lang('简介')}2)</div>
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" id="synopsis" rows="7" name="synopsis" placeholder="{:lang('简介')}1,{:lang('简介')}2,{:lang('简介')}2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <button type="button" class="btn btn-minw btn-primary  ajax-posts">
+                                {:lang('确定')}
+                            </button>
+                            <button class="btn btn-default " type="button" onclick="javascript:history.back(-1);return false;">
+                                {:lang('返回')}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__PLUG__/zTree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="__PLUG__/zTree/js/jquery.ztree.excheck.js"></script>
+<script type="text/javascript" >
+    $(".ajax-posts").click(function(){
+        var $data = $('#form').serialize();
+        Stars.loading();
+        $.post("{:url()}", $data, function (res) {
+            res = JSON.parse(res);
+            Stars.loading('hide');
+            if (res.code) {
+                console.log(res);
+                Stars.notify(res.msg, 'success' ,'fa fa-check');
+                setTimeout(function () {
+                    location.href = res.url;
+                }, 1000);
+            } else {
+                console.log(res);
+                Stars.notify(res.msg, 'danger','fa fa-bell-slash');
+            }
+        }).fail(function () {
+            Stars.loading('hide');
+            Stars.notify("{:lang('服务器错误')}"+'~', 'danger');
+        });
+    });
+</script>
+{/block}

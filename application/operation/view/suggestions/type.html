@@ -1,0 +1,221 @@
+{extend name="$admin_layout" /}
+{block name="style"}
+<link rel="stylesheet" href="__ADMIN_CSS__/element-ui.css">
+<script src="__PLUG__/vue/vue.min.js"></script>
+<script src="__PLUG__/vue/vue-resource.min.js"></script>
+<script src="__ADMIN_JS__/element-ui.js"></script>
+<style>
+    .table > tbody > tr > td {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    .select-link {
+        display: inline-block;
+        width: 70px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+        border-radius: 0 16px 16px 0;
+        border: 1px solid #b6dafc;
+        color: #067fe0;
+        background-color: #ecf5ff;
+        cursor: pointer;
+    }
+
+    .type-input {
+        display: block;
+        width: 100px !important;
+        outline: none !important;
+        padding: 6px 12px;
+        line-height: 1.42857;
+        background-color: #fff;
+        background-image: none;
+        border-radius: 4px !important;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        background: 0 0;
+        border: 1px solid #d2d6de;
+        color: #555;
+        box-shadow: none;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .title-font {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .title {
+        color: #444;
+        display: block;
+        padding: 10px;
+        position: relative;
+        line-height: 18px;
+        border-bottom: 1px solid #f4f4f4;
+    }
+
+    .add-btn {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 400px;
+        padding: 10px;
+    }
+
+    .add-search {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-left: 20px;
+    }
+
+    .type-main {
+        padding: 0 10px 10px;
+        border-radius: 3px;
+    }
+</style>
+{/block}
+{block name="content"}
+
+
+<div class="row">
+
+
+    <div id="typeManage">
+        <div class="title"><span class="title-font">{:lang('类型管理')}</span></div>
+
+        <div class="add-btn">
+            <el-button type="primary" @click="add">{:lang('新增')}</el-button>
+            <div class="add-search">
+                <el-input
+                        placeholder="{:lang('请输入内容')}"
+                        prefix-icon="el-icon-search"
+                        v-model="serachType">
+                </el-input>
+                <el-button type="success">{:lang('点击搜索')}</el-button>
+            </div>
+        </div>
+
+        <div class="type-main">
+            <el-table
+                    :data="tableData"
+                    style="width: 100%">
+                <el-table-column
+                        prop="id"
+                        label="ID"
+                        width="180"
+                >
+                    <template slot-scope="scope">
+                        <input
+                                type="text"
+                                v-model="scope.row.id"
+                                class="type-input"
+                                @blur="blurSave(scope.row)"
+                        />
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        prop="name"
+                        label="{:lang('名称')}"
+                        width="180"
+                >
+                    <template slot-scope="scope">
+                        <input
+                                type="text"
+                                v-model="scope.row.name"
+                                class="type-input"
+                                @blur="blurSave(scope.row)"
+                        />
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        label="{:lang('操作')}"
+                >
+                    <template slot-scope="scope">
+                        <span @click="forbid(scope.row)" style="cursor: pointer;">{{ scope.row.status == 1 ? '启用' : '禁用' }}</span>
+                        <span @click="del(scope.row)" style="cursor: pointer;">{:lang('删除')}</span>
+                    </template>
+            </el-table>
+        </div>
+
+    </div>
+</div>
+<script>
+    const typeManage = new Vue({
+        el: '#typeManage',
+        data() {
+            return {
+                tableData: [
+                    {
+                        id: 1,
+                        status: 1,
+                        name: '客户态度差'
+                    },
+                    {
+                        id: 2,
+                        status: 0,
+                        name: '投诉建议类型'
+                    },
+                    {
+                        id: 3,
+                        status: 1,
+                        name: 'APP体验太差'
+                    },
+                    {
+                        id: 4,
+                        status: 1,
+                        name: '内容卡顿'
+                    },
+                    {
+                        id: 5,
+                        status: 0,
+                        name: '操作复杂'
+                    }
+                ],
+                isShow: false, // 禁止用户疯狂新增
+                serachType: '', // 搜索框内容
+            }
+        },
+        methods: {
+            // 获取数据
+            getData() {
+            },
+            // 失焦保存
+            blurSave(val) {
+                console.log('保存成功', val)
+            },
+            // 新增
+            add() {
+                if (this.isShow) {
+                    alert('请先保存更改')
+                    return
+                }
+                const newType = {
+                    id: '',
+                    name: '',
+                }
+                this.tableData.unshift(newType)
+                this.isShow = true
+            },
+            // 禁用
+            forbid(val) {
+                if (val.status == 1) {
+                    this.$set(val, 'status', 0)
+                } else {
+                    this.$set(val, 'status', 1)
+                }
+            },
+            // 删除
+            del(val) {
+                for (let i = 0; i < this.tableData.length; i++) {
+                    if (this.tableData[i].id === val.id) {
+                        this.tableData.splice(i, 1)
+                        return
+                    }
+                }
+            },
+        },
+    })
+</script>
+{/block}

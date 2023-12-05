@@ -1,0 +1,123 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<style type="text/css">
+    .boss{
+        text-align:center;
+        width:350px;
+        /* height:70%; */
+        z-index:999;
+        background:white;
+        position:fixed;
+        left:50%;
+        margin-left:-300px;
+        top:50%;
+        margin-top: -223px;
+        border-radius:15px;
+    }
+    .boss img{
+        width:600px;
+        /* height:547px; */
+    }
+    .bgs{
+        width:100%;
+        height:100%;
+        background:black;
+        opacity:0.3;
+        position:fixed;
+        left:0;
+        top:0;
+    }
+    .lPaddingBXs {
+        /*padding-bottom: 5px;*/
+        height: 34px;
+    }
+</style>
+
+
+<div class="layui-form lMargin lPadding lRadiusXs lBgWhite">
+    {include file='index/sidebar/iBase' /}
+    <div class="lMarginT lMarginB lLayui-tab">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title lBgGray" style="padding-left: 10px;">
+                <li class="layui-this">{:lang('购物车')}</li>
+                <!-- 购物车，地址，订单，充值，提现，积分-->
+            
+                <li>{:lang('地址')}</li>
+                <li>{:lang('订单')}</li>
+<!--                <li>{:lang('充值')}</li>-->
+<!--                <li>{:lang('提现')}</li>-->
+<!--                <li>{:lang('积分')}</li>-->
+                <li>{:lang('浏览记录')}</li>
+                <li>{:lang('收藏记录')}</li>
+            </ul>
+            <div class="layui-tab-content" id="vueDome">
+                <div class="layui-tab-item layui-show">
+                    {include file='index/sidebar/cart' /} 
+                </div>
+                <div class="layui-tab-item">
+                    {include file='index/sidebar/address' /} 
+                </div>
+                <div class="layui-tab-item">
+                    {include file='index/sidebar/order' /}
+                </div>
+<!--                <div class="layui-tab-item">-->
+<!--                    {include file='index/sidebar/recharge' /}-->
+<!--                </div>-->
+<!--                <div class="layui-tab-item">-->
+<!--                    {include file='index/sidebar/withdrawal' /}-->
+<!--                </div>-->
+<!--                <div class="layui-tab-item">-->
+<!--                    {include file='index/sidebar/integral' /}-->
+<!--                </div>-->
+                <div class="layui-tab-item">
+                    {include file='index/sidebar/visit' /}
+                </div>
+                <div class="layui-tab-item">
+                    {include file='index/sidebar/collect' /}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 项目分析回复、项目日志回复 @员工 -->
+<div class="fixedStaff">
+    <div class="bg"></div>
+    <div class="content">
+        <div class="contentFuzhu">
+            <form id="fixedStaffForm" action="">
+                <div id="staffListAll"></div>
+                <div class="layui-btn-group">
+                    <button type="button" class="layui-btn lLayui-btn fixedStaffSubmit">{:lang('确定')}</button>
+                    <button type="button" class="layui-btn layui-btn-primary fixedStaffClose">{:lang('取消')}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- 项目分析回复、项目日志回复 @员工 -->
+
+<input type="hidden" id="project_id" value="{$data['aid']}" /> <!-- 项目id -->
+<input type="hidden" id="record_url" value='{:url("ProjectRecord/listByProject")}' /> <!-- 项目分析URL -->
+<input type="hidden" id="record_url_read" value='{:url("ProjectRecord/read")}' /> <!-- 项目分析URL阅读 -->
+<input type="hidden" id="log_url" value='{:url("ProjectLog/listByProject")}' /> <!-- 工作日志URL -->
+<input type="hidden" id="log_url_read" value='{:url("ProjectLog/read")}' /> <!-- 工作日志URL阅读 -->
+<input type="hidden" id="log_url_del" value='{:url("ProjectLog/delete")}' /> <!-- 删除计划 -->
+<input type="hidden" id="bugs_url" value='{:url("ProjectBugs/listByProject")}' /> <!-- 测试记录URL -->
+<input type="hidden" id="task_url" value='{:url("ProjectTask/listByProject")}' /> <!-- 计划任务URL -->
+<input type="hidden" id="plan_url" value='{:url("ProjectPlan/listByProject")}' /> <!-- 周计划 -->
+<input type="hidden" id="plan_url_this" value='{:url("ProjectPlan/listByProjectThis")}' /> <!-- 本周计划 -->
+<link rel="stylesheet" type="text/css" href="__ADMIN_JS__/crm/animate.min.css"/>
+<link rel="stylesheet" type="text/css" href="__ADMIN_JS__/crm/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="__ADMIN_JS__/crm/lStyle.css?1605056679" />
+<script src="__ADMIN_JS__/layui/layui.js"></script>
+<script src="__ADMIN_JS__/layui/xm-select.js"></script>
+<script src="/static/plugins/vue/vue.min.js"></script><!-- VUE -->
+<script src="__ADMIN_JS__/sidebar.js?v={:config('asset_version')}"></script> <!-- 本页js -->
+<script src="__ADMIN_JS__/lTableTree.js"></script> <!-- 表格树 -->
+<script src="__ADMIN_JS__/lJs.js?<?php echo time();?>"></script> <!-- 通用js -->
+
+<script>
+
+</script>
+{/block}

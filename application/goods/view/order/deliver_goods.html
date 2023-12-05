@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- element -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <!-- vue -->
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <script src="/static/plugins/jquery/jquery.min.js"></script> 
+    <!-- 引入组件库 element -->
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <style>
+        #el {
+            padding: 20px;
+        }
+
+        
+
+        .el-button {
+            padding: 9px 20px;
+            margin: 0 10px;
+            height: 32px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="el">
+        <div style="font-size: 18px;color: #000;font-weight: bold;line-height: 64px;">{:lang('批量发货')}</div>
+        <el-table
+            border
+            :data="tableData"
+            style="width: 100%">
+            <el-table-column
+                label="{:lang('发货单号')}">
+                <template slot-scope="scope">
+                    <el-input   type="text" @input="handleChange(scope.row)"  v-model="scope.row.express_no" placeholder=""></el-input>
+                </template>
+            </el-table-column>
+            <el-table-column
+                prop="express_company"
+                label="{:lang('快递')}"
+                width="100">
+            </el-table-column>
+            <el-table-column
+                prop="express_serial_number"
+                label="{:lang('发货单流水号')}"
+                width="140">
+            </el-table-column>
+            <el-table-column
+                    width="210"
+                prop="order_sn"
+                label="{:lang('订单号')}">
+            </el-table-column>
+            <el-table-column
+                    width="220"
+                label="{:lang('收货信息')}">
+                <template slot-scope="scope">
+                    <div>
+                        <div>
+                            <span style="color: #0e72e3">{{scope.row.receiver_name}}</span><span>[TEL:{{scope.row.receiver_mobile}}]</span>
+                        </div>
+                        <div>
+                            <span>[{{scope.row.province}}{{scope.row.city}}{{scope.row.district}}]</span><span>{{scope.row.receiver_address}}</span>
+                        </div>
+                    </div>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div class="remarks" style="display: flex;justify-content: flex-start;margin-top: 20px;">
+            <div>{:lang('备注信息')}：</div>
+            <div style="width: 800px;">
+                <el-input
+                type="textarea"
+                :autosize="{ minRows: 6, maxRows: 10}"
+                placeholder="{:lang('请输入内容')}"
+                v-model="textarea">
+                </el-input>
+            </div>
+        </div>
+        <div style="display: flex;justify-content: center;margin: 40px 0;">
+            <el-button type="primary" @click="submitData()">{:lang('确定')}</el-button>
+            <el-button>{:lang('取消')}</el-button>
+        </div>
+        <input type="hidden" name="data_list" id="data_list" value="{$data_list}">
+    </div>
+</body>
+
+</html>
+<script>
+    let data_list = JSON.parse($('#data_list').val());
+    new Vue({
+        el: '#el',
+        data() {
+            return {
+                tableData:data_list|| [],
+                textarea:'',
+                express_no:"",
+            }
+        },
+        mounted() {
+
+        },
+        methods: {
+            handleChange(item){
+                item.express_no=item.express_no.replace(/[\u4e00-\u9fa5]/ig,'')
+            },
+            handleChangebb(item){
+                item=item.replace(/[\u4e00-\u9fa5]/ig,'')
+            },
+
+            submitData(){
+                let dataList = [];
+                this.tableData.forEach(val=>{
+                    if(val.express_no){
+                        dataList.push({id:val.id,express_no:val.express_no}) ;
+                    }
+                })
+                if(dataList.length == 0){
+                    this.$message.error("{:lang('请输入发货单号')}");
+                    return;
+                }
+                var that = this;
+                $.ajax({
+                    url:"express_create",
+                    type:'post',
+                    data:{data:dataList,remark:this.textarea},
+                    success(res){
+                        res = JSON.parse(res);
+                        if( res.code == 1 ){
+                            parent.layer.msg("{:lang('发货成功')}");
+                            setTimeout(() => {
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);//关闭当前页
+                                parent.window.location.reload();
+                            },800)
+/*
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);//关闭当前页
+                            parent.window.location.reload();*/
+                            // location.href="/admin.php/goods/order/express_index";
+
+                        }else{
+                            that.$message.error(res.msg);
+                        }
+                        console.log(res.msg);
+                    }
+                })
+                // console.log(dataList);
+            }
+        },
+    })
+</script>

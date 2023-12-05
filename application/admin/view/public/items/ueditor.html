@@ -1,0 +1,19 @@
+<?php   
+//定义插件的JS,CSS和脚本
+$plugin_item_js['ueditor.1'] = "__STATIC__/plugins/ueditor/ueditor.config.js";
+$plugin_item_js['ueditor.2'] = "__STATIC__/plugins/ueditor/ueditor.all.js";
+$plugin_item_js['ueditor.3'] = "__STATIC__/plugins/ueditor/lang/zh-cn/zh-cn.js";
+$plugin_item_js['ueditor.4'] = "__STATIC__/plugins/ueditor/init.js";
+
+
+?>
+
+<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="form_group_{$form.name}" style="overflow:hiddden">
+    <div class="col-xs-12 label-title" for="{$form.name}">{$form.title|htmlspecialchars}</div>
+    <div class="col-xs-12" >
+        <textarea class="js-ueditor" name="{$form.name}" data-img-ext="{:config('upload_image_ext')}" id="{$form.name}" rows="15" placeholder="{:lang('请输入')}{$form.title}" {$form.attr|default=''|raw}>{$form.value|default=''|raw}</textarea>
+        {notempty name="form.tips"}
+        <div class="help-block">{$form.tips|raw}</div>
+        {/notempty}
+    </div>
+</div>

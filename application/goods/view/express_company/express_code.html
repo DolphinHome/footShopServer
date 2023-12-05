@@ -1,0 +1,332 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<link href="__PLUG__/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+{/block}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box nav-tabs-custom">
+                <div class="box-header with-border">
+					<h3 class="box-title">{:lang('快递公司编码')}</h3>
+				</div>
+				<div class="box-body">
+                    <div class="tab-pane active">
+                        <div class="row data-table-toolbar">
+                            <div class="col-sm-12">
+                                <table class="table table-builder table-hover table-bordered table-striped mb10">
+					<colgroup>
+						<col style="width: 30%;">
+						<col style="width: 30%;">
+						<col style="width: 30%;">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>{:lang('物流公司名称')}</th>
+							<th>{:lang('快递')}100{:lang('编码')}</th>
+							<th>{:lang('快递鸟编码')}</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+												<tr >
+							<td>{:lang('顺丰')}</td>
+							<td>shunfeng</td>
+							<td>SF</td>
+						</tr>
+												<tr >
+							<td>{:lang('申通')}</td>
+							<td>shentong</td>
+							<td>STO</td>
+						</tr>
+												<tr >
+							<td>{:lang('中通')}</td>
+							<td>zhongtong</td>
+							<td>ZTO</td>
+						</tr>
+												<tr >
+							<td>{:lang('中通快运')}</td>
+							<td></td>
+							<td>ZTO</td>
+						</tr>
+												<tr >
+							<td>{:lang('圆通')}</td>
+							<td>yuantong</td>
+							<td>YTO</td>
+						</tr>
+												<tr >
+							<td>{:lang('韵达')}</td>
+							<td>yunda</td>
+							<td>YD</td>
+						</tr>
+												<tr >
+							<td>{:lang('天天')}</td>
+							<td>tiantian</td>
+							<td>HHTT</td>
+						</tr>
+												<tr >
+							<td>EMS</td>
+							<td>ems</td>
+							<td>EMS</td>
+						</tr>
+												<tr >
+							<td>EMS{:lang('国际')}</td>
+							<td>emsguoji</td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>{:lang('马来西亚')}（{:lang('大包')}EMS）</td>
+							<td>malaysiaems</td>
+							<td>EMSGJ</td>
+						</tr>
+												<tr >
+							<td>{:lang('邮政国内')}（{:lang('挂号信')}）</td>
+							<td>youzhengguonei</td>
+							<td>YZBK</td>
+						</tr>
+												<tr >
+							<td>{:lang('汇通')}</td>
+							<td>huitongkuaidi</td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>{:lang('全峰')}</td>
+							<td>quanfengkuaidi</td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>{:lang('德邦')}</td>
+							<td>debangwuliu</td>
+							<td>DBL</td>
+						</tr>
+												<tr >
+							<td>{:lang('国通')}</td>
+							<td>guotongkuaidi</td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>{:lang('如风达')}</td>
+							<td>rufengda</td>
+							<td>RFD</td>
+						</tr>
+												<tr >
+							<td>{:lang('京东')}</td>
+							<td>jd</td>
+							<td>JD</td>
+						</tr>
+												<tr >
+							<td>{:lang('宅急送')}</td>
+							<td>zhaijisong</td>
+							<td>ZJS</td>
+						</tr>
+												<tr >
+							<td>Fedex</td>
+							<td>fedexcn</td>
+							<td>FEDEX</td>
+						</tr>
+												<tr >
+							<td>Fedex{:lang('国际')}</td>
+							<td>fedex</td>
+							<td>FEDEX_GJ</td>
+						</tr>
+												<tr >
+							<td>UPS</td>
+							<td>ups</td>
+							<td>UPS</td>
+						</tr>
+												<tr >
+							<td>{:lang('中铁')}</td>
+							<td></td>
+							<td>ZHWL</td>
+						</tr>
+												<tr >
+							<td>{:lang('佳吉')}</td>
+							<td>jiajiwuliu</td>
+							<td>CNEX</td>
+						</tr>
+												<tr >
+							<td>{:lang('速尔')}</td>
+							<td>suer</td>
+							<td>SURE</td>
+						</tr>
+												<tr >
+							<td>{:lang('信丰')}</td>
+							<td>xinfengwuliu</td>
+							<td>XFEX</td>
+						</tr>
+												<tr >
+							<td>{:lang('优速')}</td>
+							<td>youshuwuliu</td>
+							<td>UC</td>
+						</tr>
+												<tr >
+							<td>{:lang('中邮')}</td>
+							<td>zhongyouwuliu</td>
+							<td>ZYKD</td>
+						</tr>
+												<tr >
+							<td>{:lang('天地华宇')}</td>
+							<td>tiandihuayu</td>
+							<td>HOAU</td>
+						</tr>
+												<tr >
+							<td>{:lang('安信达')}</td>
+							<td>anxindakuaixi</td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>{:lang('快捷')}</td>
+							<td>kuaijiesudi</td>
+							<td>DJKJWL</td>
+						</tr>
+												<tr >
+							<td>AAE{:lang('全球专递')}</td>
+							<td>aae</td>
+							<td>AAE</td>
+						</tr>
+												<tr >
+							<td>DHL{:lang('国内件')}</td>
+							<td>dhl</td>
+							<td>FEDEX</td>
+						</tr>
+												<tr >
+							<td>DHL{:lang('国际件')}</td>
+							<td>dhlen</td>
+							<td>FEDEX_GJ</td>
+						</tr>
+												<tr >
+							<td>DPEX{:lang('国际')}</td>
+							<td>dpex</td>
+							<td>DPEX</td>
+						</tr>
+												<tr >
+							<td>D速</td>
+							<td>dsukuaidi</td>
+							<td>DSWL</td>
+						</tr>
+												<tr >
+							<td>FEDEX{:lang('国内')}</td>
+							<td>fedexcn</td>
+							<td>FEDEX</td>
+						</tr>
+												<tr >
+							<td>FEDEX{:lang('国际')}</td>
+							<td>fedex</td>
+							<td>FEDEX_GJ</td>
+						</tr>
+												<tr >
+							<td>OCS</td>
+							<td>ocs</td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>TNT</td>
+							<td>tnt</td>
+							<td>TNT</td>
+						</tr>
+												<tr >
+							<td>{:lang('中国东方')}</td>
+							<td>coe</td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>{:lang('传喜')}</td>
+							<td>chuanxiwuliu</td>
+							<td>CXHY</td>
+						</tr>
+												<tr >
+							<td>{:lang('城市')}100</td>
+							<td>city100</td>
+							<td>CITY100</td>
+						</tr>
+												<tr >
+							<td>{:lang('城市之星')}</td>
+							<td></td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>{:lang('安捷')}</td>
+							<td>anjie88</td>
+							<td>AJ</td>
+						</tr>
+												<tr >
+							<td>{:lang('百福东方')}</td>
+							<td>baifudongfang</td>
+							<td>BFDF</td>
+						</tr>
+												<tr >
+							<td>{:lang('程光')}</td>
+							<td>chengguangkuaidi</td>
+							<td>CG</td>
+						</tr>
+												<tr >
+							<td>{:lang('递四方')}</td>
+							<td>disifang</td>
+							<td>D4PX</td>
+						</tr>
+												<tr >
+							<td>{:lang('长通')}</td>
+							<td></td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>{:lang('飞豹')}</td>
+							<td>feibaokuaidi</td>
+							<td></td>
+						</tr>
+												<tr >
+							<td>{:lang('安能')}</td>
+							<td>annengwuliu</td>
+							<td>ANE</td>
+						</tr>
+												<tr >
+							<td>{:lang('远成')}</td>
+							<td>yuanchengwuliu</td>
+							<td>YCWL</td>
+						</tr>
+												<tr >
+							<td>{:lang('邮政')}</td>
+							<td>youzhengbk</td>
+							<td>YZPY</td>
+						</tr>
+												<tr >
+							<td>{:lang('百世')}</td>
+							<td>huitongkuaidi</td>
+							<td>HTKY</td>
+						</tr>
+												<tr >
+							<td>{:lang('苏宁')}</td>
+							<td>suning</td>
+							<td>SNWL</td>
+						</tr>
+												<tr >
+							<td>{:lang('安能')}</td>
+							<td>annengwuliu</td>
+							<td>ANE</td>
+						</tr>
+												<tr >
+							<td>{:lang('九曳')}</td>
+							<td>jiuyescm</td>
+							<td>JIUYE</td>
+						</tr>
+												<tr >
+							<td>{:lang('亚马逊')}</td>
+							<td></td>
+							<td>AMAZON</td>
+						</tr>
+												<tr >
+							<td>{:lang('环球速运')}</td>
+							<td></td>
+							<td>HQSY</td>
+						</tr>
+											</tbody>
+				</table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}

@@ -1,0 +1,141 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<script src="__PLUG__/layer/laydate/laydate.js?v={:config('asset_version')}"></script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom">
+            <div class="box-header with-border">
+                <h3 class="box-title">{:lang('订单物流')}</h3>
+            </div>
+            <div class="box-body">
+                <div class="tab-pane active">
+                    <div class="row">
+                        <form action="" method="get" class="marBtm">
+                            <div class="col-md-2 col-xs-6">
+                                <span class="txt">{:lang('订单号')}：</span>
+                                <input type="text" class="form-control" name="order_sn" placeholder="{:lang('请输入订单号')}" value="{$Think.get.order_sn}">
+                            </div>
+
+                            <div class="col-md-2 col-xs-6">
+                                <span class="txt">{:lang('快递单号')}：</span>
+                                <input type="text" class="form-control" name="express_no" placeholder="{:lang('请输入快递单号')}" value="{$Think.get.express_no}">
+                            </div>
+                            <div class="col-md-2 col-xs-6">
+                                <span class="txt">{:lang('收货人')}：</span>
+                                <input type="text" class="form-control" name="receiver_name" placeholder="{:lang('请输入收货人')}" value="{$Think.get.receiver_name}">
+                            </div>
+                            <div class="col-md-2 col-xs-6">
+                                <span class="txt">{:lang('收货人联系方式')}：</span>
+                                <input type="text" class="form-control" name="receiver_mobile" placeholder="{:lang('请输入联系方式')}" value="{$Think.get.receiver_mobile}">
+                            </div>
+                            <div class="col-md-3 col-xs-6">
+                                <span class="txt">{:lang('发货时间')} ：</span>
+                                <input type="date" class="form-control js-date" readonly name="shipping_time" placeholder="{:lang('请输入日期')}" value="{$Think.get.shipping_time}">
+                            </div>
+<!--                            <div class="col-md-2 col-xs-6">-->
+<!--                                <span class="txt">{:lang('发货方式')}：</span>-->
+<!--                                <select name="shipping_type" class="select2">-->
+<!--                                    <option value="">{:lang('请选择')}：</option>-->
+<!--                                    <option value="1" {if condition="$Think.get.shipping_type == 1"}selected{/if} >{:lang('需要物流')}</option>-->
+<!--                                    <option value="0" {if condition="$Think.get.shipping_type == 0 && $Think.get.shipping_type !='' "}selected{/if} >{:lang('无需物流')}</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+                            <div class="col-md-2 col-xs-6" style="padding-top: 18px;">
+                                <button class="btn btn-success btn-flat" type="submit">{:lang('搜索')}</button> <button class="btn btn-success btn-flat" type="button" onclick="clearinput()">{:lang('重置')}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="tab-pane active table-responsive">
+                    <div class="pb10">
+                        <div class="pull-left">
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <table class="table table-builder table-hover table-bordered table-striped mb10">
+                        <thead>
+                        <th class="">{:lang('订单')}ID</th>
+                        <th class="">{:lang('订单号')}</th>
+                        <th class="">{:lang('下单人')}</th>
+                        <th class="">{:lang('下单人联系方式')}</th>
+                        <th class="">{:lang('收货人')}</th>
+                        <th class="">{:lang('收货人联系方式')}</th>
+                        <th class="">{:lang('收货人地址')}</th>
+                        <!--<th class="">{:lang('发货方式')}</th>
+                        <th class="">{:lang('包裹名称')}</th>
+                        <th class="">{:lang('快递公司')}</th>--->
+                        <th class="">{:lang('快递单号')}</th>
+                        <th class="">{:lang('发货时间')}</th>
+                        <th class="">{:lang('收货时间')}</th>
+                        <th class="text-center">{:lang('操作')}</th>
+                        </thead>
+                        <tbody>
+                        {volist name="list" id="o"}
+                        <tr>
+                            <td class=""> {$o.id}
+                            </td>
+                            <td class=""> <a ident="edit" title="{:lang('详情')}" href="{:url('detail',['order_sn'=>$o['order_sn']])}" class="mr5">{$o.order_sn}</a>
+                            </td>
+                            <td class=""> {$o.uid|get_nickname}
+                            </td>
+                            <td class=""> {$o.uid|get_user_info=mobile}
+                            </td>
+                            <td class=""> {$o.receiver_name}
+                            </td>
+                            <td class=""> {$o.receiver_mobile}
+                            </td>
+                            <td class=""> {$o.receiver_address}
+                            </td>
+                            <!--<td class=""> {$o.shipping_type}
+                            </td>
+                            <td class=""> {$o.express_name}
+                            </td>
+                            <td class=""> {$o.express_company}--->
+                            </td>
+                            <td class=""> {$o.express_no}
+                            </td>
+                            <td class=""> {$o.shipping_time|date="Y-m-d H:i"}
+                            </td>
+                            <td class=""> <?php if($o['receive_time']){ ?>{$o.receive_time|date="Y-m-d H:i"}<?php }?>
+                            </td>
+                            <td class="text-center">
+                                <a ident="edit" title="{:lang('详情')}" href="{:url('detail',['order_sn'=>$o['order_sn']])}" icon="fa fa-pencil pr5" class="btn btn-xs mr5 btn-default btn-flat"><i class="fa fa-pencil pr5"></i>{:lang('详情')}</a>
+                                <a ident="delete" title="{:lang('删除')}" href="{:url('express_del',['eid'=>$o.id])}" icon="fa fa-times pr5" class="btn btn-xs mr5 btn-default btn-flat ajax-get confirm"><i class="fa fa-times pr5"></i>{:lang('删除')}</a>
+                            </td>
+
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    <div class="data-table-toolbar">
+                        <div class="row">
+							<div class="pagination-info pull-right">
+								<div>
+									{$pages|raw}
+
+									<input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+									<input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $list->listRows() : input('param.list_rows');{/php}">
+									/ <strong>{$list->lastPage()|raw}</strong> 页，共 <strong>{$list->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    function clearinput() {
+        $(".marBtm").find('input').val('');
+        $(".marBtm").find(".select2").val('all').trigger('change');
+        window.location.href = location.origin + location.pathname
+    }
+</script>
+{/block}
+

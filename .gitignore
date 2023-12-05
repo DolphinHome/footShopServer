@@ -1,0 +1,15 @@
+/config/database.php
+/application/common1.php
+/application/common.php
+runtime
+.idea
+/application/common/controller/Common1.php
+/application/common/controller/Common.php
+/nbproject/private/
+/data/install.lock
+/public/.htaccess
+/public/uploads
+/application/lang
+/addons/WeChat/sdk/cert/apiclient_cert.p12
+/addons/WeChat/sdk/cert/apiclient_cert.pem
+/addons/WeChat/sdk/cert/apiclient_key.pem

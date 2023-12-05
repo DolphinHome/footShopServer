@@ -1,0 +1,65 @@
+<!--
+ * @Descripttion: 
+ * @Version: 1.0
+ * @Author: wangph
+ * @Date: 2021-03-31 09:46:02
+ * @LastEditors: wangph
+ * @LastEditTime: 2021-04-27 11:50:01
+-->
+{extend name="$admin_layout" /}
+{block name="content"}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom">
+            <div class="box-body">
+                <div class="box-header with-border">
+                    <h5 class="box-title" style="font-size: 14px;">{:lang('收款信息')}</h5>
+                </div>
+                
+                <div style="display:block" class="row">
+                    <div class="col-lg-3">
+                        <table class="table table-builder table-hover table-bordered table-striped mb10">
+                            <tr>
+                                <td><b>{:lang('姓名')}</b></td><td>{$user_account.true_name}</td>
+                            </tr>
+                            <tr>
+                                <td><b>{:lang('账号类型')}</b></td><td>
+								 {if condition="$user_account.account_type eq 1"}{:lang('微信')}
+								 {elseif condition="$user_account.account_type eq 2"}{:lang('支付宝')}
+								 {elseif condition="$user_account.account_type eq 3"}{:lang('银行卡')}
+								 {/if}
+								</td>
+                            </tr>
+                            <tr>
+                                <td><b>{:lang('二维码')}</b></td>
+								<td>
+								<img src="{$user_account.qrcode|get_file_url}">
+								</td>
+                            </tr>
+							<tr>
+                                <td><b>{:lang('账户')}</b></td>
+								<td>
+								{$user_account.account_id}
+								</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-3">
+
+                    </div>
+                </div>
+                
+                <div class="clearfix"></div>
+
+                <div class="row box-header">
+                    <div class="col-md-6 col-md-offset-3">
+                        <a class="btn btn-primary ajax-get confirm" href="{:url('order/refund_change_status',['val'=>3,'rfid'=>$order_refund['id']])}" >{:lang('确认打款')}</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{/block}

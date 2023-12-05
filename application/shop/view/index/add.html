@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+    <!-- layui css -->
+    <link rel="stylesheet" href="/static/admin/js/layui/css/layui.css">
+    <script src="/static/plugins/vue/vue.min.js"></script>
+    <!-- import JavaScript -->
+    <script src="/static/plugins/element-ui/element-ui.js"></script>
+    <script src="__PLUG__/jquery/jquery.min.js?v={:config('asset_version')}"></script>
+    <script src="__PLUG__/layer/layer.js"></script>
+    <style>
+        .form {
+            margin: 30px
+        }
+
+        .box-card {
+            margin-bottom: 30px;
+        }
+
+        .layui-card-header {
+            position: relative;
+            height: 42px;
+            line-height: 42px;
+            padding: 0 15px;
+            border-bottom: 1px solid #f6f6f6;
+            color: #333;
+            border-radius: 2px 2px 0 0;
+            font-size: 14px;
+        }
+
+        .ns-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            padding-left: 10px;
+        }
+
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            display: block;
+            border: 1px solid #CCCCCC;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app" class="app" style="display: none;">
+    <div class="layui-card-header">
+        <span class="ns-card-title">新增附近店铺</span>
+    </div>
+    <el-form ref="form" :model="form" label-width="80px" size='mini' class="form">
+        <el-card class="box-card" shadow="never">
+            <div slot="header" class="clearfix">
+                <span>添加附近店铺</span>
+            </div>
+            <el-form-item label-width="100px" label="店铺名称" prop="shop_name"
+                          :rules="{required: true, message: '内容不能为空', trigger: 'blur'}">
+                            <el-input v-model="form.shop_name"></el-input>
+            </el-form-item>
+            <el-form-item label-width="100px" label="店铺logo" prop="thumb"
+                          :rules="{required: true, message: '内容不能为空', trigger: 'blur'}">
+                <el-upload class="avatar-uploader" action="/api/v1/5d5fa8984f0c2" :show-file-list="false"
+                           :on-success="handleAvatarSuccess">
+                    <img v-if="form.thumb" :src="form.thumb" class="avatar" @click="btn('thumb')">
+                    <i v-else class="el-icon-plus avatar-uploader-icon" @click="btn('thumb')"></i>
+                </el-upload>
+
+            </el-form-item>
+            <el-form-item :rules="{required: true, message: '内容不能为空', trigger: 'blur'}" label-width="100px"
+                          label="店铺所在位置" prop="store_district_name">
+                <el-select v-model="store_province_id" placeholder="请选择" @change='onProvinceChange'>
+                    <el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
+                    </el-option>
+                </el-select>
+                <el-select v-model="store_city_id" placeholder="请选择" @change='onCityChange'>
+                    <el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id">
+                    </el-option>
+                </el-select>
+                <el-select v-model="store_district_id" placeholder="请选择" @change='onChange'>
+                    <el-option v-for="item in districtOptions" :key="item.id" :label="item.name" :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item :rules="{required: true, message: '内容不能为空', trigger: 'blur'}" label-width="100px"
+                          label="店铺所在详细地址" prop="address">
+                <el-input type="textarea" v-model="form.address"></el-input>
+            </el-form-item>
+            <div class="search-box">
+                <el-form-item label-width="100px" label="加盟商定位"
+                              prop="lng">
+                    <el-input
+                            v-model="searchKey"
+                            type="search"
+                            id="search"
+                            placeholder="请输入详细地址"
+                    ></el-input>
+                </el-form-item>
+                <!--<button @click="searchByHand">搜索</button>-->
+                <div class="tip-box" id="searchTip"></div>
+            </div>
+
+            <div class="amap-box" >
+                <el-amap
+                        :amap-manager="amapManager"
+                        :vid="'amap-vue'"
+                        :zoom="zoom"
+                        :plugin="plugin"
+                        :center="center"
+                        :events="events"
+                        style="width:750px;height: 400px;"
+                >
+                    <!-- 标记 -->
+                    <el-amap-marker
+                            v-for="(marker, index) in markers"
+                            :position="marker"
+                            :key="index"
+                    ></el-amap-marker>
+                </el-amap>
+            </div>
+                <el-form-item>
+                    <el-button type="primary" style="margin-top: 250px" @click="onSubmit('form')">新增</el-button>
+                    <el-button @click='cancel'>取消</el-button>
+                </el-form-item>
+        </el-card>
+    </el-form>
+</div>
+
+</body>
+<script src="/static/admin/js/mapVue.js"></script>
+<script type="text/javascript">
+    window._AMapSecurityConfig = {
+        securityJsCode:'bc2e7d27a21b9a36e9644507fc148953',
+    }
+</script>
+<script>
+    Vue.use(VueAMap);
+    // 初始化vue-amap
+    VueAMap.initAMapApiLoader({
+        key: "e784981766fce693bce06e86110f2ab0", // 这里写你申请的高德地图的key
+        plugin: ["AMap.Autocomplete", "AMap.Geocoder", "AMap.Geolocation","AMapManager","lazyAMapApiLoaderInstance"],
+        v: "1.4.15",
+        uiVersion: "1.1"
+    });
+
+    const amapManager = new VueAMap.AMapManager();
+    // var lazyAMapApiLoaderInstance = new VueAMap.lazyAMapApiLoaderInstance();
+
+    new Vue({
+        el: '#app',
+        props: ["city", "value", "longitude", "latitude", "isEdit"],
+        data: function () {
+            let self = this;
+            return {
+                store_location:'',
+                address: null,
+                searchKey: "",
+                amapManager,
+                markers: [],
+                searchOption: {
+                    city: this.city ? this.city : "全国",
+                    citylimit: true
+                },
+                center: [121.329402, 31.228667],
+                zoom: 17,
+                lng: 0,
+                lat: 0,
+                loaded: false,
+                events: {
+                    init() {
+                        // lazyAMapApiLoaderInstance.load().then(() => {
+                        self.initSearch();
+                        // });
+                    },
+                    // 点击获取地址的数据
+                    click(e) {
+                        self.markers = [];
+                        let { lng, lat } = e.lnglat;
+                        self.lng = lng;
+                        self.lat = lat;
+                        self.center = [lng, lat];
+                        self.markers.push([lng, lat]);
+                        console.log(self.lng,self.lat,'ewewewewewewe')
+                        // 这里通过高德 SDK 完成。
+                        let geocoder = new AMap.Geocoder({
+                            radius: 1000,
+                            extensions: "all"
+                        });
+                        geocoder.getAddress([lng, lat], function(status, result) {
+                            if (status === "complete" && result.info === "OK") {
+                                if (result && result.regeocode) {
+                                    self.address = result.regeocode.formattedAddress;
+                                    self.searchKey = result.regeocode.formattedAddress;
+                                    self.$emit("updateLocation", lng, lat, self.searchKey);
+                                    self.$nextTick();
+                                }
+                            }
+                        });
+                    }
+                },
+                // 一些工具插件
+                plugin: [
+                    {
+                        // 定位
+                        pName: "Geolocation",
+                        events: {
+                            init(o) {
+                                // o是高德地图定位插件实例
+                                o.getCurrentPosition((status, result) => {
+                                    if (result && result.position) {
+                                        if (self.isEdit) {
+                                            console.log(self.longitude)
+                                            console.log(self.latitude)
+                                            // 设置经度
+                                            self.lng = self.longitude;
+                                            // 设置维度
+                                            self.lat = self.latitude;
+                                            // 设置坐标
+                                            self.center = [self.longitude, self.latitude];
+                                            self.markers.push([self.longitude, self.latitude]);
+                                        } else {
+                                            // 设置经度
+                                            self.lng = result.position.lng;
+                                            // 设置维度
+                                            self.lat = result.position.lat;
+                                            // 设置坐标
+                                            self.center = [self.lng, self.lat];
+                                            self.markers.push([self.lng, self.lat]);
+                                        }
+                                        // load
+                                        self.loaded = true;
+                                        // 页面渲染好后
+                                        self.$nextTick();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                ],
+
+
+
+
+                showflag: true,
+                showflags: true,
+                valtemp: '',
+
+                store_level_list: [],
+                form: {
+                    thumb: '', // 店铺logo
+                    thumb_id: '', // 店铺logo
+                    shop_name: "", // 店铺名称
+                    store_province_id: '', // 省code
+                    store_city_id: '', // 市code
+                    store_district_id: '', // 区code
+                    store_province_name: '', // 省
+                    store_city_name: '', // 市
+                    store_district_name: '', // 区
+                    address:'',
+                },
+                time: 1,
+                store_district_id: '', // 区id
+                store_province_id: '', // 省id
+                store_city_id: '', // 市id
+                districtOptions: [],
+                provinceOptions: [],
+                cityOptions: [],
+                companyof_name: '400-886-7993',
+                logins_account: 'test1',
+                valtemp: '',
+                username: "",
+                showflag: true,
+                stay_time: [],
+                showflags: true,
+                service_money: "",
+                options: [],
+                adProps: {
+                    lazy: true,
+                    value: 'id',
+                    label: 'name',
+                    lazyLoad(node, resolve) {
+                        const {
+                            level,
+                            root,
+                            data
+                        } = node;
+                        let params = {}
+                        params = root ? {
+                            pid: '',
+                            tableName: "(select * from ym_platfrom.v_region where pid='0') t"
+                        } : {
+                            pid: data.id,
+                            tableName: 'ym_platfrom.v_region'
+                        };
+
+                        if (root) {
+                            $.ajax({
+                                type: "GET",
+                                dataType: "JSON",
+                                url: '/admin.php/store/index/address',
+                                data: params,
+                                success: function (res) {
+                                    const result = res.data.map(item => {
+                                        item.id = `${item.id}`;
+                                        return Object.assign(item, {
+                                            label: name,
+                                            leaf: level >= 2
+                                        });
+                                    });
+                                    resolve(result);
+                                },
+                            })
+                        } else {
+                            $.ajax({
+                                type: "GET",
+                                dataType: "JSON",
+                                url: '/admin.php/store/index/address',
+                                data: params,
+                                success: function (res) {
+                                    const result = res.data.map(item => {
+                                        item.id = `${item.id}`;
+                                        return Object.assign(item, {
+                                            label: name,
+                                            leaf: level >= 2
+                                        });
+                                    });
+                                    resolve(result);
+                                },
+                            })
+                        }
+                    }
+                }
+
+            }
+        },
+        created() {
+            if (this.value) {
+                this.searchKey = this.value;
+                this.address = this.value;
+            }
+            if (this.longitude && this.latitude) {
+                this.lng = this.longitude;
+                this.lat = this.latitude;
+                this.center = [this.longitude, this.latitude];
+                this.markers.push([this.longitude, this.latitude]);
+            }
+        },
+        computed: {
+            money() {
+                // this.form.money
+                let stay_time = Number(this.time);
+                let money = Number(this.form.money);
+                let service_money = Number(this.form.service_money)
+                let total = stay_time * service_money + money;
+                console.log(stay_time, money, service_money)
+                this.form.pay_money = total;
+                return total || 0
+            }
+        },
+        mounted() {
+            document.getElementById('app').style.display = 'block'
+            this.getAddressList()
+            console.log(12344)
+
+
+        },
+        methods: {
+            // 选择地址后自动定位到当前地址附近
+            updateAddress(value, longitude, latitude) {
+                this.searchKey = value;
+                this.address = value;
+                this.lng = longitude;
+                this.lat = latitude;
+                this.center = [longitude, latitude];
+                this.markers.push([longitude, latitude]);
+            },
+            initSearch() {
+                let vm = this;
+                let map = this.amapManager.getMap();
+                AMapUI.loadUI(["misc/PoiPicker"], function(PoiPicker) {
+                    let poiPicker = new PoiPicker({
+                        input: "search",
+                        placeSearchOptions: {
+                            map: map,
+                            pageSize: 20
+                        },
+                        suggestContainer: "searchTip",
+                        searchResultsContainer: "searchTip"
+                    });
+                    vm.poiPicker = poiPicker;
+                    // 监听poi选中信息
+                    poiPicker.on("poiPicked", function(poiResult) {
+                        let source = poiResult.source;
+                        let poi = poiResult.item;
+                        if (source !== "search") {
+                            poiPicker.searchByKeyword(poi.name);
+                        } else {
+                            poiPicker.clearSearchResults();
+                            vm.markers = [];
+                            let lng = poi.location.lng;
+                            let lat = poi.location.lat;
+                            let address = poi.name; // poi.cityname + poi.adname + poi.name
+                            vm.center = [lng, lat];
+                            vm.markers.push([lng, lat]);
+                            vm.lng = lng;
+                            vm.lat = lat;
+                            vm.address = address;
+                            vm.searchKey = address;
+                            vm.$emit("updateLocation", lng, lat, vm.searchKey);
+                            console.log(lng,lat,'dsae34erwdwe')
+                        }
+                    });
+                });
+            },
+            get_store_level_id() {
+                let params = {
+                    id: this.form.store_level
+                }
+                $.ajax({
+                    type: "GET",
+                    dataType: "JSON",
+                    url: '/admin.php/store/index/get_store_level_id',
+                    data: params,
+                    success: (res) => {
+                        console.log(res)
+                        this.form.service_money = res.data.money
+                        this.form.store_level_name = res.data.store_level_name
+                        var n = Number(this.form.stay_time.substring(0, s = this.form.stay_time
+                            .length - 1))
+                        this.form.pay_money = Number(this.form.service_money) * n + Number(this.form
+                            .money)
+                        console.log(n, this.form.service_money)
+                    },
+                })
+            },
+            onChange(val) {
+                console.log(val)
+                this.districtOptions.forEach(item => {
+                    if (item.id == val) {
+                        this.form.store_district_name = item.name
+                        this.form.store_district_id = item.region_code
+                    }
+                })
+            },
+            onCityChange(val) {
+                this.getAddressList('city', val)
+                this.store_district_id = ''
+                this.form.store_district_name = ''
+                this.form.store_district_id = ''
+                this.cityOptions.forEach(item => {
+                    if (item.id == val) {
+                        this.form.store_city_name = item.name
+                        this.form.store_city_id = item.region_code
+                    }
+                })
+            },
+            // 地址
+            getAddressList(type, id) {
+                let data = {}
+                if (type == 'province') {
+
+                    this.districtOptions = []
+                    data.pid = id
+                }
+                if (type == 'city') {
+                    data.pid = id
+                }
+                $.ajax({
+                    type: "POST",
+                    dataType: "JSON",
+                    // url: '{:config("web_site_domain")}/api/v1/6103722b95168',
+                    url: 'https://powerful.jishu11.com/api/v1/622aac50404e4',
+                    data: data,
+                    success: (res) => {
+                        if (res.code == 1) {
+                            console.log(res.data)
+                            console.log(type)
+                            if (type == 'province') {
+                                this.cityOptions = res.data
+                                return false
+                            }
+                            if (type == 'city') {
+                                this.districtOptions = res.data
+                                return false
+                            }
+                            this.provinceOptions = res.data
+                        } else {
+                            layer.msg(res.msg);
+                        }
+                    }
+                })
+            },
+            onProvinceChange(val) {
+                console.log(val)
+                this.store_city_id = ''
+                this.store_district_id = ''
+                this.form.store_district_name = ''
+                this.form.store_district_id = ''
+                this.form.store_city_name = ''
+                this.form.store_city_id = ''
+                this.provinceOptions.forEach(item => {
+                    if (item.id == val) {
+                        this.form.store_province_name = item.name
+                        this.form.store_province_id = item.region_code
+                    }
+                })
+                this.getAddressList('province', val)
+            },
+
+            handleAvatarSuccess2(res) {
+                console.log('上传成功', res)
+                this.form.thumb_id = res.data[0].id
+                this.form.thumb = res.data[0].path
+            },
+            sele_stay(e) {
+                console.log('333333333', e)
+                this.time = e;
+            },
+            // 店铺名称告警
+            blur() {
+                if (this.form.store_name.length < 3) {
+                    this.showflag = false
+                } else {
+                    this.showflag = true
+                }
+            },
+            //主营行业
+            main_industrychange(item) {
+
+                this.showflags = true
+                this.form.money = this.form.main_industry[item - 1].money
+            },
+            btn(val) {
+                setTimeout(() => {
+                    this.valtemp = val
+                }, 500)
+
+            },
+            handleAvatarSuccess(res, file) {
+                const data = {
+                    "id": res.data[0].id,
+                    "path": res.data[0].path
+                }
+                console.log('上传成功', res)
+                console.log(this.valtemp)
+                // this.$set(this.temp, "thumb", data.id)
+                if (this.valtemp == 'business_licence') {
+                    this.form.business_licence = data.id
+                    this.form.business_licence_img = data.path
+                } else if (this.valtemp == 'idcard_reverse') {
+                    this.form.idcard_reverse = data.id
+                    this.form.idcard_reverse_img = data.path
+                } else if (this.valtemp == 'idcard_front') {
+                    this.form.idcard_front = data.id
+                    this.form.idcard_front_img = data.path
+                } else if (this.valtemp == 'qrcode') {
+                    this.form.qrcode = data.id
+                    this.form.qrcode_img = data.path
+                } else if (this.valtemp == 'store_logo') {
+                    this.form.store_logo = data.id
+                    this.form.store_logo_img = data.path
+                }  else if (this.valtemp == 'thumb') {
+                    this.form.thumb_id = data.id
+                    this.form.thumb = data.path
+                }else {
+
+                    return
+                }
+
+            },
+            cancel() {
+                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                parent.layer.close(index);
+            },
+            onSubmit(formName) {
+                if (this.form.main_industry_id == '') {
+                    this.showflags = false
+                } else {
+                    this.showflags = true
+                }
+                if (this.form.store_name == '') {
+                    this.showflag = false
+                } else {
+                    this.showflags = true
+                }
+                if(this.lng == '' || this.lat == ''){
+                    this.showflag = false
+                }
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        if (this.form.apply_type == 2) {
+                            this.form.company_province_id = this.form.company_province[0]
+                            this.form.company_city_id = this.form.company_province[1]
+                            this.form.company_district_id = this.form.company_province[2]
+                        }
+                        let data = JSON.parse(JSON.stringify(this.form))
+                        if(this.lng == 0 || this.lat == 0){
+                            layer.msg('请选择加盟商定位');
+                            return false
+                        }
+                        data.lon = this.lng
+                        data.lat = this.lat
+
+
+                        data.main_industry =data.main_industry_id
+
+                        delete data.company_province
+                        delete data.main_industry_id
+                        delete data.store_logo_img
+
+                        console.log('submit!', data);
+                        $.ajax({
+                            type: "POST",
+                            dataType: "JSON",
+                            url: '/admin.php/shop/index/add',
+                            data: data,
+                            success: function (res) {
+                                console.log(res, 'res')
+                                if (res.code == 1) {
+                                    layer.msg('添加成功',{
+                                            icon: 1,
+                                            time: 2000
+                                        },
+                                        function(){
+                                        window.parent.location.reload();
+                                        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                        parent.layer.close(index);
+                                    })
+
+
+                                } else {
+                                    layer.msg(res.msg);
+                                }
+                            }
+                        })
+
+
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+
+                });
+
+
+            }
+        },
+    })
+</script>
+<style lang="stylus">
+    .search-box {
+        margin-top: 6px;
+        /*width: 100%;*/
+    }
+    .search-box input {
+        padding: 0 15px;
+        width: 100%;
+        height: 28px;
+        line-height: 28px;
+        color: #606266;
+        border: 1px solid #dcdfe6;
+        border-radius: 4px;
+    }
+    .search-box input:focus {
+        border-color: #409eff;
+        outline: 0;
+    }
+    .search-box input::-webkit-input-placeholder {
+        color: #c0c4cc;
+    }
+    .tip-box {
+        width: 80%;
+        max-height:280px;
+        position: absolute;
+        /*top: 72px;*/
+        z-index: 10000;
+        overflow-y: auto;
+        background-color: #fff;
+    }
+</style>
+<style>
+    .amap-box {
+        width:500px !important;
+        height: 200px !important;
+        margin-left: 100px;
+
+    }
+</style>
+</html>

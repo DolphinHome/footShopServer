@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html style="font-size: 20px;">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<meta name="format-detection" content="telephone=no">
+		<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport">
+		<link rel="stylesheet" type="text/css" href="./css/yzqcommon.css">
+		<link rel="stylesheet" type="text/css" href="./css/redpackage.css">
+		<title>童模星球</title>
+		<link rel="stylesheet" href="./css/layer.css" id="layui_layer_skinlayercss" style="">
+	</head>
+	<body style="font-size: 20px;">
+		<div id="main" style="height: 100vh;">
+			<img src="./img/new-bg.jpg" style="height:100%" alt="" class="bg">
+
+			<div class="dialog-box">
+				<div class="ipt-box brb_e">
+					<div class="ipt-row ">
+						<img src="./img/01.png" alt="" style="width: 1rem;">
+						<div class="input">
+							<input type="tel" placeholder="请输入手机号(注册后不可更改)" id="tel" maxlength="11">
+						</div>
+					</div>
+				</div>
+				<div class="ipt-box brb_e">
+					<div class="ipt-row msgcode">
+						<img src="./img/code.png" alt="">
+						<div class="input">
+							<input type="tel" placeholder="请输入验证码" id="msgcode" maxlength="6">
+						</div>
+					</div>
+					<div class="getcode">获取验证码</div>
+				</div>
+				<div class="ipt-box brb_e">
+					<div class="ipt-row ">
+						<img src="./img/01.png" alt="" style="width: 1rem;">
+						<div class="input">
+							<input type="password" placeholder="请输入密码(6-12位字母+数字)" id="pwd" maxlength="12">
+						</div>
+					</div>
+				</div>
+				<div class="ipt-box brb_e">
+					<div class="ipt-row ">
+						<img src="./img/code.png" alt="" style="width: 1rem;">
+						<div class="input">
+							<input type="text" placeholder="昵称(注册后不可更改,请谨慎填写)" id="user_nickname" maxlength="50">
+						</div>
+					</div>
+				</div>
+				<!-- <div class="ipt-box">
+					<div class="ipt-row">
+						<img src="./img/new-pwd.png" alt="">
+						<div class="input">
+							<input type="password" placeholder="请输入字母加数字(6-12位)密码" id="pwd">
+						</div>
+					</div>
+				</div> -->
+				<div class="reg ">
+					立即注册
+				</div>
+			</div>
+			<div class="reg-info">
+				<div class="info1">奖励已发送至您的帐号</div>
+				<div class="info2">下载FAST-UI APP查看吧</div>
+				<div class="down">点击下载</div>
+				<div class="uinfo">
+					<div>您的FAST-UI帐户为</div>
+					<div id="regphone"></div>
+					<div>直接用该手机登陆哦！</div>
+					<div>(使用其他登陆方式无效)</div>
+				</div>
+			</div>
+
+			<input type="hidden" value="5b5bdc44796e8" id="getcode">
+			<input type="hidden" value="5c78dca45ebc1" id="verifycode">
+			<input type="hidden" value="5cad9f63e4f94" id="reg">
+		</div>
+
+		<script>
+			//location.href="";
+		</script>
+
+		<script type="text/javascript" src="../static/plugins/jquery/jquery.min.js"></script>
+		<!--<script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>-->
+		<script type="text/javascript" src="./js/layer.js"></script>
+		<script type="text/javascript" src="./js/mobileUtil.js"></script>
+		<script>
+			var type = '1';
+			var host = 'https://tongmoxq.com/api/v1/' //host
+			var download_url = ''; //下载地址
+			var invite_code = '' //邀请码
+			var course_id=''//课程id
+			var userid=''//分享者id
+
+			var option = '' //路径后的参数
+			option = window.location.search
+			console.log(window.location.search, '=====');
+
+			$.post('https://tongmoxq.com/api/v1/5fe59aaeaf920', function(res) {
+				if (res.code == 1) {
+					host = res.data.host
+					download_url = res.data.down_url
+				} else {
+					layer.msg('下载地址获取失败');
+				}
+
+			})
+
+			var width = $(window).width();
+			$("html,body").css('font-size', (width / 18.75) + 'px');
+			$(window).resize(function() {
+				var width = $(window).width();
+				$("html,body").css('font-size', (width / 18.75) + 'px');
+			})
+			var getList = GetRequest();
+			if (getList.course_id) {
+				course_id=getList.course_id,
+				userid=getList.userid
+			}
+
+			//获取url后面的参数
+			function GetRequest() {
+				const url = location.search; //获取url中"?"符后的字串
+				let theRequest = new Object();
+				if (url.indexOf("?") != -1) {
+					let str = url.substr(1);
+					strs = str.split("&");
+					for (let i = 0; i < strs.length; i++) {
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+					}
+				}
+				return theRequest;
+			}
+
+			var send_phone = null;
+			$(".getred").click(function() {
+				$(".step1").hide();
+				$(".step2").show();
+			})
+			$(".next").click(function() {
+				var phone = $("#tel").val();
+				var code = $("#msgcode").val();
+				var user_nickname = $("#user_nickname").val();
+				var pwd = $("#pwd").val();
+				if (phone == '' || phone.length != 11) {
+					layer.msg('请输入正确的手机号');
+				} else if (code == '') {
+					layer.msg('请输入验证码');
+				} else if (user_nickname == '') {
+					layer.msg('请填写昵称');
+				} else if (pwd == '') {
+					layer.msg('请填写密码');
+				} else {
+					$.post(host + $("#verifycode").val(), {
+						vercode: code
+					}, function(ret) {
+						if (ret.isError == false) {
+							send_phone = phone;
+							$('.phone').text(phone);
+							$(".setpwd").show();
+							$(".reg").hide();
+						} else {
+							layer.msg(ret.errorMessage);
+						}
+					})
+				}
+
+			})
+			// 注册
+			$(".reg").click(function() {
+				var phone = $("#tel").val();
+				if (!phone) {
+					layer.msg('请输入手机号');
+					return;
+				}
+				var msgcode = $("#msgcode").val();
+				if (!msgcode) {
+					layer.msg('请输入验证码');
+					return;
+				}
+				var user_nickname = $("#user_nickname").val();
+				if (!user_nickname) {
+					layer.msg('请填写昵称');
+					return;
+				}
+				var pwd = $("#pwd").val();
+				var patt = / /ig;
+				// if (patt.test(pwd)) {
+				// 	layer.msg('不能包含空格');
+				// 	$(".pwd").val('');
+				// } else {
+				// 	if (!(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9a-zA-Z]{6,12}$/.test(pwd))) {
+				// 		layer.msg('请输入字母加数字(6-12位)密码');
+				// 	} else {
+				$.post(host + $("#reg").val(), {
+					type: 1,
+					mobile: phone,
+					password: pwd,
+					code: msgcode,
+					course_id:course_id,//分享的课程id
+					user_nickname:user_nickname,//用户昵称
+					pid:userid || '',//分享者id
+					// invite_code: invite_code
+				}, function(res) {
+					if (res.code == 1) {
+						layer.msg('注册成功');
+						if (option!='') {
+							// 从课程详情过来的
+							localStorage.setItem("USER_INFO",JSON.stringify(res.data.userinfo) );
+							window.history.back(-1);
+							
+							// 本地存储用户信息
+							return
+						}else{
+							window.location.href = './downLoad.html'
+						}
+					} else {
+						layer.msg(res.msg);
+					}
+				})
+				// 	}
+				// }
+
+			})
+
+			function oldUser() {
+				$(".dialog-box").hide();
+			}
+			// 获取验证码
+			$(".getcode").click(function() {
+				var phone = $("#tel").val();
+				var self = $(this);
+				if (!$(this).hasClass('disabled')) {
+					if (phone == '' || phone.length != 11) {
+						layer.msg('请输入正确的手机号');
+					} else {
+				// 		alert(phone)
+						$.post(host + '5b5bdc44796e8', {//$("#getcode").val()
+				// 			is_test: 1,
+							mobile: phone,
+							type: 1,
+						}, function(res) {
+				// 			alert(res)
+							if (res.code == 1) {
+								// layer.msg('验证码为:' + res.data.code);
+								timer();
+								self.addClass('disabled');
+
+							} else {
+								console.log(res, 8888)
+								layer.msg(res.msg);
+							}
+						})
+					}
+				}
+
+			})
+
+			function timer() {
+				var t = 60;
+				var handle = setInterval(function() {
+					if (t > 0) {
+						t--;
+						$(".getcode").text(t + 's后获取');
+					} else {
+						$(".getcode").text('验证码').removeClass('disabled');
+						clearInterval(handle);
+					}
+				}, 1000)
+			}
+			$(".down").click(function() {
+				location.href = download_url;
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,55 @@
+<div class="layui-row layui-rowInput">
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		项目状态：<font size="" color="#1E9FFF">{$data.state_codeName}</font>
+	</div>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		项目名称：
+		<?php if($data['name_times'] < 3 && in_array($admin_role,[20,21])):?>
+		<input type="text" value="{$data.name}" class="layui-input lInputEnter" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+		 data-db="name" style="display: inline-block;width: 50%;height: 30px;" />
+		<?php else:?>
+		{$data.name}
+		<?php endif;?>
+	</div>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		商务名称：{$data.staff_id|get_staff}
+	</div>
+	<?php if(!in_array($admin_role,[21,22])):?>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		合同编号：{$data.num}
+	</div>
+	<?php endif;?>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		项目类型：{$data.platform_id|getPlatformName}
+	</div>
+	<?php if(!in_array($admin_role,[21,22])):?>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		项目金额：￥{$data.money|number_format}
+	</div>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		付款方式：{$data.pay_ratio}
+	</div>
+	<?php endif;?>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		工期要求：{$data.allotted_day}{$data.allotted_type}
+	</div>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		提单时间：{$data.create_time|date='m-d H:i'}
+	</div>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		所属部门：{$data.deptName}
+	</div>
+	<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+		项目经理：{$data.project_managerName}
+	</div>
+</div>
+
+<div class="layui-form layui-form-pane">
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label">制作要求(Ctrl + Enter键提交)</label>
+		<div class="layui-input-block">
+			<textarea placeholder="请输入制作要求" class="layui-textarea lInputEnterCtrl" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+		 data-db="make_note">{$data.make_note}</textarea>
+		</div>
+	</div>
+</div>

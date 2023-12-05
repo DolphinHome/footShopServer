@@ -1,0 +1,76 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+{php}
+$url_param = input('param.');
+{/php}
+<div class="row">
+	<div class="col-md-12">
+		<div class="box nav-tabs-custom">
+			<div class="box-header with-border">
+				<h3 class="box-title">{$page_title|default=""|htmlspecialchars}</h3>
+				{eq name="url_param.layer" value="1"}
+				<!-- <div class="close close_crm_set_bar icon-del" onClick="closelayer()"></div> -->
+				{else /}
+				<button class="btn btn-default btn-flat btn-xs pull-right" type="button" onclick="javascript:history.back(-1);return false;">
+					<i class="fa fa-mail-reply"></i> {:lang('返回')} </button>
+				{/eq}
+			</div>
+			<div class="box-body tab-content">
+				<div class="tab-pane active">
+					{notempty name="$page_tips"}					
+						<div class="alert alert-info">{$page_tips|raw}</div>					
+					{/notempty}
+					<div class="block-content" style="max-width: 700px;">
+						{php}
+						$url_param = input('param.');
+						{/php} 
+						<!-- 表单验证请保留id="form"，否则验证不起作用 -->
+						{eq name="url_param.layer" value="1"}
+						<form class="form row" parent_reload="1" name="form" id="form" onkeydown="if(event.keyCode==13){findinput();}"
+							  autocomplete="on" action="{:url('',$url_param)}" method="post" data-validator-option="{timely:1, theme:'bootstrap'}">
+							{else /}
+							<form class="form row" parent_reload="{$url_param.reload|default = '-1'}" name="form" id="form" onkeydown="if(event.keyCode==13){findinput();}"
+								  autocomplete="on" action="{:url('',$url_param)}" method="post" data-validator-option="{timely:1, theme:'bootstrap'}">
+								{/eq}
+							{include file="../application/admin/view/public/form.html" /}
+							<div class="form-group col-md-12 col-xs-12">
+							<div class="col-xs-12">
+								{neq name="btn_hide" value="1"}
+								<button class="btn btn-primary " type="submit"> {:lang('提交')} </button>
+								{eq name="url_param.layer" value="1"}
+								<button class="btn btn-default btn-flat" type="button" onClick="closelayer()">{:lang('关闭')}</button>
+								{else /}
+								<button class="btn btn-default btn-flat" type="button" onClick="javascript:history.back(-1);return false;">{:lang('返回')} </button>
+								{/eq}
+								{/neq}
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="style"}
+{volist name="set_style" id="s"}<link rel="stylesheet" href="{$s}" />{/volist}
+{volist name="plugin_item_css" id="s"}<link rel="stylesheet" href="{$s}" />{/volist}
+{/block}
+{block name="script"}
+{volist name="set_script" id="s"}<script type="text/javascript" src="{$s}"></script>{/volist}
+{volist name="plugin_item_js" id="s"}<script type="text/javascript" src="{$s}"></script>{/volist}
+<script>
+	function findinput() {
+		var focusinput = $(":focus").focus();
+		var nextinput = $(focusinput).parent().parent().nextAll().find("input[type='text']");
+		if (nextinput.length > 0) {
+			nextinput[0].focus();
+		}
+	}
+
+	function closelayer() {
+		var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+		parent.layer.close(index);
+	}
+</script>
+{/block}

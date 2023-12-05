@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<!-- saved from url=(0119)http://beberyomi.xuanpin.org/admin/order/print-order-goods-bill?orderIds=GJ63706755704046200144,GJ63706755625390434197, -->
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<script src="http://127.0.0.1:18000/CLodopfuncs.js?priority=0"></script>
+		<script src="http://127.0.0.1:8005/CLodopfuncs.js?priority=1"></script>
+		<title>{:lang('打印配货单')}</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<link href="/static/print/bootstrap.min.css" rel="stylesheet">
+		<script src="/static/print/jquery-2.1.4.js"></script>
+		<script src="/static/print/template7.min.js"></script>
+		<script src="/static/print/bootstrap.min.js"></script>
+		<script src="/static/print/LodopFuncs.js"></script>
+	</head>
+	<body>
+		<style>
+			body {
+				padding-top: 40px;
+			}
+			.setting-item {
+				display: inline-block;
+				font-size: 12px;
+				background: #fff;
+				border-radius: 5px;
+				padding: 0 5px;
+				vertical-align: top;
+			}
+			.setting-txt {
+				margin: 0 5px;
+				display: inline-block;
+				vertical-align: baseline;
+			}
+			.border-l {
+				border-left: 1px solid #5d9cec;
+			}
+			.border-r {
+				border-right: 1px solid #5d9cec;
+			}
+			.border-input {
+				width: 30px;
+				height: 23px;
+				line-height: 1.4;
+				vertical-align: top;
+				margin: 1px 0;
+				border: 1px solid #5d9cec;
+				border-radius: 5px;
+			}
+			input,
+			select {
+				display: inline-block;
+				height: 25px;
+				line-height: 25px;
+				padding: 0 3px;
+				outline: none;
+				border: none;
+				font-size: 12px;
+				color: #5d9cec;
+			}
+			@media print {
+				.print-setting {
+					display: none;
+				}
+
+				body {
+					padding: 0;
+				}
+			}
+		</style>
+		<style id="print-style" type="text/css">
+			dl {
+				padding: 0;
+				margin: 0;
+			}
+
+			dd {
+				margin: 0;
+			}
+
+			label {
+				display: inline-block;
+				max-width: 100%;
+				margin-bottom: 5px;
+				font-weight: 700;
+			}
+
+			td,
+			th {
+				display: table-cell;
+				vertical-align: inherit;
+				padding: 0;
+			}
+
+			.order-detail {
+				margin-top: 15px;
+			}
+
+			.order-detail table {
+				border-collapse: collapse;
+			}
+
+			.order-detail table td {
+				height: 26px;
+				line-height: 26px;
+				border: solid#000 1px;
+			}
+
+			.order-detail table th {
+				border: solid#000 1px;
+			}
+
+			.h3 {
+				font-family: inherit;
+				font-weight: 500;
+				line-height: 1.1;
+				color: inherit;
+			}
+
+			body {
+				margin: 8px;
+			}
+
+			input[type=number] {
+				-moz-appearance: textfield;
+			}
+
+			input[type=number]::-webkit-inner-spin-button,
+			input[type=number]::-webkit-outer-spin-button {
+				-webkit-appearance: none;
+				margin: 0;
+			}
+		</style>
+
+		<div class="print-container">
+			<div class="print-setting" style="background:#5d9cec;text-align:center;position:fixed;left:0;top:0;width:100%;padding:5px;z-index:9999">
+				<div class="setting-item">
+					<div class="setting-txt">{:lang('打印机选择')}</div>
+					<select class="printers border-l border-r" style="width:150px;vertical-align:top"></select>
+					<select class="print-direction" style="width:auto">
+						<option value="1" selected="">{:lang('纵向')}</option>
+						<option value="2">{:lang('横向')}</option>
+					</select>
+				</div>
+				<div class="setting-item hidden-xs" style="margin-left:10px">
+					<div class="setting-txt">{:lang('上下边距')}（mm）：</div>
+					<input class="distance-top border-l" style="width:40px;padding:0 5px" value="1.0" type="number">
+				</div>
+				<div class="setting-item hidden-xs" style="margin-left:10px">
+					<div class="setting-txt">{:lang('左右边距')}（mm）：</div>
+					<input class="distance-left border-l" style="width:40px;padding:0 5px" value="10.0" type="number">
+				</div>
+				<div class="setting-item hidden-xs" style="margin-left:10px">
+					<div class="setting-txt">{:lang('纸张类型')}：</div>
+					<select class="paper-type border-l" style="width:150px"></select>
+					<span class="paper-size hidden">
+						宽（mm）：<input class="border-input paper-width" style="margin-right:10px" value="210.0" type="number">
+						高（mm）：<input class="border-input paper-height" value="93.2" type="number">
+					</span>
+				</div>
+				<button class="btn" style="height:25px;line-height:0;color:#fff;background:#000;margin-left:20px" onclick="javascript: lodopPrint()">{:lang('打印')}</button>
+			</div>
+		</div>
+
+		<!--顺丰-->
+		<script type="text/template" id="bill_template">
+			<div class="bill">
+				<div style="font-family: Microsoft YaHei,tahoma,arial,\5b8b\4f53, Sans-Serif; font-size:12px;color: #333;padding: 0">
+					<h3 style="text-align:center;font-size:15px; margin-top:15px;margin-bottom:15px">{:lang('犇腾家商城')}—{:lang('配货清单')}</h3>
+					<div class="order-title">
+						<table width="100%" cellpadding="0" cellspacing="0" style="font-size:12px">
+							<tbody>
+								<tr>
+									<td style="text-align:left">
+										<dl>
+											<dd style="line-height:19px;">{:lang('订单编号')}：{{order_sn}}</dd>
+										</dl>
+										<dl>
+											<dd style="line-height:19px;">{:lang('订单时间')}：{{date_time}}</dd>
+										</dl>
+										<dl>
+											<dd style="line-height:19px;"><label style="float:left;margin:0">{:lang('配送地址')}：</label><span style="display:block;padding-left:60px;">{{province}}{{city}}{{district}}{{receiver_address}}</span></dd>
+										</dl>
+										<dl>
+											<dd style="line-height:19px;">{:lang('客户名称')}：{{receiver_name}}</dd>
+										</dl>
+										<dl>
+											<dd style="line-height:19px;">{:lang('联系方式')}：{{receiver_mobile}}</dd>
+										</dl>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="order-detail">
+						<table width="100%" cellpadding="0" cellspacing="0" style="font-size:12px;border:1px solid #000">
+							<thead>
+								<tr>
+									<th style="font-weight:bold;text-align:center;width:30px">{:lang('序号')}</th>
+									<th style="font-weight:bold;text-align:left;height:30px">{:lang('产品名称')}</th>
+									<th style="font-weight:bold;text-align:left;height:30px">{:lang('品类名')}</th>
+									<th style="font-weight:bold;text-align:center;height:30px;width:30px">{:lang('数量')}</th>
+									<th style="font-weight:bold;text-align:left;height:30px">{:lang('兑换积分')}</th>
+									<th style="font-weight:bold;text-align:left;height:30px">{:lang('实付金额')}</th>
+								</tr>
+							</thead>
+							<tbody>
+								{{#each goods_list}}
+								<tr>
+									<td style="text-align:center;height:26px;line-height:26px;border:1px solid #000;border-collapse:collapse;">
+										{{@index+1}}
+									</td>
+									<td style="text-align:left;height:26px;line-height:26px;border:1px solid #000;border-collapse:collapse;">
+										{{goods_name}}
+									</td>
+									<td style="text-align:left;height:26px;line-height:26px;border:1px solid #000;border-collapse:collapse;">
+										{{sku_name}}
+									</td>
+									<td style="text-align:center;height:26px;line-height:26px;border:1px solid #000;border-collapse:collapse;">
+										{{num}}
+									</td>
+									<td style="text-align:left;height:26px;line-height:26px;border:1px solid #000;border-collapse:collapse;">
+										{{sales_integral}}
+									</td>
+									<td style="text-align:left;height:26px;line-height:26px;border:1px solid #000;border-collapse:collapse;">
+										{{shop_price}}
+									</td>
+								</tr>
+								{{/each}}
+								<tr>
+									<td style="text-align:center">{:lang('合计')}</td>
+									<td colspan="5">{{order_num}}</td>
+									<!-- <td colspan="5">{:lang('总数量')}：{{order_num}}</td> -->
+								</tr>
+								<tr>
+									<td style="text-align:center">{:lang('备注')}</td>
+									<td colspan="5">{{remark}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div style="page-break-before:always;"></div>
+    	</script>
+		<script>
+			$(document).ready(function() {
+				var aids = getQueryVariable('aids');
+				var url = "getshipmentorderdata?aids=" + aids;
+				$.get(url, function(data) {
+					// console.log(data);return; 
+					if(data.status == '2000'){
+						console.log(data.result)
+						if (data.result && data.result.length > 0) {
+							data.result.forEach(function(e, index) {
+								var template = $('script#bill_template').html();
+								var compiledTemplate = Template7.compile(template);
+								var html = compiledTemplate(e);
+								var $html = $(html);
+								$('.print-container').append($html);
+								if (index != data.length - 1)
+									$('.print-container').append('<div class="page-split" style="page-break-before:always;"></div>');
+							})
+						} else {
+							alert('无相关数据或合作物流商户号非法');
+						}
+					}else{
+						alert(data.msg);
+					}
+				})
+			});
+			$(window).load(function() {
+				var LODOP = getLodop();
+				LODOP.PRINT_INIT('配货清单');
+				for (var i = 0; i < LODOP.GET_PRINTER_COUNT(); i++) {
+					var option = document.createElement('option');
+					option.innerHTML = LODOP.GET_PRINTER_NAME(i);
+					option.value = i;
+					if (i == '0') {
+						option.selected = true;
+					}
+					$('.printers')[0].appendChild(option);
+				}
+				paperInit();
+				$('.paper-type').on('change', function() {
+					if ($(this).val() == '自定义') {
+						$('.paper-size').removeClass('hidden');
+						$(this).addClass('border-r');
+					} else {
+						$('.paper-size').addClass('hidden');
+						$(this).removeClass('border-r');
+					}
+				});
+				$('.printers').on('change', function() {
+					$('.paper-type').html('');
+					paperInit();
+					if ($('.paper-type').val() == '自定义') {
+						$('.paper-size').removeClass('hidden');
+						$('.paper-type').addClass('border-r');
+					} else {
+						$('.paper-size').addClass('hidden');
+						$('.paper-type').removeClass('border-r');
+					}
+				});
+			});
+
+			function getQueryVariable(variable)
+				{
+				       var query = window.location.search.substring(1);
+				       var vars = query.split("&");
+				       for (var i=0;i<vars.length;i++) {
+				               var pair = vars[i].split("=");
+				               if(pair[0] == variable){return pair[1];}
+				       }
+				       return(false);
+				}
+			function paperInit() {
+				var LODOP = getLodop();
+				var papers = LODOP.GET_PAGESIZES_LIST($('.printers').val(), ',');
+				var Options = new Array();
+				Options = papers.split(",");
+				for (i in Options) {
+					var option = document.createElement('option');
+					option.innerHTML = Options[i];
+					option.value = Options[i];
+					if (Options[i] == '信纸') {
+						option.selected = true;
+						$('.paper-type').removeClass('border-r');
+					}
+					$('.paper-type')[0].appendChild(option);
+				}
+				var option = document.createElement('option');
+				option.innerHTML = '自定义';
+				option.value = '自定义';
+				if ('信纸' == '自定义') {
+					option.selected = true;
+					$('.paper-type').addClass('border-r');
+				}
+				$('.paper-type')[0].appendChild(option);
+			};
+
+			function lodopPrint() {
+				var LODOP = getLodop();
+				var top = $('.distance-top').val() == '' ? 0 : $('.distance-top').val() + 'mm';
+				var left = $('.distance-left').val() == '' ? 0 : $('.distance-left').val() + 'mm';
+				var style = '<style>' + $('#print-style').html() + '</style>';
+				var paper = $('.paper-type').val();
+				var direction = $('.print-direction').val();
+				LODOP.SET_PRINTER_INDEXA($('.printers').val());
+				var myPaper = '部落管家 ' + $('.paper-width').val() + 'x' + $('.paper-height').val() + ' mm';
+				if (paper == '自定义') {
+					LODOP.SET_PRINT_PAGESIZE(parseInt(direction), $('.paper-width').val() * 10, $('.paper-height').val() * 10,
+						'CreateCustomPage');
+					LODOP.SET_PRINT_MODE('CREATE_CUSTOM_PAGE_NAME', myPaper);
+				} else {
+					LODOP.SET_PRINT_PAGESIZE(parseInt(direction), 0, 0, paper);
+				}
+
+				$('.bill').each(function() {
+					LODOP.ADD_PRINT_HTM(top, left, 'RightMargin:' + left, 'BottomMargin:' + top, style + $(this).html());
+					LODOP.NewPageA();
+				});
+
+				
+
+				LODOP.SET_PREVIEW_WINDOW(0, 1, 1, 800, 600, "");
+				LODOP.SET_SHOW_MODE("HIDE_PAPER_BOARD", 1);
+				LODOP.SET_PRINT_MODE("AUTO_CLOSE_PREWINDOW", 1);
+				LODOP.PREVIEW();
+				//LODOP.PRINT();
+
+
+				//printstatus();
+			}
+
+			// function printstatus(){
+			// 	var orderIds = getQueryVariable('ids');
+			// 	var url = '/admin/platform/plat_form_order/print_status?type=peihuo&orderIds=' + orderIds ;
+			// 	$.get(url, function(data) {})
+			// }
+		</script>
+
+	</body>
+</html>

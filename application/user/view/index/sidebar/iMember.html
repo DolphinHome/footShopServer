@@ -1,0 +1,196 @@
+<form id="lFromFromMember" method="POST" action="{:url('Project/saveProject_member')}">
+	<?php if($leaderType['isLeaderTop'] || ($leaderType['isLeader'] && $leaderType['isLeaderJs'])):?>
+	<!-- 领导和技术部领导 -->
+	<div class="layui-form-item">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">{:lang('项目经理')}：</label>
+		<div class="layui-input-inline">
+			<select name="project_manager" lay-search="" lay-filter="saveFieldSelect" data-url="{:url('saveField',['aid'=>$data['aid']])}"
+			 data-db="project_manager">
+				<option value="">{:lang('请选择')}</option>
+				<?php foreach($memberList as $v):?>
+				<?php if($v['aid'] == $data['project_manager']):?>
+				<option value="{$v['aid']}" selected="selected">{$v['name']}</option>
+				<?php else:?>
+				<option value="{$v['aid']}">{$v['name']}</option>
+				<?php endif;?>
+				<?php endforeach;?>
+			</select>
+		</div>
+	</div>
+	
+	<?php
+		$lsMemberCount = 0;
+		foreach($memberList as $v){
+			if($v['type_work'] == 2){
+				$lsMemberCount++;
+			}
+		}
+	?>
+	<?php if($lsMemberCount):?>
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">{:lang('前端成员')}：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($memberList as $v):?>
+			<?php if($v['type_work'] == 2):?>
+			<?php if(in_array($v['aid'],$data['project_memberArr'])):?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary" checked="checked"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php else:?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php endif;?>
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php endif;?>
+	
+	<?php
+		$lsMemberCount = 0;
+		foreach($memberList as $v){
+			if($v['type_work'] == 3){
+				$lsMemberCount++;
+			}
+		}
+	?>
+	<?php if($lsMemberCount):?>
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">IOS{:lang('成员')}：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($memberList as $v):?>
+			<?php if($v['type_work'] == 3):?>
+			<?php if(in_array($v['aid'],$data['project_memberArr'])):?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary" checked="checked"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php else:?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php endif;?>
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php endif;?>
+	
+	<?php
+		$lsMemberCount = 0;
+		foreach($memberList as $v){
+			if($v['type_work'] == 4){
+				$lsMemberCount++;
+			}
+		}
+	?>
+	<?php if($lsMemberCount):?>
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">{:lang('安卓成员')}：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($memberList as $v):?>
+			<?php if($v['type_work'] == 4):?>
+			<?php if(in_array($v['aid'],$data['project_memberArr'])):?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary" checked="checked"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php else:?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php endif;?>
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php endif;?>
+	
+	<?php
+		$lsMemberCount = 0;
+		foreach($memberList as $v){
+			if(!in_array($v['type_work'],[2,3,4])){
+				$lsMemberCount++;
+			}
+		}
+	?>
+	<?php if($lsMemberCount):?>
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">{:lang('后端成员')}：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($memberList as $v):?>
+			<?php if(!in_array($v['type_work'],[2,3,4])):?>
+			<?php if(in_array($v['aid'],$data['project_memberArr'])):?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary" checked="checked"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php else:?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php endif;?>
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php endif;?>
+	
+	<?php if(!$isLeaderTop):?>
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">{:lang('跨部门')}：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($data['project_memberList'] as $v):?>
+			<?php if(!in_array($v['aid'],$memberArr)):?>
+			<span style="display: inline-block;margin-top: 10px; line-height: 18px;margin-right: 10px;">{$v['name']}</span>
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php endif;?>
+	<?php elseif($leaderType['isLeader'] && $leaderType['isLeaderUe']):?>
+	<!-- 产品部领导 -->
+	<div class="layui-form-item layui-form-text">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<?php foreach($memberList as $v):?>
+			<?php if(in_array($v['aid'],$data['project_memberArr'])):?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary" checked="checked"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php else:?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php elseif($leaderType['isLeader'] && $leaderType['isLeaderUi']):?>
+	<!-- 设计部领导 -->
+	<div class="layui-form-item layui-form-text">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<?php foreach($memberList as $v):?>
+			<?php if(in_array($v['aid'],$data['project_memberArr'])):?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary" checked="checked"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php else:?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php elseif($leaderType['isLeader'] && $leaderType['isLeaderCs']):?>
+	<!-- 测试部领导 -->
+	<div class="layui-form-item layui-form-text">
+		<div class="layui-input-block" style="margin-left: 0;">
+			<?php foreach($memberList as $v):?>
+			<?php if(in_array($v['aid'],$data['project_memberArr'])):?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary" checked="checked"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php else:?>
+			<input type="checkbox" name="project_member[]" title="{$v['name']}" value="{$v['aid']}" lay-skin="primary"
+			 lay-filter="saveFieldCheckbox" data-url="{:url('saveField',['aid'=>$data['aid']])}" data-db="project_member">
+			<?php endif;?>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php else:?>
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label" style="text-align: left;padding-left: 0;">项目成员：</label>
+		<div class="layui-input-block" style="margin-left: 96px;">
+			<?php foreach($data['project_memberList'] as $v):?>
+			<span style="display: inline-block;margin-top: 10px; line-height: 18px;margin-right: 10px;">{$v['name']}</span>
+			<?php endforeach;?>
+		</div>
+	</div>
+	<?php endif;?>
+</form>

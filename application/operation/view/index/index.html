@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    {block name="page-title"}
+	<title>{$page_title|default='客服【工作台】'} | {:config('web_site_title')}</title>
+	{/block}
+    <link rel="stylesheet" href="/static/plugins/layer/layui/css/layui.css?version=1.0.0.0">
+    <link rel="stylesheet" href="/static/service/css/whisper.css?version=1.0.0.0">
+    <script src="__PLUG__/layer/layer.js?v={:config('asset_version')}"></script>
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo" style="color: white">{:config('web_site_title')}{:lang('客服')}【{:lang('工作台')}】</div>
+        <ul class="layui-nav layui-layout-right">
+            <li style="margin-top: 10%">
+                <a href="javascript:;" onclick="loginOut();">
+                    <button class="layui-btn layui-bg-red">
+                        <i class="layui-icon">&#xe609;</i> {:lang('退出')}
+                    </button>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side" style="background:#f2f2f2">
+        <div class="layui-side-scroll">
+            <blockquote class="layui-elem-quote layui-bg-cyan" style="color: white">{:lang('正在咨询的会员')}</blockquote>
+            <ul class="layui-unselect" id="user_list">
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" style="bottom:0">
+        <input type="hidden" id="active-user" data-avatar="" data-name="" data-id=""><!-- 当前对话的用户 -->
+        <div class="chat-left">
+            <div class="chat-box whisper-chat-main">
+
+            </div>
+            <div class="msg-send">
+                <div class="tools-bar">
+                    <i class="layui-icon" style="font-size: 30px;" id="face">&#xe60c;</i>
+                    <i class="layui-icon" style="font-size: 30px;" id="image">&#xe60d;</i>
+                    <i class="layui-icon" style="font-size: 30px;" id="file">&#xe61d;</i>
+                </div>
+                <div class="msg-box">
+                    <textarea class="msg-area" id="msg-area"></textarea>
+                </div>
+                <div class="send-area">
+                    <span style="margin-left:10px;color:gray">{:lang('快捷键')} Enter</span>
+                    <button class="layui-btn layui-btn-small layui-bg-cyan" style="float:right;margin-right:10px;height: 40px;padding: 0 15px;" id="send">
+                        <i class="layui-icon">&#xe609;</i>{:lang('发送')}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div style="width:28%;height:100%;float:left;margin-left:1%">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">{:lang('访客信息')}</li>
+                    <li>{:lang('常用语')}</li>
+                </ul>
+                <div class="layui-tab-content" style="height: 100px;">
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-form layui-form-pane">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('访客名')}</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="f-user" class="layui-input" readonly>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">IP</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="f-ip" class="layui-input" readonly>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('地区')}</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="f-area" class="layui-input" readonly>
+                                </div>
+                            </div>
+                            {if(1 == $status['change_status'])}
+                            <div class="layui-form-item">
+                                <label class="layui-form-label layui-bg-cyan" style="cursor: pointer;color:white" id="scroll-link">{:lang('转接')}</label>
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="layui-tab-item">
+                        <div class="layui-form">
+                            <table class="layui-table">
+                                <thead>
+                                <tr>
+                                    <th>{:lang('内容')}</th>
+                                    <th>{:lang('操作')}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {foreach name="word" item="vo"}
+                                <tr>
+                                    <td><a href="javascript:;" onclick="sendWord(this)" data-word="{$vo.body}" style="color:#009688">{$vo.body}</a></td>
+                                    <td>
+                                        <a href="javascript:;" onclick="sendWord(this)" data-word="{$vo.body}" style="color:#009688">{:lang('发送')}</a>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 转接提示层 -->
+<div class="layui-form" id="change-box" style="display: none">
+    <div class="layui-form-item" style="margin-top: 20px">
+        <label class="layui-form-label">{:lang('选择分组')}</label>
+        <div class="layui-input-block" style="width: 70%" >
+            <select lay-verify="required" lay-filter="group">
+                <option value=""></option>
+                {if !empty($groups)}
+                {foreach name="groups" item="vo"}
+                <option value="{$vo['id']}">{$vo['name']}</option>
+                {/foreach}
+                {/if}
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+    var uid = "{$uinfo['uid']}";
+    var uname = "{$uinfo['nickname']}";
+    var avatar = "{$uinfo['avatar']|get_file_url}";
+    var group = "{$uinfo['group']}";
+    var partner_id = "{$uinfo['partner_id']}";
+    var service_number = "{$uinfo['service_number']}";
+    var socket_server = "{$socket}";
+</script>
+<!-- 转接提示层 -->
+<script src="/static/plugins/jquery/jquery.min.js?version=1.0.0.0"></script>
+<script src="/static/plugins/layer/layui/layui.js?version=1.0.0.0"></script>
+<script type="text/javascript" src="/static/service/js/functions.js?version=1.0.0.0"></script>
+<script type="text/javascript" src="/static/service/js/whisper.js?v={php} echo time();{/php}"></script>
+</body>
+</html>

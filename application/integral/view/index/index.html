@@ -1,0 +1,200 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<div class="row">
+	<div class="col-md-12">
+		 <div class="box nav-tabs-custom" >
+			<div class="box-body">
+				<div class="tab-pane active">
+					<div class="row">
+						<form action="" method="get">
+							<div class="col-md-2 col-xs-6">
+								<span class="txt">{:lang('商品名称')}：</span>
+								<input type="text" class="form-control" name="name" placeholder="{:lang('请输入商品名称')}" value="{$map.name}">
+							</div>
+
+							<div class="col-md-2 col-xs-6">
+								<span class="txt" style="display:block">&nbsp;</span>
+								<button class="btn btn-primary btn-flat" type="submit">{:lang('搜索')}</button> <button class="btn btn-default btn-flat" type="button" onclick="clearinput()">{:lang('重置')}</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="box nav-tabs-custom" style="border-top: 0;">
+			<ul class="nav nav-tabs">
+		        <li {if condition="count($map)==0"}class="active"{/if}> <a href="{:url('integral/index/index')}">{:lang('全部')}</a> </li>
+				{volist name="tab_list" id="tab"}
+				<li {if condition="isset($map[$tab['field']]) and $map[$tab['field']]==$tab['val']"}class="active"{/if}> <a href="{$tab.url}">{$tab.title}</a> </li>
+				{/volist}
+			</ul>
+			<div class="box-body">
+				<div class="tab-pane active">
+					<div class="pb10"> 
+					 <a title="{:lang('新增商品')}" href="{:url('integral/index/add')}" class="btn btn-sm mr5 btn-primary btn-flat"><i class="fa fa-plus pr5"></i> {:lang('新增商品')}</a>
+					<!--<a title="批量启用" href="{:url('integral/index/setstatus',['type'=>enable])}" icon="fa fa-check-circle pr5" class="btn btn-sm mr5 btn-default btn-flat ajax-post confirm" target-form="ids"><i class="fa fa-check-circle pr5"></i> 批量启用</a>
+					<a title="批量禁用" href="{:url('integral/index/setstatus',['type'=>disable])}" icon="fa fa-ban pr5" class="btn btn-sm mr5 btn-default btn-flat ajax-post confirm" target-form="ids"><i class="fa fa-ban pr5"></i> 批量禁用</a> -->
+					</div>
+					<table class="table table-builder table-hover table-bordered table-striped mb10">
+						<thead>
+						<th class="text-center" style="width: 55px;"> <input class="minimal-red checkboxCtrl" data-group="ids[]" data-toggle="icheck" type="checkbox">
+							</th>
+							<th class="">ID</th>
+							<th class="">{:lang('商品名称')}</th>
+							<th class="">{:lang('所属栏目')}</th>
+							<th class="">{:lang('缩略图')}</th>
+							<th class="">{:lang('积分价')}</th>
+							<th class="">{:lang('库存')}</th>
+							<th class="text-center">{:lang('状态')}</th>
+							<th class="text-center">{:lang('操作')}</th>
+								</thead>
+						<tbody>
+							{volist name="data_list" id="g"}
+							<tr>
+								<td class="text-center" style="width: 55px;"><input class="ids minimal-red" data-toggle="icheck" type="checkbox" name="ids[]" value="{$g.id}"></td>
+								<td class=""> {$g.id} </td>
+								<td class="" style="max-width: 250px !important;" > {$g.name}&nbsp;{eq name="g.is_shipping" value="1"}<span class="badge bg-aqua">{:lang('包邮')}</span>{/eq}</td>
+								<td class=""> <a href="{:url('index',['cid'=>$g['cid']])}">{$g.cate_name}</a> </td>
+								<td class=""> <a data-magnify="gallery{$g.id}" data-caption="{$g.id}" href="{$g.thumb|get_file_url}"><img data-original="{$g.id}" src="{$g.thumb|get_file_url}" alt="" style="width:25px;height:25px;" /></a></td>
+								<td class=""> {$g.integral}</td>
+								<td class=""> {$g.stock}</td>
+								<td class="text-center"> 
+								{if condition="$g['status'] == 1"}
+								<span class="label label-flat label-success"> {:lang('启用')} </span>
+								{else/}
+								<span class="label label-flat label-warning"> {:lang('禁用')} </span>
+								{/if}
+								</td>
+								<td class="text-center">
+									<a title="{:lang('编辑')}" href="{:url('edit',['id'=>$g['id']])}" icon="fa fa-pencil pr5" class="btn btn-xs mr5 btn-default btn-flat" ><i class="fa fa-pencil pr5"></i>{:lang('编辑')}</a>
+									{eq name="$g.status" value="1"}
+										<a title="{:lang('禁用')}" href="{:url('setstatus',['ids'=>$g['id'],'type'=>'disable'])}" icon="fa fa-ban pr5" class="btn btn-xs mr5 btn-default btn-flat ajax-get confirm" ><i class="fa fa-ban pr5"></i>{:lang('禁用')}</a> 
+									{else /}
+										<a title="{:lang('启用')}" href="{:url('setstatus',['ids'=>$g['id'],'type'=>'enable'])}" icon="fa fa-ban pr5" class="btn btn-xs mr5 btn-default btn-flat ajax-get confirm" ><i class="fa fa-ban pr5"></i>{:lang('启用')}</a> 
+									{/eq}
+									<a title="{:lang('删除')}" href="{:url('delete',['ids'=>$g['id']])}" icon="fa fa-times pr5" class="btn btn-xs mr5 btn-default btn-flat ajax-get confirm" ><i class="fa fa-times pr5"></i>{:lang('删除')}</a>
+									</td>
+							</tr>
+							{/volist}
+						</tbody>
+					</table>
+
+
+					<div class="bottom-select-all">
+						<div>
+							{if (!$hide_checkbox)}
+							<th class="text-center" style="width: 70px;">
+								<input class="minimal-red checkboxCtrl" data-group="ids[]" data-toggle="icheck" type="checkbox">
+							</th>
+							{/if}
+							<span>{:lang('全选')}</span>
+						</div>
+						<div>
+
+
+							<select name="" id="" class="select-mian">
+								<option value="-1" >{:lang('请选择')}</option>
+								{volist name="bottom_button_select" id="row"}
+								<option value="/admin.php/{$action}" action="{$row.ident}">{$row.title}</option>
+								{/volist}
+							</select>
+
+						</div>
+						<div>
+							<button class="select-btn" id="select-btn">{:lang('确定')}</button>
+						</div>
+					</div>
+
+
+					<div class="data-table-toolbar">
+						<div class="row">
+							<div class="col-sm-12">
+								{notempty name="pages"}
+								{$pages|raw}
+								{/notempty}
+								{notempty name="data_list"}
+								<div class="pagination-info pull-right">
+									<div>
+										<input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+										<input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $data_list->listRows() : input('param.list_rows');{/php}">
+										/ <strong>{$data_list->lastPage()|raw}</strong> {:lang('页')}，{:lang('共')} <strong>{$data_list->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+									</div>
+								</div>
+								{/notempty} 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+    function clearinput(){
+        $(".marBtm").find('input').val('');
+        // $(".marBtm").find(".select2").val(0).trigger('change');
+    }
+</script>
+<script>
+    document.querySelector('#select-btn').addEventListener('click',() => {
+        let myselect = document.querySelector('.select-mian');
+        let index = myselect.selectedIndex;
+        let val = myselect.options[index].value
+
+        console.log(document.querySelector('.checkboxCtrl').getAttribute('data-group'))
+        var chk_value =[];
+        $('input[name="ids[]"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+
+        if(val == -1 || chk_value.length < 1) {
+            layer.msg("{:lang('请选择操作')}");
+            return
+        }
+        var params={
+            'id':chk_value,
+            'action': $(".select-mian").find("option:selected").attr("action")
+        };
+
+        $.post(val,params,function (res) {
+            console.log(res)
+            if(res.code==1){
+                layer.msg("{:lang('操作成功')}");
+                window.location.reload();
+            }else{
+                layer.msg("{:lang('操作失败')}");
+            }
+        })
+    })
+</script>
+<style>
+	.bottom-select-all {
+		display: flex;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		align-items: center;
+		width: 250px;
+		margin-left: 9px;
+	}
+	.select-mian {
+		width: 120px;
+		height: 28px;
+		border-radius: 2px;
+		outline: none;
+	}
+	.select-btn {
+		height: 30px;
+		line-height: 28px;
+		padding: 0 15px;
+		color: #fff;
+		background: #31b4e1;
+		font-size: 12px;
+		float: left;
+		margin-right: 10px;
+		outline: none;
+		border: none;
+		border-radius: 4px;
+	}
+</style>
+
+{/block}

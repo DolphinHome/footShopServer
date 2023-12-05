@@ -1,0 +1,921 @@
+{extend name="$admin_layout" /}
+{block name="style"}
+{volist name="css_list" id="vo"}
+<link rel="stylesheet" href="{$vo}?v={:config('asset_version')}">
+{/volist}
+{/block}
+{block name="content"}
+<script src="/static/plugins/vue/vue.min.js"></script>
+<script src="/static/plugins/element-ui/element-ui.js"></script>
+<link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+<style>
+	.form-control[disabled],
+	.form-control[readonly],
+	fieldset[disabled] .form-control {
+		background-color: #FFFFFF;
+		opacity: 1;
+	}
+	.col-md-2{height:6rem;}
+</style>
+<div class="row">
+	<div class="col-md-12">
+		{notempty name="page_tips"}
+		<div class="callout callout-info">
+			{$page_tips|raw}
+		</div>
+		{/notempty}
+
+		{notempty name="top_search"}
+		<!-- 独立搜索 -->
+		<div class="box nav-tabs-custom">
+			<div class="box-body">
+				<div class="tab-pane active">
+					<div class="row">
+						<div class="box-header ">
+							<h3 class="box-title">{$page_title|default=""|htmlspecialchars}</h3>
+						</div>
+						<form action="" method="get" class="marBtm" id="data_form">
+							{volist name="top_search" id="search_val"}
+							{if ($search_val['type'] == 'text')}
+							<div class="col-md-2 col-xs-6">
+								<span class="txt">{$search_val.title}：</span>
+								<input type="text" class="form-control" autocomplete="off" name="{$search_val.name}" placeholder="{:lang('请输入')}{$search_val.title}"
+									value="{$search_val.default}">
+							</div>
+							{/if}
+							{if ($search_val['type'] == 'date')}
+							<div class="col-md-2 col-xs-6">
+								<span class="txt">{$search_val.title} ：</span>
+								<input type="date" class="form-control js-date" readonly name="{$search_val.name}"
+									placeholder="{:lang('请选择')}{$search_val.title}" value="{$search_val.default}">
+							</div>
+							{/if}
+							{if ($search_val['type'] == 'daterange')}
+							<div class="col-md-2 col-xs-6">
+								<span class="txt">{$search_val.title} ：</span>
+								<input type="text" class="form-control js-daterangepicker" readonly name="{$search_val.name}"
+									placeholder="{:lang('请选择')}{$search_val.title}" value="{$search_val.default}">
+							</div>
+							{/if}
+							{if ($search_val['type'] == 'select')}
+							<div class="col-md-2 col-xs-6">
+								<span class="txt">{$search_val.title}：</span>
+								<select name="{$search_val.name}" class="selectpicker" data-live-search="true">
+									{volist name="$search_val.param" id="select_val"}
+									<option value="{$key}" {if strval($key)===strval($search_val['default'])}selected{/if}>{$select_val}
+									</option>
+									{/volist}
+								</select>
+							</div>
+							{/if}
+							<!-- 商品分类 -->
+							{if ($search_val['type'] == 'multistage_select')}
+							<div class="col-md-2 col-xs-6" id="com">
+								<span class="txt">{$search_val.title}：</span>
+								<!-- <select name="{$search_val.name}" class="select2">
+									{volist name="$search_val.param" id="select_val"}
+									<option value="{$key}" {if strval($key)===strval($search_val['default'])}selected{/if}>{$select_val}
+									</option>
+									{/volist}
+								</select> -->
+								<input type="hidden" name="cid" v-model='goods_cid'>
+								<el-cascader
+								size='small'
+								:options="goodsOptions"
+								v-model='goods_cid_list'
+								:props="{ checkStrictly: true,
+								value:'id',
+								label:'name',
+								children:'children'}"
+								clearable
+								@change='goodsOptionsChange'
+								ref="cascaderHandle" 
+								:show-all-levels="false" 
+								filterable></el-cascader>
+							</div>
+							{/if}
+							{/volist}
+							<div class="col-md-2 col-xs-6" style="padding-top: 18px;">
+								<button class="btn btn-primary " type="submit" id="p_submit">{:lang('搜索')}</button>
+								<button class="btn btn-default " type="button" onclick="clearinput()">{:lang('重置')}</button>
+								{notempty name='excel_show'}
+								<button class="btn btn-default addCheck"  id="exprot_out">{:lang('导出')}</button>
+								{/notempty}
+							</div>
+
+							<input type="hidden" name="ids">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		{/notempty}
+
+		<div class="box nav-tabs-custom" {notempty name="tab_nav" } style="border-top:0" {/notempty}>
+
+			{notempty name="tab_nav"}
+			<ul class="nav nav-tabs">
+				{volist name="tab_nav['tab_list']" id="tab"}
+				<li {eq name="tab_nav.active" value="$key" }class="active" {/eq}> <a
+						href="{$tab.url}">{$tab.title|htmlspecialchars}</a> </li>
+				{/volist}
+			</ul>
+			{else /}
+			{empty name="top_search"}
+			<div class="box-header with-border">
+				<h3 class="box-title">{$page_title|default=""|htmlspecialchars}</h3>
+			</div>
+			{/empty}
+			{/notempty}
+			<div class="box-body">
+				<div class="tab-pane active">
+					<div class="pb10">
+						<div class="pull-left">
+							{if (!empty($top_button))}
+							{volist name="top_button" id="button"}
+							{$button|raw}
+							{/volist}
+							{/if}
+							{if (!empty($top_statistics))}
+							{volist name="top_statistics" id="button"}
+							<a href="javascript:void(0);" class="{$button.class}"
+								icon="{$button.icon}">{$button.title}:{$button.value}</a>
+							{/volist}
+							{/if}
+
+						</div>
+						{// 搜索框 }
+						{notempty name="search"}
+						<div class="pull-right search-bar">
+							<input type="hidden" name="search_field" id="search-field"
+								value="{php}echo input('param.search_field', '') == '' ? $search['field_all'] : input('param.search_field');{/php}">
+							<div class="input-group">
+								<div class="input-group-btn">
+									<button class="btn btn-default" id="search-btn" data-toggle="dropdown" type="button"
+										aria-expanded="false">
+										{:lang('不限')} <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li>
+											<a tabindex="-1" href="javascript:void(0)" data-field="{$search.field_all}">{:lang('不限')}</a>
+										</li>
+										{volist name="search.fields" id="field"}
+										<li>
+											<a tabindex="-1" href="javascript:void(0)" data-field="{$key}">{$field|htmlspecialchars}</a>
+										</li>
+										{/volist}
+									</ul>
+								</div>
+								<div {$search_button ?='class="input-group"' }>
+									<input type="text" style="border:1px #ccc solid;padding-left:5px;" class="form-control"
+										value="{:input('param.keyword', '')}" data-url="{$search.url}" id="search-input" name="keyword"
+										placeholder="{$search.placeholder}">
+									{$search_button ?= '<span class="input-group-btn"><button class="btn btn-default"
+											id="search-submit-btn" type="button">'.($search_button === true ? "搜索" :
+											$search_button).'</button></span>'}
+								</div>
+
+							</div>
+						</div>
+						{/notempty}
+						{notempty name='back_show'}
+							<button style="float: right" class="btn btn-default" type="button" onClick="javascript:history.back(-1);return false;"> {:lang('返回')} </button>
+						{/notempty}
+						<div class="clearfix"></div>
+					</div>
+					<input type="hidden" id="tablefields" value="{$tablefields}">
+					<input type="hidden" id="tablehide_checkbox" value="{$hide_checkbox}">
+
+					<div class="table-responsive">
+						<table class="table table-builder table-hover table-bordered table-striped mb10">
+							<thead>
+								{if (!$hide_checkbox)}
+								<th class="text-center" style="width: 70px;">
+									<input class="minimal-red checkboxCtrl "  data-group="ids[]" data-toggle="icheck" type="checkbox">
+								</th>
+								{/if}
+								{volist name="fields" id="field"}
+								<th class="{$field['class']|default=''}">{$field.title}
+									{// 排序功能}
+									{php}
+									if (isset($order_columns[$field['name']])): {/php}
+									{php}
+									$_by = input('param.by') == 'asc' ? 'desc' : 'asc';
+									$_param = array_merge(input('get.'), ['by' => $_by, 'order' =>
+									$order_columns[$field['name']]]);
+									if ($_param) {
+									$_get = [];
+									foreach ($_param as $key => $value) {
+									$_get[] = $key. '=' .$value;
+									}
+									$_get = '?'.implode('&', $_get);
+									}
+									{/php}
+									<a href="{$Request.baseUrl}{$_get}" data-toggle="tooltip" data-original-title="{:lang('排序')}">
+										{php}
+										if (input('param.order') == $order_columns[$field['name']]) {
+										echo input('param.by') == 'asc' ? '<i class="fa fa-caret-up"></i>' : '<i
+											class="fa fa-caret-down"></i>';
+										} else {
+										echo '<i class="fa fa-sort text-muted"></i>';
+										}
+										{/php}
+									</a>
+									{php}endif;{/php}
+								</th>
+								{/volist}
+							</thead>
+							<tbody>
+								{volist name="row_list" id="row"}
+								<tr>
+									{if (!$hide_checkbox)}
+									<td class="text-center" style="width: 70px;"><input class="ids minimal-red" data-toggle="icheck"
+											type="checkbox" name="ids[]" value="{$row['checkid']|default=''}"></td>
+									{/if}
+
+									{volist name="fields" id="column"}
+									<td class="{$column['class']|default=''}">
+										{php}if(is_array($column['type']) || $column['type'] == '' || $column['type'] ==
+										'btn' || $column['type'] == 'text'):{/php}
+										{$row[$column['name']]|raw}
+										{php}else:{/php}
+										{$row[$column['name'].'__'.$column['type']]|raw}
+										{php}endif;{/php}
+									</td>
+									{/volist}
+								</tr>
+								{/volist}
+
+								{empty name="row_list"}
+								<tr class="table-empty"> {php}$colspan = count($fields)+1{/php}
+									<td class="text-center empty-info" colspan="{$colspan}"><i class="fa fa-database"></i> {:lang('暂无数据')} <br>
+									</td>
+								</tr>
+								{/empty}
+							</tbody>
+						</table>
+					</div>
+					<div class="data-table-toolbar">
+						<div class="row">
+							<div class="col-sm-12"> {// 分页 }
+								{notempty name="pages"}
+								{$pages|raw}
+								{/notempty}
+								{notempty name="page_info"}
+								<div class="pagination-info pull-right">
+									<div>
+										<input type="text" class="form-control input-sm go-page" id="go-page" name="page"
+											value="{:input('param.page', '1')}">
+										<input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows"
+											value="{php}echo input('param.list_rows', '') == '' ? $page_info->listRows() : input('param.list_rows');{/php}">
+										/ <strong>{$page_info->lastPage()|raw}</strong>  {:lang('页')}， {:lang('共')}
+										<strong>{$page_info->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+									</div>
+								</div>
+								{/notempty}
+								{notempty name="bottom_button_select"}
+								<div class="bottom-select-all">
+									<div>
+										{if (!$hide_checkbox)}
+										<th class="text-center" style="width: 70px;">
+											<input class="minimal-red checkboxCtrl" data-group="ids[]" data-toggle="icheck" type="checkbox">
+										</th>
+										{/if}
+										<span>{:lang('全选')}</span>
+									</div>
+									<div>
+
+
+										<select name="" id="" class="select-mian">
+											<option value="-1">{:lang('请选择')}</option>
+											{volist name="bottom_button_select" id="row"}
+											<option value="/admin.php{$action}" action="{$row.ident}">{$row.title}
+											</option>
+											{/volist}
+										</select>
+
+									</div>
+									<div>
+										<button class="select-btn" id="select-btn">{:lang('确定')}</button>
+									</div>
+								</div>
+								{/notempty}
+								<style>
+									.bottom-select-all {
+										display: flex;
+										flex-wrap: nowrap;
+										justify-content: space-between;
+										align-items: center;
+										width: 250px;
+										margin-left: 9px;
+									}
+
+									.select-mian {
+										width: 120px;
+										height: 28px;
+										border-radius: 2px;
+										outline: none;
+									}
+
+									.select-btn {
+										height: 30px;
+										line-height: 28px;
+										padding: 0 15px;
+										color: #fff;
+										background: #409EFF;
+										font-size: 12px;
+										float: left;
+										margin-right: 10px;
+										outline: none;
+										border: none;
+										border-radius: 4px;
+									}
+								</style>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="script"}
+{volist name="js_list" id="vo"}
+<script src="{$vo}?v={:config('asset_version')}"></script>
+{/volist}
+<script>
+
+	var quickadd_href = "";
+	$('.addCheck').click(function (e) {
+		// console.log(e)
+		var chk_value = [];
+		$('input[name="ids[]"]:checked').each(function () {
+			chk_value.push($(this).val());
+		});
+		$('input[name="ids"]').val(chk_value.join(','))
+	});
+
+	$('.layeradd').click(function (e) {
+		// console.log(e)
+		var chk_value = [];
+		$('input[name="ids[]"]:checked').each(function () {
+			chk_value.push($(this).val());
+		});
+		e.preventDefault()
+		quickadd_href = $(this).attr('href');
+		quickadd_href = quickadd_href + '?layer=1&ids=' + chk_value;
+		opensidebar(quickadd_href)
+		console.log(chk_value)
+	});
+
+	//批量发货单独使用
+	$('.plfh').click(function (e) {
+		var chk_value = [];
+		$('input[name="ids[]"]:checked').each(function () {
+			chk_value.push($(this).val());
+		});
+		if(chk_value.length == 0){
+			layer.msg("{:lang('请选择操作数据')}");
+			return false;
+		}
+		e.preventDefault()
+		quickadd_href = $(this).attr('href');
+		quickadd_href = quickadd_href + '?layer=1&ids=' + chk_value;
+		opensidebar(quickadd_href)
+		console.log(chk_value)
+	});
+
+	$('.layeredit').click(function (e) {
+		e.preventDefault()
+		quickadd_href = $(this).attr('href');
+		quickadd_href = quickadd_href + '?layer=1';
+		opensidebar(quickadd_href)
+	});
+
+	function opensidebar(url) {
+		console.log(url);
+		layer.open({
+			type: 2,
+			title: false,
+			closeBtn: false,
+			shadeClose: true,
+			scrollbar: true,
+			offset: 'r',
+			anim: '7',
+			area: ['50%', '100vh'],
+			content: url
+		})
+	}
+
+	$(".quickadd").click(function (e) {
+		e.preventDefault()
+		quickadd_href = $(this).attr('href');
+		// var td = $('.table tbody tr:eq(0)').html();
+		// var tr = '<tr>'+td+'</tr>'
+		// $('.table tbody').prepend(tr);
+		// var ttd = $('.table tbody tr:eq(0)').children()[2];
+
+		var tablefields = $('#tablefields').val();
+		var tablehide_checkbox = $('#tablehide_checkbox').val();
+		console.log(tablefields)
+		console.log(tablehide_checkbox)
+
+		//字符串转数组
+		var fields = JSON.parse(tablefields)
+		var html = '<tr>';
+		if (!tablehide_checkbox) {
+			html += '<td></td>';
+		}
+
+		for (var i = 0; i < fields.length; i++) {
+			for (var j = 0; j < fields[i].length; j++) {
+
+			}
+			if (fields[i][0] == 'id') {
+				html += '<td></td>';
+			}
+
+			else if (fields[i][0] == 'right_button') {
+				html += '<td></td>';
+			}
+
+			else {
+				if (fields[i][2] == 'text' || fields[i][2] == 'text.edit') {
+					html += '<td><input type="text" name="" class="quickaddtext form-control input-sm" data-id="" data-name="' + fields[i][0] + '"  onblur="quickblur(this)"></td>';
+				}
+			}
+		}
+		html += '</tr>';
+		$('.table tbody').prepend(html);
+
+	})
+
+	function quickblur(obj) {
+		var txt = $(obj).val();
+		var field = $(obj).attr('data-name');
+		if (txt.length == 0) {
+			return false;
+		}
+		var params = {};
+		params[field] = txt;
+		$.post(quickadd_href, params, function (data, status) {
+			console.log(data)
+			console.log(status)
+			if (data.code == 1) {
+				let newA = document.createElement('a')
+				newA.setAttribute('href', 'javascript:void(0);')
+				newA.setAttribute('class', 'text-edit editable editable-click')
+				newA.setAttribute('data-placeholder', '请输入广告位名称')
+				newA.setAttribute('data-table', 'c82f4b46')
+				newA.setAttribute('data-type', 'text')
+				newA.setAttribute('data-pk', '6')//使用添加成功的返回值
+				newA.setAttribute('data-name', field)
+				newA.innerText = txt
+				console.log(newA)
+				obj.parentElement.replaceChild(newA, obj)
+			}
+			else {
+				layer.msg(data.msg);
+			}
+		});
+
+	}
+
+	function clearinput() {
+		$(".marBtm").find('input').val('');
+		$(".marBtm").find(".select2").val('all').trigger('change');
+		window.location.href = location.origin + location.pathname
+	}
+
+//	$('#exprot_out').click(function () {
+//		let is_import = document.createElement('input')
+//		is_import.setAttribute('type', 'hidden')
+//		is_import.setAttribute('name', 'is_import')
+//		is_import.setAttribute('value', '1')
+//		$("#data_form").append(is_import)
+//		$("#data_form").submit();
+//		$('input[name="is_import"]').remove();
+//		return false;
+//	})
+
+	$('#exprot_out').click(function () {
+		let is_import = document.createElement('input')
+		is_import.setAttribute('type', 'hidden')
+		is_import.setAttribute('name', 'is_import')
+		is_import.setAttribute('value', '1')
+		$("#data_form").append(is_import)
+		$("#data_form").submit();
+
+	})
+
+	$('#p_submit').click(function () {
+		$("input[name=is_import]").remove();
+		$("input[name=page]").remove();
+		$("#data_form").submit();
+	})
+
+	$('#select-btn').click(function () {
+		let myselect = document.querySelector('.select-mian');
+		let index = myselect.selectedIndex;
+		let val = myselect.options[index].value
+
+		console.log(document.querySelector('.checkboxCtrl').getAttribute('data-group'))
+		var chk_value = [];
+		$('input[name="ids[]"]:checked').each(function () {
+			chk_value.push($(this).val());
+		});
+
+		if (val == -1 || chk_value.length < 1) {
+			layer.msg("{:lang('请选择操作')}");
+			return
+		}
+		var params = {
+			'ids': chk_value,
+			'action': $(".select-mian").find("option:selected").attr("action")
+		};
+
+		$.post(val, params, function (res) {
+			console.log(res)
+			if (res.code == 1) {
+				layer.msg("{:lang('操作成功')}");
+				window.location.reload();
+			} else {
+				layer.msg("{:lang('操作失败')}");
+			}
+		})
+	})
+
+	// 新增页面的选择链接
+	function selectLink(callBack) {
+		layer.open({
+			title: "{:lang('新增广告')}",
+			type: 2,
+			area: ['900px', '700px'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{:url('/operation/ads/ad_layer')}",
+			end: () => {
+				let linkSrt = localStorage.getItem("myLink")
+				callBack(linkSrt)
+				localStorage.removeItem("myLink")
+			}
+		});
+	}
+	// 新增页面的图片裁切
+	function addImgCov(data, callBack) {
+		localStorage.setItem('picSize', JSON.stringify(data.picSize))
+		let picData = '';
+		layer.open({
+			title: "{:lang('图片裁切')}",
+			type: 2,
+			area: ['950px', '600px'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{:url('/operation/ads/cut')}",
+			end: () => {
+				picData = localStorage.getItem('picBase64');
+				localStorage.removeItem('picBase64')
+				$.post('/admin.php/operation/ads/base64_upload', { 'img_base64': picData })
+					.then(res => {
+						if (res.code == 1) {
+							data.picNum++;
+							if (data.slideVal == '') {
+								data.slideVal += `${res.data.id}`;
+							} else {
+								data.slideVal += `,${res.data.id}`;
+							}
+
+							data.Html.length = 0;
+							data.Html.push(`<div id="WU_FILE_${data.picNum}" style="width:214px;" class="file-item js-gallery thumbnail">
+									<a data-magnify="gallery" id="iview" href="${res.data.path}">
+										<img src="${picData}" data-original="${res.data.path}"/>
+									</a>
+									<div class="info">xxxx</div>
+									<i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${res.data.id}"></i>
+									<i class="fa fa-fw fa-arrows move-picture"></i>
+									<div class="file-state img-state">
+										<div class="bg-success">上传成功</div>
+									</div>
+								</div>`);
+
+							let callData = {
+								Html: data.Html,
+								picNum: data.picNum,
+								slideVal: data.slideVal,
+								picData
+							}
+							callBack(callData);
+						}
+					})
+			}
+		});
+	}
+	// 编辑页面的图片裁切
+	function editImgCov(data, callBack) {
+		localStorage.setItem('picSize', JSON.stringify(data.picSize))
+		let picData = '';
+		layer.open({
+			title: "{:lang('图片裁切')}",
+			type: 2,
+			area: ['950px', '600px'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{:url('/operation/ads/cut')}",
+			end: () => {
+				picData = localStorage.getItem('picBase64');
+				localStorage.removeItem('picBase64')
+				$.post('/admin.php/operation/ads/base64_upload', { 'img_base64': picData })
+					.then(res => {
+						if (res.code == 1) {
+							data.picNum++;
+							if (data.slideVal == '') {
+								data.slideVal += `${res.data.id}`;
+							} else {
+								data.slideVal = `${res.data.id}`;
+							}
+
+							// Html.push();
+
+							let tempDom = `<div id="WU_FILE_${data.picNum}" style="width:214px;" class="file-item js-gallery thumbnail">
+								<a data-magnify="gallery" id="iview" href="${res.data.path}">
+									<img src="${picData}" data-original="${res.data.path}"/>
+								</a>
+								<div class="info">xxxx</div>
+								<i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${res.data.id}"></i>
+								<div class="file-state img-state">
+									<div class="bg-success">上传成功</div>
+								</div>
+							</div>`;
+
+							let callData = {
+								picNum: data.picNum,
+								slideVal: data.slideVal,
+								picData,
+								tempDom
+							}
+							callBack(callData);
+
+							// $("#file_list_images").html(Html.join(''))
+
+						}
+					})
+			}
+		})
+	}
+
+
+	// 文章列表页面新增功能的图片裁切 
+	function essayAddImgCov(data, callBack) {
+		localStorage.setItem('picSize', JSON.stringify(data.picSize))
+		let picData = '';
+		layer.open({
+			title: "{:lang('图片裁切')}",
+			type: 2,
+			area: ['950px', '600px'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{:url('/operation/ads/cut')}",
+			end: () => {
+				picData = localStorage.getItem('picBase64');
+				localStorage.removeItem('picBase64')
+				$.post('/admin.php/operation/ads/base64_upload', { 'img_base64': picData })
+					.then(res => {
+						if (res.code == 1) {
+							data.picNum++;
+							if (data.slideVal == '') {
+								data.slideVal += `${res.data.id}`;
+							} else {
+								data.slideVal += `,${res.data.id}`;
+							}
+
+							data.Html = $(`<div id="WU_FILE_${data.picNum}" style="width:107px;" class="file-item js-gallery thumbnail">
+									<a data-magnify="gallery" id="iview" href="${res.data.path}">
+										<img src="${picData}" data-original="${res.data.path}"/>
+									</a>
+									<div class="info">xxxx</div>
+									<i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${res.data.id}"></i>
+									
+									<div class="file-state img-state">
+										<div class="bg-success">上传成功</div>
+									</div>
+								</div>`);
+
+							let callData = {
+								Html: data.Html,
+								picNum: data.picNum,
+								slideVal: data.slideVal,
+								picData
+							}
+							callBack(callData);
+						}
+					})
+			}
+		});
+	}
+	// 文章列表页面编辑功能的图片裁切 
+	function essayEditImgCov(data, callBack) {
+		localStorage.setItem('picSize', JSON.stringify(data.picSize))
+		let picData = '';
+		layer.open({
+			title: "{:lang('图片裁切')}",
+			type: 2,
+			area: ['950px', '600px'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{:url('/operation/ads/cut')}",
+			end: () => {
+				picData = localStorage.getItem('picBase64');
+				localStorage.removeItem('picBase64')
+				$.post('/admin.php/operation/ads/base64_upload', { 'img_base64': picData })
+					.then(res => {
+						if (res.code == 1) {
+							data.list_picNum++;
+							if (data.list_slideVal == '') {
+								data.list_slideVal += `${res.data.id}`;
+							} else {
+								data.list_slideVal += `,${res.data.id}`;
+							}
+							let tempDom = $(`<div id="WU_FILE_${data.list_picNum}" style="width:107px;" class="file-item js-gallery thumbnail">
+								<a data-magnify="gallery" id="iview" href="${res.data.path}">
+									<img src="${picData}" data-original="${res.data.path}"/>
+								</a>
+								<div class="info">xxxx</div>
+								<i class="fa fa-times-circle remove-picture" onclick="removePic(this)" data-id="${res.data.id}"></i>
+								<i class="fa fa-fw fa-arrows move-picture"></i>
+								<div class="file-state img-state">
+									<div class="bg-success">上传成功</div>
+								</div>
+							</div>`);
+
+							let callData = {
+								tempDom,
+								list_picNum: data.list_picNum,
+								list_slideVal: data.list_slideVal,
+								picData
+							}
+							callBack(callData);
+						}
+					})
+			}
+		});
+	}
+
+
+	// 导航管理页面的新增选择链接 
+	function navAddSelectLink(callBack) {
+		let index = layer.open({
+			title: "{:lang('新增广告')}",
+			type: 2,
+			area: ['900px', '700px'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{:url('/operation/ads/ad_layer')}",
+			end: () => {
+				let linkSrt = localStorage.getItem("myLink")
+				callBack(linkSrt)
+				localStorage.removeItem("myLink")
+			}
+		});
+	}
+	// 导航管理页面的编辑选择链接 
+	function navEditSelectLink(callBack) {
+		let index = layer.open({
+			title: "{:lang('新增广告')}",
+			type: 2,
+			area: ['900px', '700px'],
+			fixed: false, //不固定
+			maxmin: true,
+			content: "{:url('/operation/ads/ad_layer')}",
+			end: () => {
+				let linkSrt = localStorage.getItem("myLink")
+				callBack(linkSrt)
+				localStorage.removeItem("myLink")
+			}
+		});
+	}
+
+	
+    new Vue({
+      el: '#com',
+      data: function() {
+        return {
+			goods_cid_list:[], // 商品分类id的多级信息
+			goods_cid:'',  //商品分类id
+            goodsOptions:[], // 商品分类
+            timer:null, // 定时器
+        }
+    },
+    mounted() {
+        this.getGoodsOptions()
+		  let cid =this.getQueryVariable('cid')
+		  console.log(cid)
+		  if(cid){
+			this.goods_cid =cid
+          }
+          	  // 点击文字即选中
+		this.timer =  setInterval(function() {
+　　　　　　document.querySelectorAll(".el-cascader-node__label").forEach(el => {
+　　　　　　　　el.onclick = function() {
+　　　　　　　　　　if (this.previousElementSibling) this.previousElementSibling.click();
+　　　　　　　　};
+　　　　　　});
+　　　　}, 1000);
+    },
+    methods: {
+        destroyed(){
+		clearInterval(this.timer)
+	  },
+		  	// 处理cid在三级联动的位置,
+			  getCidList(val,id){
+						let cid_list =[]
+						val.forEach((item,index)=>{
+							if(item.id ==id){
+								cid_list = [item.id]
+								return false
+							}else{
+								if(item.children){
+									let newCid_list =[item.id]
+									let list = nodefun(item.children,id,newCid_list)
+									if(list) {
+										cid_list =list
+									}
+								}
+							}
+						})
+						// 递归函数
+						function nodefun(newVal,newId,newCid_list){
+							let flag =false
+							newVal.forEach(j=>{
+								// console.log(j)
+								if(j.id == newId){
+									newCid_list.push(j.id)
+									flag =true
+								}else{
+									if(j.children){
+										let	cid_list = JSON.parse(JSON.stringify(newCid_list))
+										cid_list.push(j.id)
+										let list =  nodefun(j.children,newId,cid_list)
+										if(list){
+											newCid_list =list 
+											flag =true
+										}
+									}
+
+								}
+							})
+							if(flag){
+								return	newCid_list						
+							}
+						}
+						return	cid_list
+			},
+		 getQueryVariable(variable){
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i=0;i<vars.length;i++) {
+					var pair = vars[i].split("=");
+					if(pair[0] == variable){return pair[1];}
+				}
+				return(false);
+			},
+
+		  // 获取分类接口数据
+		getGoodsOptions(){
+			let that =this
+			$.get("/admin.php/goods/category/getcategorylist",function(data,status){
+			   if(data.code == 1){
+				console.log('获取商品分类',data.data)
+				that.goodsOptions =data.data
+				// 递归获取cid的位置
+				if(that.goods_cid){
+					that.goods_cid_list = 	that.getCidList(that.goodsOptions,that.goods_cid)
+				}
+			   }else{
+				  that.$message({
+						message: data.msg,
+						type: 'warning'
+					});
+			   }
+			
+			})
+		},
+		// 商品分类选择改变时
+		goodsOptionsChange(e){
+			if(this.goods_cid_list.length>0){
+				this.goods_cid = this.goods_cid_list[this.goods_cid_list.length-1]
+			}else{
+				this.goods_cid =''
+			}
+			// this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+			// 监听是否为最后一级，如果为最后一级，面板收起
+			var children = this.$refs.cascaderHandle.getCheckedNodes();
+          if(children[0].children.length < 1){   //判断有没有下级
+            this.$refs.cascaderHandle.dropDownVisible = false; //监听值发生变化就关闭它
+		  }
+			console.log(e,this.goods_cid)
+        },
+    }
+})
+</script>
+{/block}

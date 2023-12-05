@@ -1,0 +1,270 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- main css -->
+    <link rel="stylesheet" href="/static/goods/css/main.css">
+    <!-- layui css -->
+    <link rel="stylesheet" href="/static/admin/js/layui/css/layui.css">
+    <!-- jquery -->
+    <script src="/static/admin/js/crm/jquery.min-2.1.4.js"></script>
+    <!-- layui js -->
+    <script src="/static/admin/js/layui/layui.js"></script>
+    <!-- 引入echarts -->
+    <script src="/static/plugins/echarts/echarts.min.js"></script>
+</head>
+
+<body>
+    <div class="shopping">
+        <!-- <div class="shopping-title">
+            <span>经营总览</span>
+        </div> -->
+        <!-- 交易数据 -->
+        <div class="shopping-item-title">
+            <div class="title-header">
+                <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                    <div class="title-p"><span>{:lang('交易数据')}</span></div>
+                </div>
+                <div class="title-right">
+                    <div class="date-picker-group-wrap">
+                        <div class="date-picker-item  picker_item_goods_pre">
+                            <div class="date-picker-item-inner">{:lang('今天')}</div>
+                        </div>
+                        <div class="date-picker-item picker_item_goods_pre">
+                            <div class="date-picker-item-inner">{:lang('本周')}</div>
+                        </div>
+                        <div class="date-picker-item picker_item_goods_pre">
+                            <div class="date-picker-item-inner">{:lang('本月')}</div>
+                        </div>
+                        <div class="date-picker-item picker_item_goods_pre">
+                            <div class="date-picker-item-inner">{:lang('本季度')}</div>
+                        </div>
+                        <div class="date-picker-item picker_item_goods_pre active">
+                            <div class="date-picker-item-inner">{:lang('本年')}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid_mmsGridBox__36z-d payPreData">
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('支付金额')}（{:lang('元')}）</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                </div>
+                <!-- <div class="gridItemRadio"><span>{:lang('昨天')}</span><span>-</span><span></span></div> -->
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('支付买家数')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                </div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('支付订单数')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                </div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('支付转化率')}</span></div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0.00</span><span></span></div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('支付客单价')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">-</span><span></span>
+                </div>
+            </div>
+        </div>
+        <!-- {:lang('结束')} -->
+        <div class="shopping-item-title">
+            <div class="title-header">
+                <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                    <div class="title-p"><span>{:lang('商品数据')}</span></div>
+                </div>
+                <div class="title-right">
+                    <div class="date-picker-group-wrap">
+                        <div class="date-picker-item  picker_item_goods_D">
+                            <div class="date-picker-item-inner">{:lang('今天')}</div>
+                        </div>
+                        <div class="date-picker-item picker_item_goods_D">
+                            <div class="date-picker-item-inner">{:lang('本周')}</div>
+                        </div>
+                        <div class="date-picker-item picker_item_goods_D">
+                            <div class="date-picker-item-inner">{:lang('本月')}</div>
+                        </div>
+                        <div class="date-picker-item picker_item_goods_D">
+                            <div class="date-picker-item-inner">{:lang('本季度')}</div>
+                        </div>
+                        <div class="date-picker-item picker_item_goods_D active">
+                            <div class="date-picker-item-inner">{:lang('本年')}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid_mmsGridBox__36z-d payGoodsData">
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('商品访客数')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                </div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('商品浏览量')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                </div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232,232,232); padding-bottom: 3px;">{:lang('商品成交件数')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                </div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('被访问商品数')}</span></div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0.00</span><span></span></div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('商品收藏总数')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">-</span><span></span>
+                </div>
+            </div>
+        </div>
+        <!-- {:lang('结束')} -->
+        <!-- <div class="shopping-item-title">
+            <div class="title-header">
+                <div class="border-left-blue"><i class="i" style="background: rgb(17, 153, 238);"></i>
+                    <div class="title-p"><span>{:lang('客服数据')}</span></div>
+                    <div class="title-date">（{:lang('统计时间')}：2020-11-11 15:46:10）</div>
+                </div>
+                <div class="title-right"></div>
+            </div>
+        </div>
+        <div class="grid_mmsGridBox__36z-d">
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">3{:lang('分钟人工回复率')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                </div>
+                <div class="gridItemRadio"><span>{:lang('昨天')}</span><span>-</span><span></span></div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('平均人工相应时长')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                </div>
+                <div class="gridItemRadio"><span>{:lang('昨天')}</span><span>-</span><span></span></div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('询单转化率')}</span>
+                </div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0</span><span></span>
+                </div>
+                <div class="gridItemRadio"><span>{:lang('昨天')}</span><span>-</span><span></span></div>
+            </div>
+            <div class="grgridItem">
+                <div><span class="gridItemAlias"
+                        style="border-bottom: 1px dashed rgb(232, 232, 232); padding-bottom: 3px;">{:lang('客服销售额')}</span></div>
+                <div class="gridItemVaule"><span class="gridItemVauleText">0.00</span><span></span></div>
+                <div class="gridItemRadio"><span>{:lang('昨天')}</span><span>-</span><span></span></div>
+            </div>
+        </div> -->
+        <!-- 结束 -->
+    </div>
+    <input type='hidden' id="payData" value="{$payData}">
+    <input type='hidden' id="goodsData" value="{$goodsData}">
+</body>
+<script>
+
+
+    //   实时数据切换日期接口
+    var goodsPreArr = ['day', 'week', 'month', 'quarter', 'year'];
+    function getPreDataFun(times) {
+        $.ajax({
+            url: "getpaydata",
+            type: "post",
+            data: { times },
+            success: function (res) {
+                // toast提醒
+                //     Stars.notify('哈哈哈哈','danger');
+                Stars.loading('hide');
+                res = JSON.parse(res)
+                getPreData(res)
+            }
+        });
+    }
+    // 数据渲染
+    let payData = JSON.parse($('#payData').val())
+    getPreData(payData)
+    function getPreData(res) {
+        console.log(res)
+        $('.payPreData .gridItemVauleText').eq(0).html(res.result.payAmount)
+        $('.payPreData .gridItemVauleText').eq(1).html(res.result.payUserNum)
+        $('.payPreData .gridItemVauleText').eq(2).html(res.result.payOrder)
+        $('.payPreData .gridItemVauleText').eq(3).html(res.result.payPercent + '%')
+        $('.payPreData .gridItemVauleText').eq(4).html(res.result.payCustomPrice)
+    }
+    $('.picker_item_goods_pre').click(function () {
+        $(this).addClass('active').siblings().removeClass('active')
+        var times = goodsPreArr[$(this).index()]
+        Stars.loading();
+        getPreDataFun(times)
+    })
+
+    function getGoodsDataFun(times) {
+        $.ajax({
+            url: "goodsData",
+            type: "post",
+            data: { times },
+            success: function (res) {
+                // toast提醒
+                //     Stars.notify('哈哈哈哈','danger');
+                Stars.loading('hide');
+                res = JSON.parse(res)
+                getGoodsData(res)
+            }
+        });
+    }
+    // 数据渲染
+    let goodsData = JSON.parse($('#goodsData').val())
+    getGoodsData(goodsData)
+    function getGoodsData(res) {
+        console.log(res)
+        $('.payGoodsData .gridItemVauleText').eq(0).html(res.result.goodsView)
+        $('.payGoodsData .gridItemVauleText').eq(1).html(res.result.goodsBrowse)
+        $('.payGoodsData .gridItemVauleText').eq(2).html(res.result.goodsBargainNum)
+        $('.payGoodsData .gridItemVauleText').eq(3).html(res.result.goodsSelfView)
+        $('.payGoodsData .gridItemVauleText').eq(4).html(res.result.goodsCollectNum)
+    }
+    $('.picker_item_goods_D').click(function () {
+        $(this).addClass('active').siblings().removeClass('active')
+        var times = goodsPreArr[$(this).index()]
+        Stars.loading();
+        getGoodsDataFun(times)
+    })
+</script>
+
+</html>
+{/block}

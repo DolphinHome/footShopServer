@@ -1,0 +1,262 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<script src="__PLUG__/layer/laydate/laydate.js?v={:config('asset_version')}"></script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom">
+		    <ul class="nav nav-tabs">
+				{volist name="tab_list" id="tab"}
+				<li {if condition="$status === $tab['value']"}class="active"{/if}> <a href="{$tab.url}">{$tab.title}</a> </li>
+				{/volist}
+		    </ul>
+		    <div class="box-body">
+				<div class="tab-pane active">
+					<div class="row">
+						<form action="" method="get" class="marBtm">
+								<div class="col-md-2 col-xs-6">
+										<span class="txt">{:lang('服务号')}：</span>
+										<input type="text" class="form-control" name="server_no" placeholder="{:lang('请输入服务号')}" value="{$Think.get.server_no}">
+								</div>
+                                <div class="col-md-2 col-xs-6">
+                                    <span class="txt">{:lang('订单号')}：</span>
+                                    <input type="text" class="form-control" name="order_sn" placeholder="{:lang('请输入订单号')}" value="{$Think.get.order_sn}">
+                                </div>
+								<div class="col-md-3 col-xs-6">
+									<span class="txt">{:lang('退货时间')} ：</span>
+									<input type="date" class="form-control js-date" readonly name="refund_time" placeholder="{:lang('请输入日期')}" value="{$Think.get.refund_time}">
+								</div>
+								
+							<div class="col-md-2 col-xs-6" style="padding-top: 18px;">
+								<button class="btn btn-primary btn-flat" type="submit">{:lang('搜索')}</button> <button class="btn btn-default btn-flat" type="button" onclick="clearinput()">{:lang('重置')}</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+            <div class="box-body">
+                <div class="tab-pane active">
+                    <div class="table-responsive">
+                    <table class="table table-builder table-hover table-bordered table-striped mb10">
+                        <thead>
+                        <th class="text-center">{:lang('服务号')}</th>
+                        <th class="text-center">{:lang('订单号')}</th>
+                        <th class="text-center">{:lang('售后类型')}</th>
+                        <th class="text-center">{:lang('下单人')}</th>
+                        <th class="text-center">{:lang('商品')}</th>
+                        <th class="text-center">{:lang('规格')}</th>
+                        <th class="text-center">{:lang('数量')}</th>
+                        <th class="text-center">{:lang('商品金额')}</th>
+                        <th class="text-center">{:lang('优惠金额')}</th>
+                        <th class="text-center">{:lang('退款金额')}</th>
+                        <th class="text-center">{:lang('支付类型')}</th>
+						<th class="text-center">{:lang('退货原因')}</th>
+						<th class="text-center">{:lang('货物状态')}</th>
+                        <th class="text-center">{:lang('退货状态')}</th>
+                        <th class="text-center">{:lang('退货时间')}</th>
+                        <th class="text-center">{:lang('操作')}</th>
+                        </thead>
+                        <tbody>
+                        {volist name="list" id="o"}
+                        <tr>
+                            <td class="text-center"> {$o.server_no} 
+                            </td>
+                            <td class="text-center"> <a href="{:url('goods/order/detail',['order_sn'=>$o['order_sn']])}">{$o.order_sn}</a> 
+                            </td>
+                            <td class="text-center"><span class="label label-flat label-info">{$o.refund_type_name}</span>
+                            </td>
+                            <td class="text-center"> {$o.user_id|get_nickname}
+                            </td>
+                            <td class="text-left">
+                                <span class="text-tip" id="{$o.server_no}" onmouseover="texttips('{$o.goods_name}','{$o.server_no}')" data-name="goods_name">{:mb_substr($o.goods_name,0,5,'UTF-8')}</span>
+                            </td>
+                            <td class="text-center"> {$o.sku_name}
+                            </td>
+                            <td class="text-center"> {$o.num}
+                            </td>
+                            <td class="text-center"> {$o.goods_money}
+                            </td>
+                            <td class="text-center"> {$o.coupon_money}
+                            </td>
+                            <td class="text-center"> {$o.refund_money}
+                            </td>
+                            <td class="text-center" >
+                                {if condition="$o['pay_status'] == 1"}
+                                 {if condition="$o['pay_type'] == 'alipay'"}
+                                 		<span class="label label-flat label-nocolor" style="color:rgb(0, 0, 0);font-weight: 300 !important;font-size: 13px;"> {:lang('支付宝')} </span>
+                                 {elseif condition="$o['pay_type'] == 'wxpay'"}	
+                                      	<span class="label label-flat label-nocolor" style="color:rgb(0, 0, 0);font-weight: 300 !important;font-size: 13px;"> {:lang('微信')} </span>
+							     {elseif condition="$o['pay_type'] == 'minipay'"}	
+                                      	<span class="label label-flat label-nocolor" style="color:rgb(0, 0, 0);font-weight: 300 !important;font-size: 13px;"> {:lang('小程序')} </span>
+                                {elseif condition="$o['pay_type'] == 'minipay_mix'"}
+                                        <span class="label label-flat label-nocolor" style="color:rgb(0, 0, 0);font-weight: 300 !important;font-size: 13px;"> {:lang('小程序')} </span>
+                                {elseif condition="$o['pay_type'] == 'balance'"}
+                                      	<span class="label label-flat label-nocolor" style="color:rgb(0, 0, 0);font-weight: 300 !important;font-size: 13px;"> {:lang('余额')} </span>
+                                 {/if}
+                                {/if}
+                            </td>
+							<td class="text-center"> {$o.refund_reason}</td>
+							<td class="text-center"> {$o.refund_type_title}</td>
+                            <td class="text-center"> 
+                            {if condition="$o.status eq 0"}
+                            		{:lang('处理中')}
+                            {elseif condition="$o.status neq 0"/} 
+                                    {:lang('已处理')} 【
+															    {if condition="$o.status eq 1"}
+																<font color="#00FF00">{:lang('同意退')}</font>
+																{elseif condition="$o.status eq -1"/}
+																<font color="#FF0000">{:lang('驳回退')}</font>
+																{elseif condition="$o.status eq 2"/}
+																<font color="#0000FF">{:lang('已退回')}</font>
+																{elseif condition="$o.status eq 3"/}
+																<font color="#666666">{:lang('已打款')}</font>
+																{/if}
+																】
+							 {elseif condition="$o.status neq -2"/} 
+							         {:lang('已取消')}
+                            {/if}
+                            </td>
+                            <td class="text-center">{$o.create_time|date="Y-m-d H:i:s"}</td>
+                            <td class="text-center">
+                                <a ident="disable" title="{:lang('申请原因')}" href="{:url('refund_detail',['rfid'=>$o.id])}" icon="fa fa-ban pr5" class="btn btn-xs mr5 btn-default btn-flat"><i class="fa fa-ban pr5"></i>{:lang('申请原因')}</a>
+								{if condition="$o.status eq 0"}
+								  {if condition="$o.refund_type eq 1"}
+								   <a ident="disable" title="{:lang('退款通过')}" href="{:url('refund_sure',['rfid'=>$o.id])}" icon="fa fa-edit pr5" class="btn btn-xs mr5 btn-default btn-flat confirm ajax-get"><i class="fa fa-edit pr5"></i>{:lang('同意退款')}</a>
+
+                                   <a ident="add" title="lang('拒绝退款')" href="{:url('refund_del',['rfid'=>$o.id,'layer'=>1])}" icon="fa fa-check pr5" class="btn btn-xs mr5 btn-default layeradd"><i class="fa fa-check pr5"></i>拒绝退款</a>
+                                {elseif condition="$o.refund_type eq 3" /}
+                                    <a ident="disable" title="{:lang('换货通过')}" href="{:url('refund_sure',['rfid'=>$o.id])}" icon="fa fa-edit pr5" class="btn btn-xs mr5 btn-default btn-flat confirm ajax-get"><i class="fa fa-edit pr5"></i>{:lang('同意换货')}</a>
+                                    <a ident="add" title="{:lang('换货驳回')}" href="{:url('refund_del',['rfid'=>$o.id, 'layer'=>1])}" icon="fa fa-edit pr5" class="btn btn-xs mr5 btn-default btn-flat layeradd"><i class="fa fa-edit pr5"></i>{:lang('驳回换货申请')}</a>
+
+                                {else/}
+                                   <a ident="disable" title="{:lang('退货通过')}" href="{:url('refund_sure',['rfid'=>$o.id])}" icon="fa fa-edit pr5" class="btn btn-xs mr5 btn-default btn-flat confirm ajax-get"><i class="fa fa-edit pr5"></i>{:lang('同意退货')}</a>
+                                   <a ident="add" title="{:lang('退货驳回')}" href="{:url('refund_del',['rfid'=>$o.id, 'layer'=>1])}" icon="fa fa-edit pr5" class="btn btn-xs mr5 btn-default btn-flat layeradd"><i class="fa fa-edit pr5"></i>{:lang('驳回退货申请')}</a>
+			                      {/if}
+			                    {else/}
+			                   	   {if condition="$o.status eq 1"}
+								   <a ident="disable" title="{:lang('物流信息')}" href="{:url('refund_express',['rfid'=>$o.id])}" icon="fa fa-ban pr5" class="btn btn-xs mr5 btn-default btn-flat"><i class="fa fa-ban pr5"></i>{:lang('物流信息')}</a>
+                                 <a icon="fa fa-ban pr5" class="btn btn-xs mr5 btn-default btn-flat pop" data-value="{$o.id}"><i class="fa fa-check-circle pr5"></i>{:lang('确认收货')}</a>
+                                {elseif condition="$o.status eq 2" /}
+                                    {if condition="$o.refund_type eq 3"}
+                                    <a ident="disable" title="{:lang('生成换货订单')}" href="{:url('order/refund_change_goods',['rfid'=>$o.id])}" icon="fa fa-ban pr5" class="btn btn-xs mr5 btn-default btn-flat confirm ajax-get"><i class="fa fa-ban pr5"></i>{:lang('生成换货订单')}</a>
+                                    {else/}
+                                    <a ident="disable" title="{:lang('立即打款')}" href="{:url('order/refund_change_status',['val'=>3,'rfid'=>$o.id])}" icon="fa fa-ban pr5" class="btn btn-xs mr5 btn-default btn-flat confirm ajax-get"><i class="fa fa-ban pr5"></i>{:lang('立即退款')}</a>
+                                    {/if}
+                                {/if}
+								{/if}
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    </div>
+                    <div class="data-table-toolbar">
+                        <div class="row">
+							<div class="pagination-info pull-right">
+								<div>
+									{$pages|raw}
+
+									<input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+									<input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $list->listRows() : input('param.list_rows');{/php}">
+									/ <strong>{$list->lastPage()|raw}</strong> 页，共 <strong>{$list->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="tanchu">弹出框</div> -->
+    <style>
+        .pop-class .pop-cont {
+            padding: 20px;
+        }
+        .pop-class .cont-left {
+            margin-right: 20px;
+        }
+    </style>
+
+    <div id="pop" style="display: none">
+        <div class="pop-cont">
+            <label class="cont-left"><input type="radio" name="is_defective" value="1" id="radio1">是</label> 
+            <label><input type="radio" name="is_defective" value="0" id="radio2" checked>否</label>
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    
+	$('.layeradd').click(function (e) {
+		// console.log(e)
+		var chk_value = [];
+		$('input[name="ids[]"]:checked').each(function () {
+			chk_value.push($(this).val());
+		});
+		e.preventDefault()
+		quickadd_href = $(this).attr('href');
+		quickadd_href = quickadd_href + '?layer=1&ids=' + chk_value;
+		opensidebar(quickadd_href)
+		console.log(chk_value)
+	});
+    function opensidebar(url) {
+		console.log(url);
+		layer.open({
+			type: 2,
+			title: false,
+			closeBtn: false,
+			shadeClose: true,
+			scrollbar: true,
+			offset: 'r',
+			anim: '7',
+			area: ['50%', '100vh'],
+			content: url
+		})
+	}
+    function clearinput(){
+        $(".marBtm").find('input').val('');
+        $(".marBtm").find(".select2").val(0).trigger('change');
+        window.location.href = '/admin.php/goods/order/refund.html';
+    }
+    $('.pop').on('click',function (e){
+        const rfid = e.target.attributes[2].value;
+        layer.open({
+            type: 1
+            ,title: "{:lang('是否确认收货')}" //不显示标题栏
+            ,closeBtn: false
+            ,area: ['300px','170px']
+            ,shade: 0.8
+            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+            ,btn: ["{:lang('确认')}", "{:lang('取消')}"]
+            ,btnAlign: 'r'
+            ,moveType: 1 //拖拽模式，0或者1
+            ,skin:'pop-class'
+            ,content: $('#pop')
+            ,success() {
+                console.log('打开成功')
+            }
+            ,yes(index) {
+                const is_defective = $('input[name=is_defective]:checked').val();
+                const val = 2;
+                $.post('/admin.php/goods/order/refund_change_status',{is_defective,val,rfid})
+                .then(res => {
+                    console.log(res);
+                    console.log(res.url,88888)
+                    if(res.code == 1) {
+                        layer.close(index);
+                        layer.msg(res.msg);
+                        setTimeout(function () {
+                            location.href = res.url;
+                        }, 1000);
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                })
+                
+            }
+      });
+    })
+</script>
+{/block}

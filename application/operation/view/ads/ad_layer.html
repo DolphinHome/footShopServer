@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<style>
+	#content {
+		display: flex;
+		width: 800px;
+		height: 600px;
+	}
+
+	.content-tab {
+		width: 130px;
+		height: 100%;
+		border-right: 2px solid #efefef;
+		text-align: center;
+		overflow-y: scroll;
+	}
+
+	.content-tab::-webkit-scrollbar {
+		display: none;
+	}
+
+	.tab-item {
+		width: 100px;
+		height: 35px;
+		font-size: 16px;
+		font-weight: 525;
+		line-height: 35px;
+		cursor: pointer;
+	}
+
+	.content-main {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		width: 650px;
+		height: 600px;
+		padding-left: 40px;
+	}
+
+	.main-title {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.title-name {
+		color: #007cde;
+		font-size: 24px;
+		font-weight: 700;
+		line-height: 60px;
+	}
+
+	.title-main {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.title-refresh {
+		display: inline-block;
+		width: 60px;
+		height: 30px;
+		margin-top: 15px;
+		margin-right: 25px;
+		border: 1px solid #daecfe;
+		border-radius: 15px;
+		color: #007cde;
+		text-align: center;
+		line-height: 30px;
+		background: #ecf5ff;
+		cursor: pointer;
+	}
+
+	.title-serch {}
+
+	.serch-input {
+		display: inline-block;
+		width: 250px;
+		height: 35px;
+		border: 1px solid #4fa8fc;
+		border-radius: 6px 0 0 6px;
+		outline: none;
+		font-size: 14px;
+		text-indent: 1em;
+	}
+
+	.serch-icon {
+		display: inline-block;
+		width: 50px;
+		height: 36px;
+		margin-left: -4px;
+		border: 2px solid #e2e4e9;
+		border-left: none;
+		border-radius: 0 6px 6px 0;
+		color: #007cde;
+		font-size: 16px;
+		text-align: center;
+		line-height: 35px;
+		background: #f4f7fa;
+		cursor: pointer;
+	}
+	.serch-btn {
+		display: inline-block;
+		height: 35px;
+		width: 84px;
+		border: 1px solid #b6dafc;
+		border-radius: 17px;
+		color:#067fe0;
+		background-color: #ecf5ff;
+		outline: none;
+	}
+
+	.mian-list {
+		height: 450px;
+		width: 100%;
+		overflow-y: scroll;
+	}
+
+	.mian-list::-webkit-scrollbar {
+		display: none;
+	}
+
+	.list-row {
+		display: flex;
+		height: 40px;
+		border-bottom: 2px solid #efefef;
+		cursor: pointer;
+	}
+
+	.row-title-id {
+		display: inline-block;
+		/* width: 30px; */
+		padding-right: 50px;
+		text-align: center;
+		color: #878a90;
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 40px;
+	}
+
+	.row-title-cont {
+		color: #878a90;
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 40px;
+	}
+
+	.row-id {
+		display: inline-block;
+		width:80px;
+		line-height: 40px;
+		/* text-align: center; */
+		line-height: 40px;
+	}
+
+	.row-cont {
+		display: inline-block;
+		width:500px;
+		line-height: 40px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.main-paging {}
+
+	.paging-left {
+		cursor: pointer;
+	}
+
+	.paging-num {
+		display: inline-block;
+		width: 20px;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		cursor: pointer;
+	}
+
+	.paging-right {
+		cursor: pointer;
+	}
+
+	.paging-click-num {
+		color: #0077de;
+	}
+
+	.tab-select {
+		color: #067fe0;
+		background: #ecf5ff;
+		border: 1px solid #b2d8fc;
+		border-radius: 30px;
+	}
+	.select-link {
+		font-size: 14px;
+		color: red;
+	}
+	.select-now {
+		/* font-size: 14px; */
+		color: red;
+	}
+
+	.select-row {
+		color: #067fe0;
+	}
+
+	.pagination-wrapper {
+		display: flex;
+		width: 100%;
+		margin: 10px 10px 10px 0;
+	}
+	.pagination-wrapper ul {
+		display: flex;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	/* 当前选中页面 */
+	.active {
+		color: #ff0000 !important;
+		border:2px solid #b2d8fc !important;
+		background: #ecf5ff !important;
+	}
+	.ellipsis {
+		font-weight: bold;
+		color: #999999;
+		line-height: 24px;
+	}
+	.pagination-wrapper button {
+		height: 30px;
+		width: 30px;
+		margin: 0 5px;
+		border-radius: 3px;
+		border: 1px solid #cccccc;
+		color: #777777;
+		font-weight: bold;
+		overflow: hidden;
+		user-select: none;
+		outline: none;
+	}
+	.pagination-wrapper button :hover {
+		border: 1px solid #1296db;
+		cursor: pointer;
+	}	
+	.pagination-wrapper button :disabled {
+		border: 1px solid #cccccc;
+		color: #cccccc;
+		cursor: pointer;
+	}
+</style>
+
+<body>
+	<div id="content">
+		<div class="content-tab">
+			<div class="tab-item" :class="index == tabIndex ? 'tab-select' : ''" v-for="(item,index) in tabList" :key="index"
+				@click="tabClick(index,item)">{{ item.name }}</div>
+		</div>
+		<div class="content-main">
+			<div class="main-title">
+				<div class="title-main">
+					<div class="title-serch">
+						<input type="text" class="serch-input" v-model="serchInput" placeholder="{:lang('请输入内容')}">
+						<div class="serch-icon" @click="serchClick">{:lang('搜索')}</div>
+					</div>
+				</div>
+				<button class="serch-btn" @click="selectBtn">{:lang('确定选择')}</button>
+			</div>
+			<div class="select-link">
+				<span class="select-link">{:lang('当前选择的链接是')}：</span>
+				<span class="now-link">{{ myLink }}</span>
+			</div>
+			<div>
+				<div class="mian-list">
+					<div class="list-row">
+						<span class="row-title-id">ID</span>
+						<span class="row-title-cont">{:lang('标题名称')}</span>
+					</div>
+					<div 
+						class="list-row" 
+						v-for="(item,index) in mainList" 
+						:key="index"
+						:class="index == selectIndex ? 'select-row' : ''"
+						@click="copyLink(item,index)"
+					>
+						<span class="row-id">{{ item.id }}</span>
+						<span class="row-cont">{{ item.name }}</span>
+					</div>
+				</div>
+				<div class="main-paging" v-show="canShow">
+					<div class="pagination-wrapper">
+						<button :disabled="preDisable" @click="goPre()">&#60;</button> <!--上一页按钮-->
+						<ul>                                                         <!--页码列表-->
+							<li v-for="index in pages" :key="index">
+								<button @click="jumpToPage(index)" v-if="isShowBtn(index)" :class="current===index?'active':''">{{ index }}</button>
+								<div v-else-if="isShowEllipsis(index)" class="ellipsis">&#8230;</div> <!--省略号-->
+							</li>
+						</ul>
+						<button :disabled="nextDisable" @click="goNext()">&#62;</button> <!--上一页按钮-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="__PLUG__/vue/vue.min.js"></script>
+<script src="__PLUG__/vue/vue-resource.min.js"></script>
+<script src="__PLUG__/jquery/jquery.min.js?v=20180725"></script>
+<script src="__PLUG__/layer/layer.js?v=20180725"></script>
+<script>
+	console.log('layer',layer)
+	const app = new Vue({
+		el: '#content',
+		data: {
+			tabList: [],
+			tabIndex: 0,
+			mainList: [],
+			name: '',
+			serchInput: '',
+			myLink:null,
+			type:null,
+			selectIndex:null,
+			current: 1, // 当前页
+			pageSize:null, // 每页显示几个数据
+			pages: [], // 页码列表
+			pageLength:0, // 页码长度
+			canShow: true, // 是否显示分页
+		},
+		created() {
+			this.getData()
+			this.index = localStorage.getItem("index")
+		},
+		methods: {
+			// 获取页面所有数据
+			getData() {
+				this.$http.post("{:url('/operation/ads/ad_list')}").then((res) => {
+					console.log('请求数据',res.body.data);
+					this.tabList.splice(0, this.tabList.length) // 清空当前
+					this.mainList.splice(0, this.mainList.length)
+					for (let i = 0; i < res.body.data.cate.length; i++) {
+						// 左侧
+						this.tabList.push(res.body.data.cate[i])
+					}
+					for (let j = 0; j < res.body.data.list.length; j++) {
+						// 广告列表
+						this.mainList.push(res.body.data.list[j])
+					}
+					this.curretPage = 1
+					// 初始化分页器
+					this.pages.splice(0,this.pages.length)
+					this.pageLength = res.body.data.page_num
+					this.pages = new Array(this.pageLength)
+					for (let i = 0; i < this.pageLength; i++) {
+						this.pages[i] = i + 1
+					}
+					this.current = 1
+					this.type = res.body.data.cate[0].type
+					console.log('页数',this.curretPage,this.pageNum)
+				})
+
+				console.log(this.tabList, this.mainList)
+			},
+			// 点击左侧tab分类
+			tabClick(index, item) {
+				this.tabIndex = index
+				this.type = item.type
+				this.curretPage = 1
+				if(index == 1){
+					this.canShow = false;
+				}else{
+					this.canShow = true;
+				}
+				this.$http.post("{:url('/operation/ads/ad_list')}", { type: item.type }).then((res) => {
+					this.mainList.splice(0, this.mainList.length);
+					for (let j = 0; j < res.body.data.list.length; j++) {
+						this.mainList.push(res.body.data.list[j])
+					}
+					// 分类数据特殊处理
+					if(index == 1){
+						console.log('分类数据',res.body.data);
+						function flatArray(arr,newArr, tag = '|-'){
+							arr.forEach(item => {
+								item.name = tag+item.name;
+								newArr.push(item);
+								item.children && flatArray(item.children,newArr,tag+'-');
+							});
+							return newArr;
+						}
+						this.mainList = flatArray(this.mainList,[]);
+					}
+					// 初始化分页器
+					this.pages.splice(0,this.pages.length);
+					this.pageLength = res.body.data.page_num;
+					this.pages = new Array(this.pageLength);
+					for (let i = 0; i < this.pageLength; i++) {
+						this.pages[i] = i + 1
+					}
+					this.current = 1
+				})
+			},
+			// 搜索按钮
+			serchClick() {
+				this.$http.post("{:url('/operation/ads/ad_list')}", { type:this.type,keywords: this.serchInput }).then((res) => {
+					this.mainList.splice(0, this.mainList.length)
+					for (let j = 0; j < res.body.data.list.length; j++) {
+						this.mainList.push(res.body.data.list[j])
+					}
+					this.curretPage = 1
+					this.pageNum = res.body.data.page_num
+				})
+			},
+			// copy链接
+			copyLink(item,index) {
+				//localStorage.setItem("myLink",item.url);
+				this.selectIndex = index
+				this.myLink = item.url
+			},
+			// 确定选择按钮
+			selectBtn() {
+				console.log('close pupop')
+				if(!this.myLink) {
+					alert('请选择链接')
+					return
+				}
+				localStorage.setItem("myLink",this.myLink)
+				let index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+			},
+
+
+			// 页码跳转
+			jumpToPage (index) {
+				this.current = index;
+				this.getNewPage(this.current)
+			},
+			// 上一页
+			goPre () {
+				this.current -= this.current === 1 ? 0 : 1;
+				this.getNewPage(this.current)
+			},
+			// 下一页
+			goNext () {
+				this.current += this.current === this.pageLength ? 0 : 1;
+				this.getNewPage(this.current)
+			},
+			// 页码是否被省略
+			isShowBtn (index) { 
+				if (this.pageLength < 5) {
+					return true
+				} else {
+					if (index === 1 || index === this.pageLength) {
+						return true
+					} else {
+						if (this.current < 4 && index < 6) {
+							return true
+						} else if (this.current > this.pageLength - 4 && index > this.pageLength - 6) {
+							return true
+						} else if (index < this.current + 3 && index > this.current - 3) {
+							return true
+						} else {
+							return false
+						}
+					}
+				}
+			},
+			// 是否显示省略号
+			isShowEllipsis (index) { 
+				return index === 2 || index === this.pageLength - 1
+			},
+			// 请求页面
+			getNewPage (index) {
+				this.$http.post("{:url('/operation/ads/ad_list')}",{ page:index,type:this.type })
+				.then((res) => {
+					this.mainList.splice(0, this.mainList.length)
+					for (let j = 0; j < res.body.data.list.length; j++) {
+						this.mainList.push(res.body.data.list[j])
+					}
+				})
+			}
+		},
+		computed: {
+			// 是否禁用上一页按钮
+			preDisable () {
+				return this.current === 1
+			},
+			// 是否禁用上一页按钮
+			nextDisable () {
+				return this.current === this.pageLength
+			}
+		},
+		watch: {
+			current (val) {
+				this.current = val
+			}
+		}
+
+	})
+</script>
+
+</html>

@@ -1,0 +1,688 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+  <style> 
+  .app{
+    width: 100%;
+    background-color: #F1F1F1 !important;
+    margin:0 auto;
+
+    }
+    .info-color {
+      color: #909399;
+    }
+
+   .top-left{
+    padding-left:20px;
+    font-size: 18px;
+    font-weight: 600;
+   }
+   .top-right{
+    padding-right:20px;
+    font-size: 14px;
+   }
+
+  /*数据统计*/
+  .data_all{
+     display: flex;
+     justify-content: space-between;
+  }
+  .wait-deal{
+    width:calc(100%/6);
+    border-left: 1px solid #e8e8e8;
+    text-align: left;
+  }
+  .active_border{
+    z-index: 2;
+    border: 1px solid #addfff;
+    border-bottom-color: #fff;
+    box-shadow: 0 -3px 0 0 #19e, 2px -2px 2px 0 #ceecff, -2px -2px 2px 0 #ceecff;
+  }
+  .deal-left {
+        /* padding-left: 30px; */
+        line-height: 40px;
+        text-align: center;
+    }
+
+    .deal-right {
+        /* padding-left: 20px; */
+        line-height: 20px;
+        text-align: left;
+        text-align: center;
+    }
+  /*echart*/
+
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+   .fist-box{
+    margin-left:0 !important;
+    margin-right:0 !important;
+   }
+  .el-col {
+    border-radius: 4px;
+  }
+  .initFalse{
+    display: none;
+  }
+  .options_date{
+    padding: 1px 12px;
+    font-size: 12px;
+    color: #666;
+    border: 1px solid #adadad;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    margin-left: 8px;
+    cursor: pointer;
+  }
+  .select_options{
+    color: #19e;
+    border-color: #19e;
+  }
+  .over-content {
+    width: 80;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  </style>
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- 第一个 -->
+    <el-row class="fist-box" :gutter="24" > 
+      <el-card class="box-card" id="top"  style="display: none">
+          <div slot="header" class="clearfix">
+            <span>{:lang('用户基本信息')}</span>
+            <button class="btn btn-default"  style="float: right;"  type="button" onClick="javascript:history.back(-1);return false;"> {:lang('返回')} </button>
+          </div>
+
+
+          <el-row>
+          <el-col :span="8"><span class="lable info-color">{:lang('用户名')}：</span><span>{{userInfo.user_name}}</span></el-col>
+          <el-col :span="8"><span class="lable info-color">{:lang('昵称')}：</span><span>{{userInfo.user_nickname}}</span></el-col>
+          <el-col :span="8"><span class="lable info-color">{:lang('性别')}：</span><span>{{userInfo.sex}}</span></el-col>
+         </el-row>
+         <el-row>
+          <el-col :span="8"><span class="lable info-color">{:lang('联系方式')}：</span><span>{{userInfo.mobile}}</span></el-col>
+          <el-col :span="8"><span class="lable info-color">{:lang('创建日期')}:</span><span>{{userInfo.create_time}}</span></el-col>
+          <el-col :span="8"><span class="lable info-color">{:lang('最近更新日期')}：</span><span>{{userInfo.update_time}}</span></el-col>
+         </el-row>
+         <el-row>
+          <el-col :span="8">
+              <span class="lable info-color">{:lang('可用积分')}：</span>
+              <span>{{userInfo.score}}{:lang('分')}</span>
+              <i v-if="userInfo.score>1000" style="color:#67C23A" class="el-icon-top"></i>
+              <i v-else style="color:#F56C6C" class="el-icon-bottom"></i>
+          </el-col>
+          <el-col :span="8">
+              <span class="lable info-color">{:lang('余额')}：</span>
+              <span>{{userInfo.user_money}}{:lang('人民币')}</span>
+              <i v-if="userInfo.user_money>1000" style="color:#67C23A" class="el-icon-top"></i>
+              <i v-else style="color:#F56C6C" class="el-icon-bottom"></i>
+          </el-col>
+          <el-col :span="8"><span class="lable info-color">E-mail：</span><span>{{userInfo.user_email || '无'}}</span></el-col>
+         </el-row>
+      </el-card>
+  
+    </el-row>
+    <el-row :gutter="24" class="panel-group"  >
+       <el-col :span="24" >
+         <el-card class="box-card" id="center" style="display: none">
+          <div slot="header" class="clearfix" >
+            <div style="display: flex; justify-content:space-between ;">
+              <div>{:lang('数据总览量')}</div>
+              <div style="display: flex;">
+                 <div v-for="(item,index) in tradingOptions"  @click=handleClick(index,item) class="options_date" :class="[index==handleIndex ? 'select_options' : '']" :key="index">{{item.label}}</div>
+              </div>
+            </div>
+          </div>
+          <!-- 内容 -->
+          <div   class="data_all"  >
+             <div   v-for="(item,index) in dataArray" :key="item.desc" @click="handleChane(index,item.selectName,item.desc)"  :class="[ index==handeSelect ? 'active_border' : '' ,'wait-deal']" >
+                 <div class="deal-left">{{item.number}}</div>
+                 <div class="deal-right">{{item.desc}}</div>
+             </div>
+          </div>
+          
+        </el-card>
+       </el-col>
+    </el-row>
+
+    <!-- 第二行 -->
+    <el-row :gutter="24" >
+       <el-col :span="24">
+         <el-card class="box-card">
+          <div slot="header" class="clearfix initFalse" >
+            <span>{{handleDesc}}</span>
+          </div>
+          <!-- 内容 -->
+          <div id="myChart" :style="{width: '100%', height: '200px'}"></div>
+        </el-card>
+       </el-col>
+    </el-row>
+
+    <el-row :gutter="24">
+      <el-col :span="24">
+        <el-card class="box-card">
+          <div slot="header" class="clearfix " id="bottom" style="display: none;"> 
+           <span>{:lang('单据记录')}</span>
+          </div>
+         <el-table :data="tableData" :max-height="340"  stripe style="width: 100%">
+           <el-table-column  show-overflow-tooltip v-for="(item,index) in tableHeader[selectHeader]"   :key="index" :prop="item.value"  :label="item.lable">  
+            <template slot-scope="scope">
+              <span class="over-content">{{scope.row[item.value]}}</span>
+            </template>
+           </el-table-column>
+         </el-table>
+         <!-- 分页 -->
+         <div style="display: flex; flex-direction:row-reverse;">
+            <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page.sync="currentPage"
+                  :page-size="6"
+                  layout="prev, pager, next, jumper"
+                  :total="totalPageSize">
+            </el-pagination>
+        </div>
+       </el-card>
+      </el-col >
+   </el-row>
+   <div style="margin-top:20px;height:20px;width:100%;"></div>
+  </div>
+</body>
+  <!-- import Vue before Element -->
+  <script src="/static/plugins/vue/vue.min.js"></script>
+  <!-- import JavaScript -->
+  <script src="/static/plugins/element-ui/element-ui.js" ></script>
+  <!-- 引入echarts -->
+  <script src="/static/plugins/echarts/echarts.min.js"></script>
+  <!-- ajax请求 -->
+	<script src="/static/plugins/ajax/axios.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {
+         userInfo:{},
+         memberId:'',
+         cancaveData:{},
+         totalPageSize:0,
+         handleIndex:4,
+         currentPage:1,
+         handeSelect:0,
+         handleDesc:"{:lang('下单数量')}",
+         fullscreenLoading: false, 
+         visible: false,
+         tradingDate:'',
+         tradingDateRange:[],
+         mapDate:'',
+         saleDate:'',
+         goodsDate:'',
+         orderDate:'',
+         selectHeader:'userOrder',
+         tableHeader:{
+            //订单
+            userOrder:[{
+            lable:"{:lang('订单号')}",
+            value:'order_sn',
+          },{
+            lable:"{:lang('订单金额')}",
+            value:'order_money',
+          },{
+            lable:"{:lang('实付金额')}",
+            value:'payable_money',
+          },{
+            lable:"{:lang('订单状态')}",
+            value:'status',
+          },{
+            lable:"{:lang('下单时间')}",
+            value:'create_time',
+          }],
+          //收藏数
+          userCollect:[{
+            lable:"{:lang('商品名称')}",
+            value:'name',
+          },{
+            lable:"{:lang('商品价格')}",
+            value:'price',
+          },{
+            lable:"{:lang('商品规格')}",
+            value:'sku_name',
+          },{
+            lable:"{:lang('商品销售量')}",
+            value:'collect_sales',
+          },{
+            lable:"{:lang('商品收藏量')}",
+            value:'collect_num',
+          }],
+          //购物车
+         userCart:[{
+            lable:"{:lang('商品名称')}",
+            value:'goods_name',
+          },{
+            lable:"{:lang('加入日期')}",
+            value:'create_time',
+          },{
+            lable:'商品sn码',
+            value:'sn',
+          },{
+            lable:"{:lang('商品价格')}",
+            value:'shop_price',
+          },{
+            lable:"{:lang('销售数量')}",
+            value:'sales_sum',
+          }],
+         //退款
+         userRefund:[{
+          lable:"{:lang('退款单号')}",
+          value:'server_no',
+          },{
+          lable:"{:lang('退款商品名称')}",
+          value:'name',
+          },{
+          lable:"{:lang('退款金额')}",
+          value:'refund_money',
+          },{
+          lable:"{:lang('退款时间')}",
+          value:'refund_time',
+          },{
+          lable:"{:lang('退款数量')}",
+          value:'num',
+          },{
+          lable:"{:lang('退款原因')}",
+          value:'refund_reason',
+          }],
+          //评价
+         userComment:[{
+            lable:"{:lang('业务流水号')}",
+            value:'order_sn',
+          },{
+            lable:"{:lang('评价商品')}",
+            value:'goods_id',
+          },{
+            lable:"{:lang('评价时间')}",
+            value:'create_time',
+          },{
+            lable:"{:lang('评价内容')}",
+            value:'content',
+          }],
+          //浏览量
+          userVisit:[{
+            lable:"{:lang('商品名称')}",
+            value:'name',
+          },{
+            lable:"{:lang('商品价格')}",
+            value:'price',
+          },{
+            lable:"{:lang('浏览时间')}",
+            value:'create_time',
+          }]
+        },
+        dataArray:[{
+          number:0,
+          selectName:'userOrder',
+          desc:"{:lang('下单数量')}"
+        },{
+          number:0,
+          selectName:'userCollect',
+          desc:"{:lang('收藏数量')}"
+        },{
+          number:0,
+          selectName:'userCart',
+          desc:"{:lang('购物车')}"
+        },{
+          number:0,
+          selectName:'userRefund',
+          desc:"{:lang('退款数量')}"
+        },{
+          number:0,
+          selectName:'userComment',
+          desc:"{:lang('评价数量')}"
+        },{
+          number:0,
+          selectName:'userVisit',
+          desc:"{:lang('总浏览量')}"
+        }],
+        tableData: [],
+        tradingOptions: [
+            {
+                label: "{:lang('今日')}",
+                value: 'day'
+            }, {
+                label: "{:lang('本周')}",
+                value: 'week'
+            }, {
+                label: "{:lang('本月')}",
+                value: 'month'
+            }, {
+                value: 'quarter',
+                label: "{:lang('本季度')}"
+            }, {
+                value: 'year',
+                label: "{:lang('本年')}"
+            }
+        ],
+        }
+      },
+      mounted (options) {
+          document.querySelector("#top").style.display='block'
+          document.querySelector("#center").style.display='block'
+          document.querySelector(".initFalse").style.display='block'
+          document.querySelector("#bottom").style.display='block'
+          let url=window.location.href
+          var temp1 = url.split('?');
+          var pram = temp1[1];
+          var keyValue = pram.split('&');
+          var obj = {};
+          for (var i = 0; i<keyValue.length; i++){
+              var item = keyValue[i].split('=');
+              var key = item[0];
+              var value = item[1];
+              obj[key] = value;
+            }
+          this.memberId=obj.id
+          this.getUserInfo()
+          this.hanldeDrawLine()
+   
+          this.handleSearchList()
+      },
+      methods: {
+        //用户基本信息
+        getUserInfo(){
+            const that=this
+            axios.get(`getdetail?id=${that.memberId}`).then(function (res) {
+                if(res.data.code==1){
+                  that.userInfo=res.data.data
+                }
+            })
+            .catch(function (error) {
+              that.$message.error("{:lang('出了点小差错，请联系后台管理员')}");
+            });
+
+        },
+        handleClick(index,item){
+          this.handleIndex=index
+          this.times_type=item.value
+          this.hanldeDrawLine()
+          this.handleSearchList()
+        },
+        handleChane(index,selectName,desc){
+          this.handeSelect=index
+          this.selectHeader=selectName
+          this.handleDesc=desc
+          this.drawLine(this.cancaveData[selectName])
+          this.handleSearchList()
+        },
+        // 分页功能
+        handleSizeChange(val) {
+          this.handleSearchList()
+        },
+        handleCurrentChange(val) {
+          console.log(`当前页: ${val}`);
+          this.handleSearchList()
+        },
+        // 画图接口
+        hanldeDrawLine(){
+          const that=this
+          axios.get(`userDetailData?times=${that.tradingOptions[that.handleIndex].value}&id=${that.memberId}`).then(function (res) {
+              if(res.data.code==1){
+
+                  that.cancaveData=res.data.data
+                  console.log(that.cancaveData,8888,that.cancaveData)
+                  that.dataArray[0].number=that.cancaveData.userOrder.userOrderTatal
+                  that.dataArray[1].number=that.cancaveData.userCollect.tatal
+                  that.dataArray[2].number=that.cancaveData.userCart.tatal
+                  that.dataArray[3].number=that.cancaveData.userRefund.tatal
+                  that.dataArray[4].number=that.cancaveData.userComment.tatal
+                  that.dataArray[5].number=that.cancaveData.userVisit.tatal
+                  that.drawLine(that.cancaveData[that.selectHeader]);
+              }
+          })
+          .catch(function (error) {
+            // that.$message.error('出了点小差错，请联系后台管理员!');
+          });
+
+        },
+        //列表接口
+        handleSearchList(){
+          const that=this  
+          let reqType=''
+
+          // 下单数量： order  收藏数量 collect 购物车 cart 退款数量 refund 评价数量 comment 总浏览量 visit
+
+          if(that.selectHeader=='userOrder'){
+            reqType='order'
+          }else if(that.selectHeader=='userCollect'){
+            reqType='collect'
+          }else if(that.selectHeader=='userCart'){
+            reqType='cart'
+          }else if(that.selectHeader=='userRefund'){
+            reqType='refund'
+          }else if(that.selectHeader=='userComment'){
+            reqType='comment'
+          }else if(that.selectHeader=='userVisit'){
+            reqType='visit'
+          }
+
+          axios.get(`userDetailList?times=${that.tradingOptions[that.handleIndex].value}&type=${reqType}&page=${that.currentPage}&list_rows=6&id=${that.memberId}`).then(function (res) {
+              console.log(res,1212)
+              if(res.data.code==1){
+                  that.currentPage =Number(res.data.data.current_page)
+                  that.totalPageSize=res.data.data.total
+                  that.tableData=res.data.data.data
+                  console.log(that.tableData,8888)
+              }
+          })
+          .catch(function (error) {
+            that.$message.error("{:lang('出了点小差错，请联系后台管理员')}");
+          });
+
+        },
+
+    
+       //交易数据刷新
+       handleRefresh(){
+           const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0)'
+            });
+            setTimeout(() => {
+            loading.close();
+          }, 1000);
+       },
+       changeTradingDate(){
+             const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0)'
+            });
+            setTimeout(() => {
+            loading.close();
+          }, 1000);
+
+       },
+       
+       drawLine(contentData){
+         const that=this
+         let cancaveTitel=[]
+         let Xlist=[]
+         let Ydata=[]
+  
+        if(this.selectHeader=='userOrder'){
+          let cancelOrder=[]
+          let preOrder=[]
+          let saleOrder=[]
+          cancaveTitel=["{:lang('销售订单')}", "{:lang('预付订单')}", "{:lang('订单取消')}"]
+          contentData.cancelOrder.forEach(function(item){
+            Xlist.push(item.dateFormat)
+            cancelOrder.push(item.browseCount)
+          })
+          contentData.preOrder.forEach(function(item){
+            preOrder.push(item.browseCount)
+          })
+          contentData.saleOrder.forEach(function(item){
+            saleOrder.push(item.browseCount)
+          })
+          Ydata=[{
+                    name: "{:lang('销售订单')}",
+                    type: 'line',
+                    // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                    data: saleOrder
+                },
+                {
+                    name: "{:lang('预付订单')}",
+                    type: 'line',
+                    // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                    data: preOrder
+                },
+                {
+                    name: "{:lang('订单取消')}",
+                    type: 'line',
+                    // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                    data: cancelOrder
+                }
+            ]
+
+        }else if(this.selectHeader=='userCollect'){
+
+          let dataList=[]
+          cancaveTitel=["{:lang('收藏数量')}"]
+          contentData.data.forEach(function(item){
+            Xlist.push(item.dateFormat)
+            dataList.push(item.browseCount)
+          })
+          Ydata=[{
+                    name: "{:lang('收藏数量')}",
+                    type: 'line',
+                    // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                    data: dataList
+                }
+            ]
+
+        }else if(this.selectHeader=='userCart'){
+          let dataList=[]
+          cancaveTitel=["{:lang('购物车数量')}"]
+          contentData.data.forEach(function(item){
+            Xlist.push(item.dateFormat)
+            dataList.push(item.browseCount)
+          })
+          Ydata=[{
+                    name: "{:lang('购物车数量')}",
+                    type: 'line',
+                    // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                    data: dataList
+                }
+            ]
+
+
+        }else if(this.selectHeader=='userRefund'){
+          let dataList=[]
+          cancaveTitel=["{:lang('退款数量')}"]
+          contentData.data.forEach(function(item){
+            Xlist.push(item.dateFormat)
+            dataList.push(item.browseCount)
+          })
+          Ydata=[{
+                    name: "{:lang('退款数量')}",
+                    type: 'line',
+                    // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                    data: dataList
+                }
+            ]
+
+
+        }else if(this.selectHeader=='userComment'){
+          let dataList=[]
+          cancaveTitel=["{:lang('评价数量')}"]
+          contentData.data.forEach(function(item){
+            Xlist.push(item.dateFormat)
+            dataList.push(item.browseCount)
+          })
+          Ydata=[{
+                    name: "{:lang('评价数量')}",
+                    type: 'line',
+                    // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                    data: dataList
+                }
+            ]
+
+
+        }else if(this.selectHeader=='userVisit'){
+          let dataList=[]
+          cancaveTitel=["{:lang('总浏览量')}"]
+          contentData.data.forEach(function(item){
+            Xlist.push(item.dateFormat)
+            dataList.push(item.browseCount)
+          })
+          Ydata=[{
+                    name: "{:lang('总浏览量')}",
+                    type: 'line',
+                    // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                    data: dataList
+                }
+            ]
+
+
+        }
+        
+         // 基于准备好的dom，初始化echarts实例
+        let myChart = echarts.init(document.getElementById('myChart'))
+        // 绘制图表
+        //订单:  "{:lang('销售订单')}", "{:lang('预付订单')}", "{:lang('订单取消')}"
+        //收藏： 文章收藏  商品收藏
+        //购物车: 商品数量
+        //退款数量   
+        //总浏览量
+        myChart.setOption({
+            title: {
+                text: that.handleDesc
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: cancaveTitel //头部标题
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: Xlist   //x轴日期
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: Ydata
+       
+        });
+
+       }
+      }
+    })
+</script>
+
+</html>
+{/block}

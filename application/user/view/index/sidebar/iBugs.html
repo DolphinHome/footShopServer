@@ -1,0 +1,153 @@
+<div class="layui-form-item">
+	<div class="layui-input-inline">
+		<select name="severity" class="iBugslistSelect">
+			<option value="">{:lang('严重程度')}</option>
+			<?php foreach($bugsSeverityArr as $k=>$v):?>
+			<option value="{$k}">{$v['name']}</option>
+			<?php endforeach;?>
+		</select>
+	</div>
+	
+	<div class="layui-input-inline">
+		<select name="status_name" class="iBugslistSelect">
+			<option value="">Bug{:lang('状态')}</option>
+			<?php foreach($bugsStatusArr as $k=>$v):?>
+			<option value="{$v['name']}">{$v['name']}</option>
+			<?php endforeach;?>
+		</select>
+	</div>
+	
+	<div class="layui-input-inline">
+		<select name="type_name" class="iBugslistSelect">
+			<option value="">Bug{:lang('类型')}</option>
+			<?php foreach($bugsTypeArr as $k=>$v):?>
+			<option value="{$v['name']}">{$v['name']}</option>
+			<?php endforeach;?>
+		</select>
+	</div>
+
+	<div class="layui-input-inline">
+		<button type="button" class="layui-btn lLayui-btn" v-on:click="bugslist">{:lang('查询')}</button>
+	</div>
+	
+	<div class="layui-input-inline" style="width: auto;float: right;">
+		<button type="button" class="layui-btn layui-btn-primary LAY_imageUploadProjectBug" data-id="{$data['aid']}">
+			<i class="layui-icon">&#xe67c;</i>{:lang('导入')}BUG
+		</button>
+	</div>
+</div>
+
+<ul>
+	<li style="padding-bottom: 10px;">
+		<b>{:lang('严重程度')}：</b>
+		<span v-for="(item,index) in itemsBugsSeverityArr" style="margin-right: 10px;">
+			{{item.name}}：{{item.count}}{:lang('个')}
+		</span>
+	</li>
+	<li style="padding-bottom: 10px;">
+		<b>Bug{:lang('状态')}：</b>
+		<span v-for="(item,index) in itemsBugsStatusArr" style="margin-right: 10px;">
+			{{item.name}}：{{item.count}}{:lang('个')}
+		</span>
+	</li>
+	<li style="padding-bottom: 10px;">
+		<b>Bug{:lang('类型')}：</b>
+		<span v-for="(item,index) in itemsBugsTypeArr" style="margin-right: 10px;">
+			{{item.name}}：{{item.count}}{:lang('个')}
+		</span>
+	</li>
+</ul>
+<div class="layui-table-auto">
+	<table class="layui-table">
+		<colgroup>
+			<col>
+			<col>
+			<col>
+		</colgroup>
+		<thead>
+			<tr>
+				<th>{:lang('操作')}</th>
+				<th>ID</th>
+				<th>Bug{:lang('编号')}</th>
+				<th>{:lang('严重程度')}</th>
+				<th>Bug{:lang('状态')}</th>
+				<th>Bug{:lang('类型')}</th>
+				<th>Bug{:lang('标题')}</th>
+				<th>{:lang('所属产品')}</th>
+				<th>{:lang('所属模块')}</th>
+				<th>{:lang('所属项目')}</th>
+				<th>{:lang('相关需求')}</th>
+				<th>{:lang('相关任务')}</th>
+				<th>{:lang('关键词')}</th>
+				<th>{:lang('优先级')}</th>
+				<th>{:lang('操作系统')}</th>
+				<th>{:lang('浏览器')}</th>
+				<th>{:lang('重现步骤')}</th>
+				<th>{:lang('截止日期')}</th>
+				<th>{:lang('激活次数')}</th>
+				<th>{:lang('是否确认')}</th>
+				<th>{:lang('抄送给')}</th>
+				<th>{:lang('由谁创建')}</th>
+				<th>{:lang('创建日期')}</th>
+				<th>{:lang('影响版本')}</th>
+				<th>{:lang('指派给')}</th>
+				<th>{:lang('指派日期')}</th>
+				<th>{:lang('解决者')}</th>
+				<th>{:lang('解决方案')}</th>
+				<th>{:lang('解决版本')}</th>
+				<th>{:lang('解决日期')}</th>
+				<th>{:lang('由谁关闭')}</th>
+				<th>{:lang('关闭日期')}</th>
+				<th>{:lang('重复')}id</th>
+				<th>{:lang('相关')}BUG</th>
+				<th>{:lang('相关用例')}</th>
+				<th>{:lang('最后修改者')}</th>
+				<th>{:lang('修改日期')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="(item,index) in itemsBugs">
+				<td>
+					<span class="projectBugsDel" v-on:click="taskDel" data-url="{:url('ProjectBugs/del')}" :data-aid="item.aid"
+					 data-name="bugs">{:lang('删除')}</span>
+				</td>
+				<td>{{item.aid}}</td>
+				<td>{{item.bug_num}}</td>
+				<td>{{item.severity}}级</td>
+				<td>{{item.status_name}}</td>
+				<td>{{item.type_name}}</td>
+				<td>{{item.title}}</td>
+				<td>{{item.product}}</td>
+				<td>{{item.module}}</td>
+				<td>{{item.project}}</td>
+				<td>{{item.needs}}</td>
+				<td>{{item.task}}</td>
+				<td>{{item.keyword}}</td>
+				<td>{{item.priority}}</td>
+				<td>{{item.system}}</td>
+				<td>{{item.browser}}</td>
+				<td>{{item.steps}}</td>
+				<td>{{item.time_endShow}}</td>
+				<td>{{item.activation_times}}</td>
+				<td>{{item.confirm_name}}</td>
+				<td>{{item.copy_to}}</td>
+				<td>{{item.create_name}}</td>
+				<td>{{item.create_dateShow}}</td>
+				<td>{{item.effect_version}}</td>
+				<td>{{item.assign_to}}</td>
+				<td>{{item.assign_timeShow}}</td>
+				<td>{{item.solve_name}}</td>
+				<td>{{item.solve_function}}</td>
+				<td>{{item.solve_version}}</td>
+				<td>{{item.solve_timeShow}}</td>
+				<td>{{item.close_from}}</td>
+				<td>{{item.close_timeShow}}</td>
+				<td>{{item.repeat_id}}</td>
+				<td>{{item.about_bug}}</td>
+				<td>{{item.about_case}}</td>
+				<td>{{item.edit_name}}</td>
+				<td>{{item.edit_timeShow}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

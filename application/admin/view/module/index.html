@@ -1,0 +1,92 @@
+<!--
+ * @Descripttion: 
+ * @Version: 1.0
+ * @Author: wangph
+ * @Date: 2021-03-31 09:46:02
+ * @LastEditors: wangph
+ * @LastEditTime: 2021-04-30 09:20:25
+-->
+{extend name="layout" /}
+
+{block name="content"}
+<div class="row">
+	<div class="col-md-12">
+		<div class="block nav-tabs-custom"> 
+			{notempty name="tab_nav"}
+			<ul class="nav nav-tabs">
+				{volist name="tab_nav['tab_list']" id="tab"}
+				<li {eq name="tab_nav.active" value="$key"}class="active"{/eq}> <a href="{$tab.url}">{$tab.title}</a> </li>
+				{/volist}
+			</ul>
+			{/notempty}
+			<div class="box-body tab-content">
+				<div class="tab-pane active">
+					<div class="row pb10">
+						<div class="col-md-12">
+							<div class="toolbar-btn-action"> <a title="{:lang('全部')}" class="btn btn-default  btn-sm" href="{:url('index')}">{:lang('全部')}({$total.all|default='0'})</a> <a title="{:lang('已启用')}" class="btn btn-default  btn-sm" href="{:url('index', ['status' => '1'])}">{:lang('已启用')}({$total['1']|default='0'})</a> <a title="{:lang('已禁用')}" class="btn btn-default  btn-sm" href="{:url('index', ['status' => '0'])}">{:lang('已禁用')}({$total['0']|default='0'})</a> <a title="{:lang('未安装')}" class="btn btn-default  btn-sm" href="{:url('index', ['status' => '-1'])}">{:lang('未安装')}({$total['-1']|default='0'})</a> <a title="{:lang('已损坏')}" class="btn btn-default  btn-sm" href="{:url('index', ['status' => '-2'])}" id="hide_disable">{:lang('已损坏')}({$total['-2']|default='0'})</a> <a title="{:lang('创建')}" class="btn btn-primary btn-sm" href="{:url('add')}"><i class="fa fa-plus"></i> {:lang('创建新模块')}</a> </div>
+						</div>
+					</div>
+					<div class="row module-list push-20">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-builder table-hover table-bordered table-striped">
+									<thead>
+										<tr>
+											<th>{:lang('名称')}</th>
+											<th>{:lang('图标')}</th>
+											<th>{:lang('版本')}</th>
+											<th>{:lang('模块标识')}</th>
+											<th>{:lang('作者')}</th>
+											<th>{:lang('简介')}</th>
+											<th class="column-right_button text-center">{:lang('操作')}</th>
+										</tr>
+									</thead>
+									<tbody>
+									
+									{notempty name="modules"}
+									{volist name="modules" id="module"}
+									<tr>
+										<td>{$module.title|default='无模块标题'}</td>
+										<td><i class="{$module.icon|default='fa fa-puzzle-piece'}"></i></td>
+										<td>{$module.version|default='无版本号'}</td>
+										<td>{$module.identifier}</td>
+										<td><a href="{$module.author_url|default=''}" target="_blank">{$module.author|default=''}</a></td>
+										<td>{$module.description|default='暂无简介'}</td>
+										<td class="text-center">{$module.actions|raw}</td>
+									</tr>
+									{/volist}
+									{else /}
+									<tr class="table-empty">
+										<td class="text-center empty-info" colspan="6"><i class="fa fa-database"></i> {:lang('暂无数据')} <br></td>
+									</tr>
+									{/notempty}
+										</tbody>
+									
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="data-table-toolbar">
+						<div class="row">
+							<div class="col-sm-12"> {// 分页 }
+								{notempty name="pages"}
+								{$pages|raw}
+								{/notempty}
+								{notempty name="row_list"}
+								<div class="pagination-info pull-right">
+									<form action="" method="get">
+										<input type="text" class="form-control input-sm go-page" name="page" value="{:input('param.page', '1')}">
+										<input type="text" class="form-control input-sm nums" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? config('list_rows') : input('param.list_rows');{/php}">
+										<input type="submit" class="hidden">
+										/ <strong>{$row_list->lastPage()}</strong>  {:lang('页')}， {:lang('共')} <strong>{$row_list->total()}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+									</form>
+								</div>
+								{/notempty} </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

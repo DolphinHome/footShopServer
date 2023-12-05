@@ -1,0 +1,215 @@
+
+body{
+	padding-bottom: 15%;
+}
+*{
+	-webkit-tap-highlight-color:transparent;
+	font-family: "PingFangSC-Regular",sans-serif;
+}
+
+body,html,#main{
+    height: 100% !important;
+}
+.bg{
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+#bottom{
+	display: block;
+	width: 100%;
+	padding: 2% 4%;
+	background: #ffffff;
+	position: fixed;
+	bottom: 0px;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+}
+a:visited,a:hover,a:focus{
+	text-decoration: none;
+}
+#bottom .logo{
+  width: 15%;
+  float: left;
+}
+#bottom .logo img{
+	display: block;
+	width: 100%;
+}
+.appinfo{
+	width: 50%;
+	float: left;
+}
+.appinfo p{
+	margin: 0;
+	padding-left: 5%;
+}
+.appinfo p:nth-of-type(1){
+	font-size: 18px;
+	color: #FF3E3E;
+	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.appinfo p:nth-of-type(2){
+	color: #AEACB1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+#clickdown{
+	width: 30%;
+	float: right;
+	background: #FF3E3E;
+	color: #ffffff;
+	text-align: center;
+	border-radius: 3px;
+	padding: 2% 0;
+}
+
+a.down,a.down:active,a.down:focus,a.down:visited{
+	text-decoration: none;
+}
+
+
+.alert-msg{
+	padding: 12px 25px;
+	line-height: 24px;
+	font-size: 14px;
+	background: rgba(0,0,0,.6);
+	min-width: 100px;
+	color: #ffffff;
+	text-align: center;
+	position: absolute;
+	z-index: 9999999999999999;
+	display: none;
+}
+
+.hide{
+	
+}
+
+.download-notice{
+	background: rgba(0,0,0,0.7);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: none;
+	z-index: 999;
+}
+.download-notice.active{
+	display: block;
+}
+.download-notice.active.ios .ios-notice{
+	display: block;
+}
+.download-notice.active.android .android-notice{
+	display: block;
+}
+.download-notice img{
+	display: none;
+	width: 80%;
+	margin: 0 auto;
+}
+
+.icode-copy{
+	background: url('../img/icode-copy-bg.png') no-repeat;
+	background-size: contain;
+}
+
+[v-cloak]{
+	display: none;
+}
+.nav-icon-more.t3{
+	display: none;
+}
+.ellipsis-1 {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.ellipsis-2 {
+	display: -webkit-box;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	white-space: normal !important;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+.load-more{
+	padding: 0.5rem 0;
+	display: -webkit-box;
+	-webkit-box-align: center;
+	-webkit-box-pack: center;
+	font-size: 0.7rem;
+	color: #FFFFFF;
+}
+.load-more .load-icon{
+	background: url("../img/load-more.gif") no-repeat;
+	width: 3rem;
+	height: 1rem;
+	background-size: cover;
+}
+.shareModal{
+	position:fixed;
+	left:0;
+	right:0;
+	bottom:0;
+	background:#ffffff;
+	z-index: 9;
+	padding: 0.5rem 1rem 1rem 1rem;
+	border-top-left-radius: 0.5rem;
+	border-top-right-radius: 0.5rem;
+	-webkit-transition: .1s .5s;
+}
+
+.shareModal .share-content{
+	display: -webkit-box;
+	-webkit-box-pack:justify;
+}
+.shareModal img{
+	display:block;
+	width: 2rem;
+	height: 2rem;
+	margin:0 auto;
+}
+.shareModal div{
+	font-size: 0.7rem;
+	text-align: center;
+	margin-top: 0.3rem;
+	font-size: #333333;
+}
+.shareModal .cancel-share{
+	font-size: 0.7rem;
+	text-align: center;
+	color: #333333;
+	padding-top: 0.5rem;
+}
+.common-quan .bg{
+	width: 2.375rem;
+	height: 0.8rem;
+	background: url('../img/quan-icon.png') no-repeat;
+	position:relative;
+	background-size: 2.375rem 0.8rem;
+}
+.common-quan .bg2{
+	width: 2.375rem;
+	height: 0.8rem;
+	background: url('../img/quan-bg2.png') no-repeat;
+	position:relative;
+	background-size: 2.375rem 0.8rem;
+}
+.common-quan{
+	background: -webkit-linear-gradient(left,#ff5216,#f11419);
+	width: 2.375rem;
+	height: 0.8rem;
+}
+
+
+
+

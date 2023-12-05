@@ -1,0 +1,594 @@
+body {
+	background-color: #f9fafc;
+	font-family: "microsoft yahei";
+	font-size: 14px;
+	color: #333333;
+}
+
+img {
+	vertical-align: top;
+}
+
+/*表格表头固定位置*/
+.lLayuiTableFixed tbody {
+	display: block;
+	height: 500px;
+	overflow-y: scroll;
+}
+
+.lLayuiTableFixed thead,
+.lLayuiTableFixed tbody tr {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+	/**表格列的宽度由表格宽度决定，不由内容决定*/
+	text-align: center;
+}
+
+.lLayuiTableFixed thead {
+	width: calc(100% - 1em);
+	/*表头与表格垂直对齐*/
+}
+/*表格表头固定位置*/
+
+.moneyInput {
+	width: 76px;
+	text-align: center;
+}
+
+.dayInput {
+	width: 90px;
+	text-align: center;
+}
+
+.nameInput {
+	width: 60px;
+	text-align: center;
+}
+
+.sortInput {
+	width: 50px;
+	text-align: center;
+}
+
+/* @员工 */
+.fixedStaff {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0%;
+	top: 0%;
+	display: none;
+}
+
+.fixedStaff .bg {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background-color: #000;
+	opacity: 0.3;
+}
+
+.fixedStaff .content {
+	position: absolute;
+	width: 50%;
+	height: 400px;
+	left: 25%;
+	top: 50%;
+	margin-top: -200px;
+	background-color: #FFF;
+}
+
+.fixedStaff .content .contentFuzhu {
+	margin: 20px;
+}
+
+.fixedStaff .content .layui-btn-group {
+	position: absolute;
+	bottom: 20px;
+}
+
+/* @员工 */
+
+/* 表格滚动条 */
+.layui-table-auto {
+	overflow-x: scroll;
+	overflow-y: visible;
+	padding-right: 0;
+	padding-left: 0;
+}
+
+.layui-table-auto .layui-table th,
+.layui-table-auto .layui-table td {
+	white-space: nowrap;
+}
+
+/* 表格滚动条 */
+
+/* 选项卡 */
+.lTabUlFuzhu {
+	border: 1px solid #F2F2F2;
+	border-left: 0;
+	height: 45px;
+}
+
+.lTabUl li {
+	display: inline-block;
+}
+
+.lTabUl li a,
+.lTabUl li span {
+	display: block;
+	padding: 0 20px;
+	height: 45px;
+	line-height: 42px;
+	border-top: 2px solid #FFFFFF;
+}
+
+.lTabUl li.active a,
+.lTabUl li.active span {
+	border-top: 3px solid #1E9FFF;
+	border-left: 1px solid #F2F2F2;
+	border-right: 1px solid #F2F2F2;
+	background-color: #FFFFFF;
+}
+
+/* 选项卡 */
+
+/* 关闭layer悬浮按钮 */
+.iCloseLayer {
+	position: fixed;
+	width: 20px;
+	height: 20px;
+	right: 15px;
+	top: 15px;
+	z-index: 1000;
+}
+
+.iCloseLayer img {
+	width: 100%;
+	cursor: pointer;
+}
+
+/* 关闭layer悬浮按钮 */
+
+/* 项目管理->项目计划 附件删除 */
+.projectBugsDel,
+.projectFileDel,
+.projectFileDelSave,
+.projectPlanFileDel {
+	cursor: pointer;
+}
+
+.projectBugsDel:hover,
+.projectFileDel:hover,
+.projectFileDelSave:hover,
+.projectPlanFileDel:hover {
+	color: #F00;
+}
+
+/* 项目管理->项目计划 附件删除 */
+
+
+.lSelect {
+	width: 100%;
+	height: 38px;
+	line-height: 38px;
+	border: 1px solid #e6e6e6;
+	background-color: #fff;
+	padding-right: 30px;
+	cursor: pointer;
+	padding-left: 5px;
+}
+
+.layui-formLabelTop .layui-form-item {
+	position: relative;
+	padding-top: 35px;
+	display: inline-block;
+}
+
+.layui-formLabelTop .layui-form-item .layui-form-label {
+	position: absolute;
+	width: 100%;
+	top: -0;
+	padding-left: 0;
+	text-align: left;
+	color: #73777a;
+}
+
+.layui-formLabelTop .layui-form-item .layui-input-inline,
+.layui-formLabelTop .layui-form-item .layui-input-block {
+	position: relative;
+}
+
+.layui-form-labelLeft {
+	padding: 9px 5px 9px 0;
+	width: 90px;
+	text-align: left;
+}
+
+/* 表格树 */
+.lTableTree tbody tr {
+	display: none;
+}
+
+.lTableTreeClick {
+	cursor: pointer;
+}
+
+/* 表格树 */
+
+
+/* 悬浮层 */
+.lFixedDiv {
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+	display: none;
+}
+
+.lFixedDiv .bg {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background-color: #000000;
+	opacity: 0.3;
+}
+
+.lFixedDiv .contentRT60 {
+	position: absolute;
+	width: 60%;
+	height: 100%;
+	top: 0;
+	right: 0;
+	background-color: #FFFFFF;
+}
+
+.lFixedDiv .contentRT80 {
+	position: absolute;
+	width: 80%;
+	height: 100%;
+	top: 0;
+	right: 0;
+	background-color: #FFFFFF;
+}
+
+.lFixedDiv .contentC50 {
+	position: absolute;
+	width: 50%;
+	height: 50%;
+	top: 25%;
+	left: 25%;
+	background-color: #FFFFFF;
+	border-radius: 5px;
+}
+
+/* 悬浮层 */
+
+.lTextCenter,
+.lTextCenter th,
+.lTextCenter td {
+	text-align: center !important;
+}
+
+th.lTextCenter,
+td.lTextCenter {
+	text-align: center !important;
+}
+
+.lTextLeft,
+.lTextLeft th,
+.lTextLeft td {
+	text-align: left !important;
+}
+
+th.lTextLeft,
+td.lTextLeft {
+	text-align: left !important;
+}
+
+.lTdCheckbox {
+	width: 1px;
+	text-align: center !important;
+	padding-left: 25px !important;
+}
+
+.lTdID {
+	width: 40px;
+}
+
+.lTdSort {
+	width: 60px;
+}
+
+.lSortInput {
+	width: 40px;
+	line-height: 24px;
+	text-align: center;
+	border-radius: 3px;
+	border: 1px solid #DDDDDD;
+}
+
+.lTdSave2 {
+	width: 100px;
+}
+
+.lTdSave3 {
+	width: 140px;
+}
+
+.lTdSave4 {
+	width: 185px;
+}
+
+.lTdSave5 {
+	width: 230px;
+}
+
+.lSolidTop {
+	border-top: 1px solid #F2F2F2;
+}
+
+.lSolidBottom {
+	border-bottom: 1px solid #F2F2F2;
+}
+
+.lMargin {
+	margin: 15px;
+}
+
+.lMarginSm {
+	margin: 10px;
+}
+
+.lMarginXs {
+	margin: 5px;
+}
+
+.lMarginT {
+	margin-top: 15px;
+}
+
+.lMarginB {
+	margin-bottom: 15px;
+}
+
+.lPadding {
+	padding: 15px;
+}
+
+.lPaddingSm {
+	padding: 10px;
+}
+
+.lPaddingXs {
+	padding: 5px;
+}
+
+.lPaddingTXs {
+	padding-top: 5px;
+}
+
+.lPaddingRXs {
+	padding-right: 5px;
+}
+
+.lPaddingBXs {
+	padding-bottom: 5px;
+}
+
+.lPaddingLXs {
+	padding-left: 5px;
+}
+
+.lRadius {
+	border-radius: 15px;
+}
+
+.lRadiusSm {
+	border-radius: 10px;
+}
+
+.lRadiusXs {
+	border-radius: 5px;
+}
+
+.lBgWhite {
+	background-color: #FFFFFF;
+}
+
+.lBgGray {
+	background-color: #f2f3f7;
+}
+
+.lLayui-btn {
+	background-color: #1E9FFF;
+}
+
+.lLayui-btn-warm {
+	background-color: #f39c12;
+}
+
+.lLayui-btn-see {
+	background-color: #00aaff;
+}
+
+.lLayui-elem-quote {
+	border-left: 5px solid #00aaff;
+	font-size: 14px;
+	padding: 10px 15px;
+	background-color: #f2f3f7;
+}
+
+.lLayui-tab .layui-tab-brief>.layui-tab-title .layui-this {
+	background-color: #FFFFFF;
+	color: #1E9FFF;
+}
+
+.lLayui-tab .layui-tab-title {
+	border-bottom: 0;
+}
+
+.lLayui-tab .layui-tab-title .layui-this:after {
+	top: -39px;
+}
+
+
+/* 沟通记录 */
+.notesListUL {
+	color: #333;
+	font-size: 14px;
+	border-top: 1px solid #EEEEEE;
+	list-style: none;
+}
+
+.notesListUL ul,
+.notesListUL li {
+	list-style: none;
+}
+
+.notesListUL p {
+	margin: 0;
+}
+
+.notesListUL .firLi {
+	padding: 10px 0;
+	border-bottom: 1px solid #EEEEEE;
+}
+
+.notesListUL .firLi:last-child {
+	border-bottom: 0;
+}
+
+.notesListUL .title {
+	line-height: 40px;
+	overflow: hidden;
+}
+
+.notesListUL .header {
+	width: 40px;
+	height: 40px;
+	border-radius: 100%;
+	border: 1px solid #EEEEEE;
+	float: left;
+	margin-right: 10px;
+}
+
+.notesListUL .time {
+	display: inline-block;
+	color: #999999;
+	padding-left: 10px;
+	font-size: 12px;
+}
+
+.notesListUL .reply {
+	color: #00aaff;
+	float: right;
+	cursor: pointer;
+}
+
+.notesListUL .del {
+	color: #FF5722;
+	float: right;
+	cursor: pointer;
+}
+
+.notesListUL .content {
+	padding: 0 30px 15px 52px;
+	min-height: auto;
+}
+
+.notesListUL .replyList {
+	background-color: #F2F3F7;
+	margin-left: 52px;
+	padding: 10px;
+	font-size: 12px;
+	border-radius: 5px;
+}
+
+.notesListUL .replyList li {
+	border-bottom: 1px dotted #FFFFFF;
+	padding-top: 10px;
+}
+
+.notesListUL .replyList li:last-child {
+	border-bottom: 0;
+}
+
+.notesListUL .replyList .content {
+	padding: 10px 0;
+}
+
+.notesListUL .readList {
+	margin-left: 52px;
+	margin-top: 10px;
+	overflow: hidden;
+}
+
+.notesListUL .readList li {
+	display: inline-block;
+	text-align: center;
+	width: 40px;
+	padding: 5px 0;
+	float: left;
+}
+
+.notesListUL .readList li.count {
+	width: auto;
+	line-height: 30px;
+	padding-right: 10px;
+}
+
+.notesListUL .readList li img {
+	width: 30px;
+	height: 30px;
+	border-radius: 100%;
+	border: 1px solid #EEEEEE;
+}
+
+.notesListUL .readList li p {
+	margin: 0 auto;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	border-radius: 100%;
+	border: 1px solid #00aaff;
+	background-color: #3296FA;
+	color: #FFFFFF;
+	overflow: hidden;
+	font-size: 12px;
+}
+
+/* 沟通记录 */
+
+/* 模块分配多级列表 */
+.moduleList .level {
+	margin-top: 15px;
+}
+
+.moduleList .levelTab {
+	margin-left: 29px;
+}
+
+.moduleList .level1 {
+	padding-bottom: 15px;
+	border-bottom: 1px solid #DDDDDD;
+}
+
+.moduleList .level2 {
+	padding-bottom: 15px;
+	border-bottom: 1px solid #EEEEEE;
+}
+
+.moduleList .level2:last-child {
+	border-bottom: 0;
+}
+
+/* 模块分配多级列表 */

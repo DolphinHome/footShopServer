@@ -1,0 +1,485 @@
+{extend name="$admin_layout" /}
+{block name="content"}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+</head>
+<style>
+    /*数据统计*/
+    .data_all {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .wait-deal {
+        width: calc(100%/6);
+        border-left: 1px solid #e8e8e8;
+        text-align: left;
+    }
+
+    .deal-left {
+        /* padding-left: 30px; */
+        line-height: 40px;
+        text-align: center;
+    }
+
+    .deal-right {
+        /* padding-left: 20px; */
+        line-height: 20px;
+        text-align: left;
+        text-align: center;
+    }
+    .el-row {
+        margin-bottom: 0px !important;
+        padding-bottom: 12px !important;
+    }
+    .el_row_left{
+        padding-left:0 !important;
+    }
+    .el_row_right{
+        padding-right:0 !important;
+    }
+</style>
+
+<body>
+    <div id="app" style="display: none;">
+        <el-row :gutter="24" class="panel-group" >
+            <el-col :span="24">
+                <el-card class="box-card">
+                    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                        <el-form-item label="{:lang('日期')}">
+                            <el-select v-model="formInline.times" @change="serachTime" class="order-select"
+                                placeholder="{:lang('请选择')}" size='mini'>
+                                <el-option v-for="(item,index) in tradingOptions"  :key="index" :label="item.label" :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="{:lang('分类')}">
+                            <el-select v-model="formInline.user_type" placeholder="{:lang('请选择')}" size='mini'>
+                                <el-option
+                                    v-for="item in memberType"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" style="border-radius: 0;font-weight: 400;" @click="handleSearch" size='mini'>{:lang('查询')}</el-button>
+                            <el-button  type="info" style="color: #73777a;background-color: #f4f4f4;border-radius: 0;border-color: #adadad;color: #333;font-weight: 400;" size='mini' @click="handleReset">{:lang('重置')}</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-card>
+            </el-col>
+        </el-row>
+        <!-- 小统计 -->
+        <el-row :gutter="24" class="panel-group" >
+            <el-col :span="24">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>{:lang('数据总览')}</span>
+                    </div>
+                    <!-- 内容 -->
+                    <div class="data_all">
+                        <div class="wait-deal" v-for="(item,index) in dataArray" :key="index">
+                            <div class="deal-left">{{item.number}}</div>
+                            <div class="deal-right">{{item.desc}}</div>
+                        </div>
+                    </div>
+
+                </el-card>
+            </el-col>
+        </el-row>
+
+
+        <el-row :gutter="24" >
+            <el-col :span="12" class="el_row_right">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>{:lang('交易数据')}</span>
+                    </div>
+                    <!-- 内容 -->
+                    <div id="myChart" :style="{width: '100%', height: '300px'}"></div>
+                </el-card>
+            </el-col>
+            <el-col :span="12">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span> {:lang('会员概览')}</span>
+                    </div>
+                    <!-- 内容 -->
+                    <div id="myChart02" :style="{width: '100%', height: '300px'}"></div>
+                </el-card>
+            </el-col>
+        </el-row>
+        <el-row :gutter="24" >
+            <el-col :span="24">
+              <el-card class="box-card">
+                <div slot="header" class="clearfix" > 
+                 <span>{:lang('数据列表')}</span>
+                </div>
+                <el-table :data="tablList" border  :max-height="340" style="width: 100%">
+                    <el-table-column prop="name" label="{:lang('会员名称')}" width="">
+                        <template slot-scope="scope">
+                            <a :href=`/admin.php/statistics/user/detail.html?id=${scope.row.id}` >
+                                <p style="color:#409EFF;cursor:pointer">{{scope.row.name}}</p>
+                            </a>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="type" label="{:lang('会员类型')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="integral" label="{:lang('会员积分')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="balance_money" label="{:lang('会员余额')}" width="">
+                    </el-table-column>
+                     <el-table-column prop="browse" label="{:lang('会员浏览量')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="collect" label="{:lang('收藏总数')}" width="">
+                    </el-table-column>
+                    <el-table-column prop="pay_money" label="{:lang('支付金额')}" width="">
+                    </el-table-column>
+                     <el-table-column prop="pay_order" label="{:lang('支付订单数')}" width="">
+                    </el-table-column>
+                     <el-table-column prop="pay_change" label="{:lang('支付转化率')}" width="">
+                    </el-table-column>
+                </el-table>
+               <!-- 分页 -->
+               <div style="display: flex; flex-direction:row-reverse;">
+                  <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page.sync="currentPage"
+                        :page-size="5"
+                        layout="prev, pager, next, jumper"
+                        :total="totalPageSize">
+                  </el-pagination>
+              </div>
+             </el-card>
+            </el-col >
+         </el-row>
+         <div style="margin-top:20px;height:20px;width:100%;"></div>
+    </div>
+</body>
+  <!-- import Vue before Element -->
+  <script src="/static/admin/js/vue/vue.js"></script>
+  <!-- import JavaScript -->
+  <script src="/static/admin/js/vue/index.js"></script>
+  <!-- 引入echarts -->
+  <script src="/static/plugins/echarts/echarts.min.js"></script>
+  <!-- ajax请求 -->
+  <script src="/static/plugins/ajax/axios.js" ></script>
+<script>
+    const APP = new Vue({
+        el: '#app',
+        data() {
+            return {
+                totalPageSize:0,
+                currentPage:1,
+                dataArray: [{
+                    number: 0,
+                    desc: "{:lang('会员总量')}"
+                }, {
+                    number: 0,
+                    desc: "{:lang('会员总下单量')}"
+                }, {
+                    number: 0,
+                    desc: "{:lang('会员总充值量')}"
+                },
+                 {
+                    number: 0,
+                    desc: "{:lang('会员总积分')}"
+                }, 
+                {
+                    number: 0,
+                    desc: "{:lang('会员收藏总数')}"
+                },
+                {
+                    number: 0,
+                    desc: "{:lang('会员总浏览量')}"
+                }],
+                memberType:[],
+                formInline: {
+                    times: 'year',
+                    user_type: 0,
+                },
+                tablList: [],
+                tradingOptions: [
+                    {
+                        label: "{:lang('今日')}",
+                        value: 'day'
+                    }, {
+                        label: "{:lang('本周')}",
+                        value: 'week'
+                    }, {
+                        label: "{:lang('本月')}",
+                        value: 'month'
+                    }, {
+                        value: 'quarter',
+                        label: "{:lang('本季度')}"
+                    }, {
+                        value: 'year',
+                        label: "{:lang('本年')}"
+                    }
+                ],
+            }
+        },
+        mounted() {
+            document.getElementById('app').style.display = 'block'
+            this.getOptionsData()
+            this.getContentData()
+            this.getTableList()
+       
+        },
+        methods: {
+            getTableList(){
+                const that=this
+                axios.get(`userList?times=${that.formInline.times}&user_type=${that.formInline.user_type}&page=${that.currentPage}&list_rows=5`).then(function (res) {
+                   if(res.data.code==1){
+                       that.totalPageSize=res.data.data.total
+                       that.tablList=res.data.data.data
+                   }
+                })
+                .catch(function (error) {
+                  that.$message.error("{:lang('出了点小差错，请联系后台管理员')}");
+                });
+            },
+
+            //主数据
+            getContentData(){
+                const that=this
+                axios.get(`userData?times=${that.formInline.times}&user_type=${that.formInline.user_type}`).then(function (res) {
+                   if(res.data.code==1){
+                       that.dataArray[0].number=res.data.data.userStatistics.total_user //会员总量
+                       that.dataArray[1].number=res.data.data.userStatistics.total_order //会员总下单量
+                       that.dataArray[2].number=res.data.data.userStatistics.total_money //会员总充值量
+                       that.dataArray[3].number=res.data.data.userStatistics.total_score //会员总积分
+                       that.dataArray[4].number=res.data.data.userStatistics.total_collect //会员收藏总数
+                       that.dataArray[5].number=res.data.data.userStatistics.total_visit //会员总浏览量
+                       //交易数据
+                       that.tradingData(res.data.data.payData);
+                       //会员概括
+                       that.memberSummarize(res.data.data.UserView);
+                   }
+                })
+                .catch(function (error) {
+                  that.$message.error("{:lang('出了点小差错，请联系后台管理员')}");
+                });
+
+            },
+            //下拉选项
+            getOptionsData(){
+                const that=this
+                axios.post('userlevel', {
+				}).then(function (res) {
+                   if(res.data.code==1){
+                     that.memberType=res.data.data
+                   }
+                })
+                .catch(function (error) {
+                  that.$message.error("{:lang('出了点小差错，请联系后台管理员')}");
+                });
+            },
+        
+            // 分页功能
+            handleSizeChange(val) {
+          
+              this.getTableList()
+            },
+            handleCurrentChange(val) {
+         
+              this.getTableList()
+            },
+            handleSearch() {
+             this.getContentData()
+             this.getTableList()
+            },
+            handleReset(){
+                this.formInline.times='year'
+                this.formInline.user_type=0
+                this.getTableList()
+                this.getContentData()
+
+            },
+            // 获取数据
+ 
+            // 选择时间
+            serachTime() {
+          
+            },
+            // 页面初始化
+            tradingData(response) {
+                   //交易数据
+                let Xlist=[]
+                let orderList=[]
+                let payMoneyList=[]
+                let buyList=[]
+                response.getOrderNumberData.forEach(function(item){
+                    Xlist.push(item.dateFormat)
+                    orderList.push(item.browseCount)
+                })
+
+                response.getOrderPayUserData.forEach(function(item){
+                    buyList.push(item.browseCount)
+                })
+                response.getSalePriceData.forEach(function(item){
+                    payMoneyList.push(item.browseCount)
+                })
+
+             
+                // 基于准备好的dom，初始化echarts实例
+                let myChart = echarts.init(document.getElementById('myChart'))
+                // 绘制图表
+                myChart.setOption({
+                    title: {
+                        // text: "{:lang('销售情况')}"
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ["{:lang('支付金额')}", "{:lang('支付买家数')}", "{:lang('支付订单数')}"]
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: Xlist
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                type: 'dotted',
+                                color: '#EAEAEA'
+                            }
+                        },
+                        axisTick: { //y轴刻度线
+                            show: false
+                        },
+                        axisLine: {
+                            show: false
+                        }
+                    },
+                    series: [
+                        {
+                            name: "{:lang('支付金额')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                            data: payMoneyList
+                        },
+                        {
+                            name: "{:lang('支付买家数')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                            data: buyList
+                        },
+                        {
+                            name: "{:lang('支付订单数')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}",  //放开即为 堆叠效果
+                            data: orderList
+                        }
+                    ]
+
+                });
+
+            },
+            memberSummarize(response) {
+                console.log(response,222)
+                  
+                let Xlist=[]
+                let collectList=[]
+                let visitList=[]
+                let browseList=[]
+                response.getGoodsCollectionData.forEach(function(item){
+                    Xlist.push(item.dateFormat)
+                    collectList.push(item.browseCount)
+                })
+
+                response.getGoodsVisitorsData.forEach(function(item){
+                    visitList.push(item.browseCount)
+                })
+                response.getGoodsViewsData.forEach(function(item){
+                    browseList.push(item.browseCount)
+                })
+
+                // 基于准备好的dom，初始化echarts实例
+                let myChart = echarts.init(document.getElementById('myChart02'))
+                // 绘制图表
+                myChart.setOption({
+                    title: {
+                        // text: "{:lang('销售情况')}"
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ["{:lang('会员收藏数')}", "{:lang('会员访问数')}", "{:lang('会员浏览数')}"]
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: Xlist
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                type: 'dotted',
+                                color: '#EAEAEA'
+                            }
+                        },
+                        axisTick: { //y轴刻度线
+                            show: false
+                        },
+                        axisLine: {
+                            show: false
+                        }
+                    },
+                    series: [
+                        {
+                            name: "{:lang('会员收藏数')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                            data: collectList
+                        },
+                        {
+                            name: "{:lang('会员访问数')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                            data: visitList
+                        },
+                        {
+                            name: "{:lang('会员浏览数')}",
+                            type: 'line',
+                            // stack: "{:lang('总量')}", //放开即为 堆叠效果
+                            data: browseList
+                        }
+                    ]
+
+                });
+            }
+        },
+    })
+</script>
+
+</html>
+{/block}

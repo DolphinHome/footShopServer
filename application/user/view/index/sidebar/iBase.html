@@ -1,0 +1,104 @@
+<!--
+ * @Descripttion: 
+ * @Version: 1.0
+ * @Author: wangph
+ * @Date: 2021-03-31 09:46:02
+ * @LastEditors: wangph
+ * @LastEditTime: 2021-04-27 15:52:38
+-->
+<style>
+.content {
+	min-width: 620px !important;
+	overflow-x: hidden;
+}
+.base-pop {
+	display: flex;
+	flex-wrap: nowrap;
+	width: 100%;
+}
+.pop-left {
+	display: flex;
+	flex-direction: column;
+	min-width: 250px;
+}
+.pop-left div {
+	white-space: nowrap;
+}
+.pop-right {
+	display: flex;
+	flex-direction: column;
+	min-width: 300px;
+}
+.pop-right div {
+	white-space: nowrap;
+}
+</style>
+
+<div class="layui-row layui-rowInput base-pop" style="margin-bottom: 10px">
+	
+	<div class="pop-left">
+		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+			{:lang('头像')}：<img src="{$info.head_img}" style="width: 20px;height: 20px;">
+		</div>
+<!--		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+			{:lang('会员类型')}：{$info.user_type}
+		</div>-->
+		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+			{:lang('手机号')}：{$info.mobile}
+		</div>
+<!--		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">-->
+<!--			{:lang('会员积分')}：{$info.score}-->
+<!--		</div>-->
+<!--		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">-->
+<!--			{:lang('累计获取积分')}：{$info.count_score}-->
+<!--		</div>-->
+<!--		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">-->
+<!--			{:lang('优惠券数量')}：{$info.coupon_num}-->
+<!--		</div>-->
+		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+			{:lang('累计消费金额')}：￥{$info.total_consumption_money}
+		</div>
+
+	</div>
+
+	<div class="pop-right">
+		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs" title="{$data.name}" style="padding-right: 10px; overflow: hidden;">
+			{:lang('昵称')}：{$info.user_nickname}
+		</div>
+		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs" > <!--style="color: #1E9FFF"-->
+			{:lang('性别')}：{$info.sex}
+		</div>
+<!--		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">-->
+<!--			{:lang('会员余额')}：{$info.user_money}-->
+<!--		</div>-->
+		<div class="layui-col-xs12 layui-col-sm6 layui-col-md3 lPaddingTXs lPaddingBXs">
+			{:lang('注册时间')}：{$info.create_time}
+		</div>
+
+	</div>
+	
+</div>
+
+
+<script>
+function platformChange(obj, aid) {
+
+	var name = $(obj).attr('data-name');
+	var id = $(obj).attr('data-pk');
+	var value = $(obj).val();
+	var params = {
+		aid: id,
+		name: name,
+		mode: "popup",
+		value: value
+	};
+	$.post("{:url('setWritingStatus')}", params, function(ret) {
+		if (ret.code == 1) {
+			layer.msg(ret.msg);
+			$('#backlist').show();
+			$('#edit_back').hide();
+			window.parent.updatetr(id, 'select', name, value);
+		}
+	})
+}
+</script>

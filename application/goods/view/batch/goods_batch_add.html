@@ -1,0 +1,123 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/main.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/iconfont.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/order-new.css?v=2">
+{/block}
+
+{block name="content"}
+
+<div class="warpper">
+    <div class="title">{:lang('商品')} - {:lang('商品批量上传')}</div>
+    <div class="content">
+        <div class="tabs_info">
+            <ul>
+                <li><a href="goods_batch">{:lang('商品批量修改')}</a></li>
+                <li class="curr"><a href="goods_batch_add">{:lang('商品批量上传')}</a></li>
+                <li><a href="goods_batch_export">{:lang('商品批量导出')}</a></li>
+                <li><a href="goods_batch_auto">{:lang('批量自动上下架')}</a></li>
+            </ul>
+        </div>
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{:lang('操作提示')}</h4><span id="explanationZoom" title="{:lang('收起提示')}"></span></div>
+            <ul><li>{:lang('根据使用习惯')}，{:lang('下载相应语言的')}csv{:lang('文件')}，{:lang('例如中国内地用户下载简体中文语言的文件')}，{:lang('港台用户下载繁体语言的文件')}；</li><li>{:lang('填写')}csv{:lang('文件')}，{:lang('可以使用')}excel{:lang('或文本编辑器打开')}csv{:lang('文件')}；<br>{:lang('碰到')}“{:lang('是否精品')}”{:lang('之类')}，{:lang('填写数字')}0{:lang('或者')}1，0{:lang('代表')}“否”，1{:lang('代表')}“是”；<br>{:lang('商品图片和商品缩略图请填写带路径的图片文件名')}，{:lang('其中路径是相对于')} [{:lang('根目录')}]/images/ {:lang('的路径')}，{:lang('例如图片路径为')}[{:lang('根目录')}]/images/200610/abc.jpg，{:lang('只要填写')} 200610/abc.jpg {:lang('即可')}；<br><font style="color:#FE596A;">{:lang('如果是淘宝助理格式请确保')}cvs{:lang('编码为在网站的编码')}，{:lang('如编码不正确')}，{:lang('可以用编辑软件转换编码')}。</font></li><li>{:lang('将填写的商品图片和商品缩略图上传到相应目录')}，{:lang('例如')}：[{:lang('根目录')}]/images/200610/；<br><font style="color:#FE596A;">{:lang('请首先上传商品图片和商品缩略图再上传')}csv{:lang('文件')}，{:lang('否则图片无法处理')}。</font></li><li>{:lang('选择所上传商品的分类以及文件编码')}，{:lang('上传')}csv{:lang('文件')}</li></ul>
+        </div>
+        <div class="flexilist">
+            <div class="common-content">
+                <div class="mian-info">
+                    <form action="goods_batch.php?act=upload" method="post" enctype="multipart/form-data" name="theForm" id="goods_batch_form" novalidate="novalidate">
+                        <div class="switch_info">
+                            <div class="item">
+                                <div class="label"><span class="require-field">*</span>{:lang('所属分类')}：</div>
+                                <div class="label_value">
+                                    <div class="search_select">
+                                        <div class="categorySelect">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w290 valid" value="{:lang('选择商品分类')}" autocomplete="off" readonly="" data-filter="cat_name">
+                                                <input type="hidden" name="cat" id="cat" value="0" data-filter="cat_id">
+                                            </div>
+                                            <div class="select-container" style="width:319px;display:none;">
+                                                <div class="select-top">
+                                                    <a href="javascript:;" class="categoryTop" data-cid="0" data-cname="" data-diff="0" data-show="0" data-seller="0" data-table="category">{:lang('重选')}</a>
+                                                    &gt; <span>{:lang('选择商品分类')}</span>
+                                                </div>
+                                                <div class="select-list">
+                                                    <ul>
+                                                        <li data-cid="1" data-cname="{:lang('图书')}、{:lang('音像')}、{:lang('电子书')}" data-diff="0" data-url="category.php?id=1" data-show="0" data-seller="0" data-table="category">
+                                                            <em>Ⅰ</em>
+                                                            {:lang('图书')}、{:lang('音像')}、{:lang('电子书')}		</li>
+
+                                                    </ul>
+                                                </div>                                            </div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{:lang('数据格式')}：</div>
+                                <div class="label_value">
+                                    <div id="format" class="imitate_select select_w320">
+                                        <div class="cite">{:lang('请选择')}</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="0" class="ftx-01">{:lang('请选择')}</a></li>
+                                            <li><a href="javascript:;" data-value="ecshop" class="ftx-01">ecshop{:lang('支持数据格式')}</a></li>
+                                            <li><a href="javascript:;" data-value="taobao" class="ftx-01">{:lang('淘宝助理支持数据格式')}</a></li>
+                                        </ul>
+                                        <input name="data_cat" type="hidden" value="0" id="format_val">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{:lang('文件编码')}：</div>
+                                <div class="label_value">
+                                    <div id="file_code" class="imitate_select select_w320">
+                                        <div class="cite">{:lang('国际化编码')}（utf8）</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="UTF8" class="ftx-01">{:lang('国际化编码')}（utf8）</a></li>
+                                            <li><a href="javascript:;" data-value="GB2312" class="ftx-01">{:lang('简体中文')}</a></li>
+                                            <li><a href="javascript:;" data-value="BIG5" class="ftx-01">{:lang('繁体中文')}</a></li>
+                                        </ul>
+                                        <input name="charset" type="hidden" value="UTF8" id="file_code_val">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label"><span class="require-field">*</span>{:lang('上传批量')}csv{:lang('文件')}：</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <input type="button" name="button" id="button" class="type-file-button" value="">
+                                        <input type="file" class="type-file-file" id="file" name="file" size="30" data-state="csvfile" hidefocus="true" value="">
+                                        <input type="text" name="textfile" class="type-file-text" id="textfield" readonly="">
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                    <div class="notic">（CSV{:lang('文件中一次上传商品数量最好不要超过')}40，CSV{:lang('文件大小最好不要超过')}500K.）</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                    <a href="goods_batch.php?act=download&amp;charset=zh_cn" class="mr10">1、{:lang('下载批量')}CSV{:lang('文件')}（{:lang('简体中文')}）</a>
+                                    <a href="goods_batch.php?act=download&amp;charset=en_us" class="mr10">2、{:lang('下载批量')}CSV{:lang('文件')}（{:lang('美国英语')}）</a>
+                                    <a href="goods_batch.php?act=download&amp;charset=zh_tw" class="mr10">3、{:lang('下载批量')}CSV{:lang('文件')}（{:lang('繁体中文')}）</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <input type="submit" value="{:lang('确定')}" class="button" id="submitBtn">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{/block}

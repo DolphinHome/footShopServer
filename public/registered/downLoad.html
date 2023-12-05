@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>下载</title>
+		<meta name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="/static/home/share/css/style.css" />
+		<link rel="stylesheet" href="./css/layer.css" id="layui_layer_skinlayercss" style="">
+		<style type="text/css">
+			body {
+				padding-top: 0;
+				background-color: #FFFFFF;
+			}
+
+			.flex {
+				display: flex;
+			}
+
+			.align-center {
+				align-items: center;
+			}
+
+			.justify-between {
+				justify-content: space-between;
+			}
+
+			.logo {
+				width: 10rem;
+				margin: 6rem auto 2rem;
+			}
+
+			.logo img {
+				width: 7rem;
+				height: 7rem;
+				display: block;
+				/*border-radius: 1rem;*/
+			}
+
+			.logo p {
+				text-align: center;
+			}
+
+			.down_btn {
+				text-align: center;
+				/* margin-top: 15px; */
+			}
+
+			.padding {
+				padding: .8rem;
+				position: fixed;
+				bottom: 0;
+				background-color: #FFFFFF;
+				left: 0;
+				right: 0;
+				width: 92%;
+				padding: 1rem 1rem 2rem;
+			}
+
+			.bg1 {
+				background: #FF8651;
+				margin-right: 1rem;
+			}
+
+			.sub-btn {
+				display: inline-block;
+				background: #FF8651;
+				width: 10rem;
+				height: 2.5rem;
+				border-radius: 1.5rem;
+				line-height: 2.5rem;
+				color: #FFFFFF;
+				font-size: .8rem
+			}
+
+			#contect {
+				color: #999;
+				font-size: 1rem;
+				margin: 0 3rem;
+			}
+
+			.wxtip {
+				background: rgba(0, 0, 0, 0.8);
+				text-align: center;
+				position: fixed;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 998;
+				display: none;
+			}
+
+			.wxtip-txt {
+				color: #fff;
+				font-size: 16px;
+				line-height: 1.5;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="main">
+			<!-- logo -->
+			<div id="" class="logo">
+				<img src="img/logo.png" class="img " />
+				<p class="">梦丽莎</p>
+			</div>
+<!--			<div id="contect" class=""> </div>-->
+			<!-- 下载按钮 -->
+			<div class="padding flex align-center justify-between">
+				<div onclick="downLoad(1)" class="sub-btn down_btn bg1">Android下载</div>
+				<div onclick="downLoad(2)" class="sub-btn down_btn bg2">IOS下载</div>
+			</div>
+			<div class="wxtip" id="JweixinTip">
+				<p class="wxtip-txt"><img src="./img/weixin-tip.png" style="width: 100%"></p>
+			</div>
+		</div>
+		<script src="./js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var base_url = "http://menglisha.jishu11.com/"; //域名
+			var androidapk_download_link = ''; //安卓下载APK
+			$(document).ready(function() {
+				getInfo()
+			})
+			//获取地址栏请求参数
+			// function GetQueryString(name) {
+			// 	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			// 	var r = window.location.search.substr(1).match(reg);
+			// 	if (r != null) return decodeURI(r[2]);
+			// 	return null;
+			// }
+			// 获取APP下载信息
+			function getInfo() {
+				$.ajax({
+					type: "post",
+					url: base_url + "api/v1/61502a6f7e0ac",
+					success: function(data) {
+						if (data.code == '1') {
+							// $("#contect").html(data.data.readme)
+							androidapk_download_link = data.data.down_url
+						}
+					},
+					error: function(event, xhr, options, exc) {
+						alert('请求失败，请稍后再试。')
+						console.log(xhr.start);
+					}
+				});
+			}
+
+			// 下载应用；1=安卓，2=ios
+			function downLoad(type) {
+				// 判断浏览器
+				var u = navigator.userAgent;
+				var isWeixin = !!/MicroMessenger/i.test(u);
+				if (isWeixin) {
+					document.getElementById('JweixinTip').style.display = 'block';
+					return
+				}
+				var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+				var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+				// 如果传参
+				let androidPath = androidapk_download_link; //安卓下载地址
+				let iosPath = ''; //ios下载地址
+				if (navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)) {
+					window.location.href = 'https://apps.apple.com/cn/app/sharingmall/id1582561039';//'https://testflight.apple.com/join/NDZ8R823XK'; //这里是IOS的下载地址
+				} else if (navigator.userAgent.match(/android/i)) {
+					window.location.href = androidapk_download_link;// 这里是安卓的下载地址
+				}
+			}
+		</script>
+	</body>
+
+</html>

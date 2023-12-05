@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>{:lang('项目管理')}</title>
+		<link rel="stylesheet" type="text/css" href="/static/crm/animate.min.css"/>
+		<link rel="stylesheet" type="text/css" href="/static/crm/layui/css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="/static/crm/lStyle.css?<?php echo time();?>" />
+	<style type="text/css">
+		.boss{
+			text-align:center;
+			width:350px;
+			/* height:70%; */
+			z-index:999;
+			background:white;
+			position:fixed;
+			left:50%;
+			margin-left:-300px;
+			top:50%;
+			margin-top: -223px;
+			border-radius:15px;
+		}
+		.boss img{
+			width:600px;
+			/* height:547px; */
+		}
+		.bgs{
+			width:100%;
+			height:100%;
+			background:black;
+			opacity:0.3;
+			position:fixed;
+			left:0;
+			top:0;
+		}
+		.lPaddingBXs {
+			/*padding-bottom: 5px;*/
+			height: 34px;
+		}
+	</style>
+	</head>
+	<body>
+		<p class="iCloseLayer iCloseLayerClick bounce animated">
+			<img src="/static/admin/images/close.png">
+		</p>
+		<div class="layui-form lMargin lPadding lRadiusXs lBgWhite">
+			{include file='project/sidebar/iBase' /}
+			<div class="lMarginT lMarginB lLayui-tab">
+				<div class="layui-tab layui-tab-brief">
+					<ul class="layui-tab-title lBgGray" style="padding-left: 10px;">
+						<?php if($leaderType['isLeader']):?>
+						<li class="layui-this">{:lang('项目分析')}</li>
+						<li>{:lang('人员分配')}</li>
+						<li>{:lang('项目计划')}</li>
+						<?php endif;?>
+						<?php if(!$leaderType['isLeader']):?>
+						<li> {:lang('项目分析')}</li>
+						<?php endif;?>
+						<li <?php if(!$leaderType['isLeader']):?>class="layui-this"
+						<?php endif;?> >{:lang('工作日志')}</li>
+						{if $leaderType['isLeader'] == 0}
+						<li>{:lang('项目计划')}</li>
+						{/if}
+						<li>{:lang('疑难求助')}</li>
+						<li>{:lang('测试记录')}</li>
+						<!--{if ($admin_role == 30) OR ($admin_role == 32)}
+						<li>{:lang('添加')}UE{:lang('链接')}</li>
+						{/if}
+						{if ($admin_role == 29) OR ($admin_role == 31)}
+						<li>{:lang('添加')}UI{:lang('链接')}</li>
+						{/if}-->
+						<?php if($leaderType['isLeader']):?>
+						<li>{:lang('回款记录')}</li>
+						<?php endif;?>
+						<li>{:lang('第三方资料')}</li>
+						<li>{:lang('操作日志')}</li>
+					</ul>
+					<div class="layui-tab-content" id="vueDome">
+						<?php if($leaderType['isLeader']):?>
+						<div class="layui-tab-item layui-show">
+							{include file='project/sidebar/iRecord' /} <!--项目分析-->
+						</div>
+						<div class="layui-tab-item">
+							{include file='project/sidebar/iMember' /}  <!--人员分配-->
+						</div>
+						<div class="layui-tab-item">
+							{include file='project/sidebar/iPlan' /} <!--项目计划-->
+						</div>
+						<?php endif;?>
+
+						<?php if(!$leaderType['isLeader']):?>
+						<div class="layui-tab-item">
+							{include file='project/sidebar/iRecord' /} <!--项目分析-->
+						</div>
+						<?php endif;?>
+						<div class="layui-tab-item <?php if(!$leaderType['isLeader']):?>layui-show<?php endif;?>">
+							{include file='project/sidebar/iLog' /} <!--工作日志-->
+						</div>
+
+						{if $leaderType['isLeader']==0}
+						<div class="layui-tab-item">
+							{include file='project/sidebar/iPlan' /} <!--项目计划-->
+						</div>
+						{/if}
+
+						<div class="layui-tab-item">{:lang('疑难求助')}</div>
+						<div class="layui-tab-item">
+							<?php if($data['time_test'] && $data['time_test'] < time()):?>
+							{include file='project/sidebar/iBugs' /}  <!--测试记录-->
+							<?php else:?>
+							<!-- 未申请测试 -->
+							{include file='project/sidebar/iBugs' /} <!--测试记录-->
+							<?php endif;?>
+						</div>
+
+
+						<!--{if ($admin_role == 30) OR ($admin_role == 32)}
+						<div class="layui-tab-item">
+							{include file='project/sidebar/Uelink' /}  &lt;!&ndash;添加原型图链接&ndash;&gt;
+						</div>
+						{/if}
+
+						{if ($admin_role == 29) OR ($admin_role == 31)}
+						<div class="layui-tab-item">
+							{include file='project/sidebar/Uilink' /}  &lt;!&ndash;添加效果图链接&ndash;&gt;
+						</div>
+						{/if}-->
+
+						<?php if($leaderType['isLeader']):?>
+						<div class="layui-tab-item">
+							{include file='project/sidebar/iContractPayed' /} <!--会款记录-->
+						</div>
+						<?php endif;?>
+						<div class="layui-tab-item">
+							{include file='project/sidebar/iTripartite' /} <!--第三方资料-->
+						</div>
+						<div class="layui-tab-item">
+							{include file='project/sidebar/iLog_operation' /}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 项目分析回复、项目日志回复 @员工 -->
+		<div class="fixedStaff">
+			<div class="bg"></div>
+			<div class="content">
+				<div class="contentFuzhu">
+					<form id="fixedStaffForm" action="">
+						<div id="staffListAll"></div>
+						<div class="layui-btn-group">
+							<button type="button" class="layui-btn lLayui-btn fixedStaffSubmit">{:lang('确定')}</button>
+							<button type="button" class="layui-btn layui-btn-primary fixedStaffClose">{:lang('取消')}</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- 项目分析回复、项目日志回复 @员工 -->
+
+		<input type="hidden" id="project_id" value="{$data['aid']}" /> <!-- 项目id -->
+		<input type="hidden" id="record_url" value='{:url("ProjectRecord/listByProject")}' /> <!-- 项目分析URL -->
+		<input type="hidden" id="record_url_read" value='{:url("ProjectRecord/read")}' /> <!-- 项目分析URL阅读 -->
+		<input type="hidden" id="log_url" value='{:url("ProjectLog/listByProject")}' /> <!-- 工作日志URL -->
+		<input type="hidden" id="log_url_read" value='{:url("ProjectLog/read")}' /> <!-- 工作日志URL阅读 -->
+		<input type="hidden" id="log_url_del" value='{:url("ProjectLog/delete")}' /> <!-- 删除计划 -->
+		<input type="hidden" id="bugs_url" value='{:url("ProjectBugs/listByProject")}' /> <!-- 测试记录URL -->
+		<input type="hidden" id="task_url" value='{:url("ProjectTask/listByProject")}' /> <!-- 计划任务URL -->
+		<input type="hidden" id="plan_url" value='{:url("ProjectPlan/listByProject")}' /> <!-- 周计划 -->
+		<input type="hidden" id="plan_url_this" value='{:url("ProjectPlan/listByProjectThis")}' /> <!-- 本周计划 -->
+		<script src="/static/crm/jquery.min-2.1.4.js"></script>
+		<script src="/static/crm/layui/layui.js"></script>
+		<script src="/static/crm/layui/xm-select.js"></script>
+		<script src="/static/plugins/vue/vue.min.js"></script>
+		<script src="/static/crm/Project/sidebar.js?<?php echo time();?>"></script> <!-- 本页js -->
+		<script src="/static/crm/lTableTree.js"></script> <!-- 表格树 -->
+		<script src="/static/crm/lJs.js?<?php echo time();?>"></script> <!-- 通用js -->
+
+		<script>
+			// 项目分析回复、项目日志回复 @员工
+			var staffListAll = <?php echo $staffListAll;?>;
+			var staffCheck = xmSelect.render({
+				el: '#staffListAll',
+				filterable: true,
+				data: staffListAll,
+				name: 'ids',
+			})
+
+			$('.fixedStaffSubmit').click(function() {
+				var id = $(this).attr('data-id');
+				var type = $(this).attr('data-type');
+				var idStr = type == 'Log' ? 'logReplay' : 'recordReplay';
+				var staffIds = $('#' + idStr + id).attr('data-ids');
+				var staffIdsThis = '';
+				var staffNames = $('#' + idStr + id).val();
+				var staffNamesThis = '';
+				var staffIdsNames = $('#' + idStr + id).attr('data-idsnames');
+				var staffIdsNamesJson = staffIdsNames ? JSON.parse(staffIdsNames) : [];
+
+				var data = $("#fixedStaffForm").serializeArray();
+				if (staffIds) {
+					staffIds += data[0].value + ',';
+				} else {
+					staffIds = ',' + data[0].value + ',';
+				}
+				staffIdsThis = ',' + data[0].value + ',';
+
+				var i = 0;
+				for (i in staffListAll) {
+					var value = ',' + staffListAll[i]['value'] + ',';
+					if (staffIdsThis.indexOf(value) != -1) {
+						if (staffNamesThis) {
+							staffNamesThis += '@' + staffListAll[i]['name'] + ' ';
+						} else {
+							staffNamesThis += staffListAll[i]['name'] + ' ';
+						}
+
+						staffIdsNamesJson.push(staffListAll[i])
+					}
+				}
+
+				$('#' + idStr + id).val(staffNames + staffNamesThis);
+				$('#' + idStr + id).attr('data-ids', staffIds);
+				$('#' + idStr + id).attr('data-idsnames', JSON.stringify(staffIdsNamesJson));
+				$('.fixedStaff').hide();
+				staffCheck.setValue([])
+			})
+			$('.fixedStaffClose').click(function() {
+				$('.fixedStaff').hide();
+			})
+			// 项目分析回复、项目日志回复 @员工
+
+			$(".set_btn").on('click', function() {
+				var id = $(this).data('id');
+				layer.open({
+					type: 2,
+					title: false,
+					closeBtn: false,
+					shadeClose: true,
+					scrollbar: true,
+					offset: 'r',
+					anim: '7',
+					area: ['66%', '100vh'],
+					content: "{:url('saveFieldUelink')}?layer=1&id=" + id
+				})
+			});
+
+			$(".set_btn_ui").on('click', function() {
+				var id = $(this).data('id');
+				layer.open({
+					type: 2,
+					title: false,
+					closeBtn: false,
+					shadeClose: true,
+					scrollbar: true,
+					offset: 'r',
+					anim: '7',
+					area: ['66%', '100vh'],
+					content: "{:url('saveFieldUilink')}?layer=1&id=" + id
+				})
+			});
+		</script>
+	</body>
+</html>

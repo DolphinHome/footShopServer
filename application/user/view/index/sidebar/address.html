@@ -1,0 +1,52 @@
+<div>
+  <table class="table table-builder table-hover table-bordered table-striped">
+    <thead>
+    <tr>
+      <th>{:lang('姓名')}</th>
+      <th>{:lang('收货电话')}</th>
+      <th>{:lang('收货人地址')}</th>
+      <!--<th>{:lang('邮政编码')}</th>-->
+      <!--<th class="column-right_button text-center">{:lang('时间')}</th>-->
+    </tr>
+    </thead>
+    <tbody>
+
+    {notempty name="address"}
+    {volist name="address" id="module"}
+    <tr>
+      <td>{$module.name|default='无标题'}</td>
+      <td>{$module.mobile}</td>
+      <td  title="{$module.province}-{$module.city}-{$module.district}-{$module.address}">{$module.province}-{$module.city}-{$module.district}-{$module.address}</td>
+      <!--<td>{$module.postal_code}</td>-->
+      <!--<td class="text-center">{$module.create_time}</td>-->
+    </tr>
+    {/volist}
+    {else /}
+    <tr class="table-empty">
+      <td class="text-center empty-info" colspan="6"><i class="fa fa-database"></i> {:lang('暂无数据')} <br></td>
+    </tr>
+    {/notempty}
+    </tbody>
+
+  </table>
+  <div class="data-table-toolbar">
+    <div class="row">
+      <div class="col-sm-12"> {// 分页 }
+        {notempty name="address_pages"}
+        {$address_pages|raw}
+        {/notempty}
+        {notempty name="address"}
+
+        <div class="pagination-info pull-right">
+          <div>
+            <input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="{:input('param.page', '1')}">
+            <input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="{php}echo input('param.list_rows', '') == '' ? $address->listRows() : input('param.list_rows');{/php}">
+            / <strong>{$address->lastPage()|raw}</strong> {:lang('页')}，{:lang('共')} <strong>{$address->total()|raw}</strong> {:lang('条数据')}，{:lang('每页显示数量')}
+          </div>
+        </div>
+        {/notempty}
+      </div>
+    </div>
+  </div>
+
+</div>

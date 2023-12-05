@@ -1,0 +1,131 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/main.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/iconfont.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/dsc/order-new.css?v=2">
+{/block}
+
+{block name="content"}
+<style type="text/css">
+    .select-list {
+        width:150px;
+        height:150px;
+        /*overflow: hidden;*/
+        overflow:scroll;
+    }
+    .select-container {
+        display: none;
+    }
+    .select2 {
+        width: 140px !important;
+    }
+    @media screen and (max-width: 1400px) {
+        .common-content {
+            display: block;
+            overflow-x: scroll;
+        }
+    }
+        .list-div tfoot td{
+                background: #fff!important;
+    border-bottom: 0px!important;
+        }
+        .list-div th{
+            border: 0px; 
+        }
+</style>
+<div class="warpper">
+    <div class="title">{:lang('商品')} - {:lang('商品批量修改')}</div>
+    <div class="content">
+        <!-- <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>标识“<em>*</em>”的选项为必填项，其余为选填项。</li>
+                <li>可从管理平台手动添加一名新会员，并填写相关信息。</li>
+                <li>新增会员后可从会员列表中找到该条数据，并再次进行编辑操作，但该会员名称不可变。</li>
+            </ul>
+        </div> -->
+        <div class="flexilist">
+            <div class="common-head">
+                <!-- <div class="refresh ml0">
+                    <div class="refresh_tit" title="刷新数据"><i class="icon icon-refresh"></i></div>
+                    <div class="refresh_span">刷新 - 共条记录</div>
+                </div> -->
+                <div style="color: red;">{:lang('提示')}：{:lang('目前只支持单规格商品')}</div>
+            </div>
+            <div class="common-content">
+                <form action="goods_batch_update" method="post" name="theForm">
+                    <div class="list-div" id="listDiv">
+                        <table cellpadding="0" cellspacing="0"  border="0">
+                            <thead>
+                            <tr>
+                                <th width="12%"><div class="tDiv">{:lang('货号')}</div></th>
+                                <th width="16%"><div class="tDiv">{:lang('商品名称')}</div></th>
+                                <th width="12%"><div class="tDiv">{:lang('划线价格')}</div></th>
+                                <th width="12%"><div class="tDiv">{:lang('本店价格')}</div></th>
+                                <th width="12%"><div class="tDiv">{:lang('成本价')}</div></th>
+                                <th width="12%"><div class="tDiv">{:lang('会员价格')}</div></th>
+                                <th width="12%"><div class="tDiv">{:lang('虚拟销量')}</div></th>
+                                <th width="12%"><div class="tDiv">{:lang('总库存')}</div></th>
+                            </tr>
+                            </thead>
+                            <tbody class="tbodyText">
+                                {volist name="data_list" id="g"}
+                                <tr class="">
+                                    <td><div class="tDiv">{$g.sn}</div></td>
+                                    <td><div class="tDiv" style="width:400px;word-wrap:break-word;">{$g.name}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <input name="market_price[{$g.sn}]" type="text" value="{$g.market_price}" size="8" autocomplete="off" class="text ">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <input name="shop_price[{$g.sn}]" type="text" value="{$g.shop_price}" size="8" autocomplete="off" class="text ">
+                                        </div>
+                                    </td>
+                                    <td class="tc">
+                                        <div class="tDiv">
+                                            <input name="cost_price[{$g.sn}]" type="text" value="{$g.cost_price}" size="8" autocomplete="off" class="text ">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <input name="member_price[{$g.sn}]" type="text" value="{$g.member_price}" size="8" autocomplete="off" class="text ">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <input name="sales_sum[{$g.sn}]" type="text" value="{$g.sales_sum}" size="8" autocomplete="off" class="text ">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <input name="stock[{$g.sn}]" type="text" value="{$g.stock}" size="8" autocomplete="off" class="text ">
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/volist}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="22">
+                                    <div class="tDiv tc info_btn" style="width:100px; margin:0 auto;">
+                                        <input type="submit" name="submit" value=" {:lang('确定')} " class="button" style="background:#409EFF;color:#ffffff;border:none;">
+                                        <input type="hidden" name="edit_method" value="each">
+                                        {volist name="data_list" id="goods"}
+                                             <input type="hidden" name="goods_sn[]" value="{$goods.sn}">
+                                        {/volist}
+                                    </div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

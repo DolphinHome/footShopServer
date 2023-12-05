@@ -1,0 +1,211 @@
+
+
+.fu-account{
+    margin-top: 16px;
+    margin-bottom: 12px;
+    background: #fff;
+    padding: 0;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border: 1px solid #e8e8e8;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.fu-account-cart{
+    -webkit-flex: 1 1;
+    -moz-box-flex: 1;
+    -ms-flex: 1 1;
+    flex: 1 1;
+    padding: 24px;
+}
+.fu-account-cart-title{
+    font-size: 14px;
+}
+.fu-account-cart-title .fu-account-cart-title-tips{
+    border-bottom: 1px dotted rgb(153, 153, 153);
+}
+.fu-account-cart-title .fu-account-cart-title-money{
+    font-size: 12px;
+    color: rgb(102, 102, 102);
+}
+.fu-account-cart-title .fu-account-catt-title-detail{
+    margin-left: 8px;
+    font-size: 12px;
+    color: #26a;
+    cursor: pointer;
+}
+.fu-account-cart-content{
+    display: block;
+    margin-top: 12px;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.fu-account-cart-content-main{
+    display: block;
+}
+.fu-account-cart-content-main .fu-account-cart-content-main-amount{
+    font-size: 22px;
+    color: #ff7300;
+    font-weight: 500;
+    margin-right: 12px;
+    line-height: 1;
+    display: inline-block;
+}
+.fu-account-cart-content-main .fu-account-cart-content-main-amount-limit{
+    margin-right: 8px;
+    color: #666;
+}
+.fu-account-cart-content-main-amount-withdrawBtn{
+    float: right;
+    margin-top: -6px;
+}
+.fu-account-cart-content-main-amount-withdrawBtn button{
+    margin: 0;
+    outline: none;
+    overflow: visible;
+    font-family: inherit;
+    line-height: 1.15;
+    text-transform: none;
+    -webkit-appearance: button;
+    position: relative;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 3px;
+    cursor: not-allowed;
+    font-size: 14px;
+    height: 28px;
+    padding: 0 12px;
+    min-width: 64px;
+    color: rgba(0, 0, 0, 0.32);
+    border-color: #dbdbdb;
+    background-color: #f5f5f5;
+}
+.fu-maskGuidel{
+    padding: 12px 0px 12px 0px;
+    display: none;
+}
+.fu-maskGuidel .fu-market-card-frozen{
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background: -webkit-gradient(linear,right top,left top,from(rgba(255,169,0,.02)),to(rgba(255,169,0,.06)));
+    background: -webkit-linear-gradient(right,rgba(255,169,0,.02),rgba(255,169,0,.06));
+    background: -moz-linear-gradient(right,rgba(255,169,0,.02) 0,rgba(255,169,0,.06) 100%);
+    background: -o-linear-gradient(right,rgba(255,169,0,.02) 0,rgba(255,169,0,.06) 100%);
+    background: linear-gradient(270deg,rgba(255,169,0,.02),rgba(255,169,0,.06));
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding: 6px 8px;
+    position: relative;
+    background: linear-gradient(270deg,rgba(39,201,248,.02),rgba(17,153,238,.06));
+}
+.el-icon-time{
+    font-size: 20px;
+}
+.fu-maskGuidel .fu-balance-overview-new-lock{
+    margin-left: 5px;
+    color: #666;
+    margin-right: 4px;
+    display: inline-block;
+    vertical-align: text-top;
+    font-size: 16px;
+    vertical-align: bottom;
+    line-height: 22px;
+}
+.fu-maskGuidel .fu-balance-overview-new-lock-line{
+    border-bottom: 1px dotted rgb(153, 153, 153);
+}
+.fu-balance-deposit-bank,.fu-balance-deposit-bank-card{
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.fu-balance-deposit-bank{
+    margin: 0 0 24px;
+}
+.fu-balance-deposit-bank-card{
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border: 1px solid #e8e8e8;
+    padding: 28px 16px;
+    height: 96px;
+}
+.fu-balance-deposit-card{
+    -webkit-flex: 3 1;
+    -moz-box-flex: 3;
+    -ms-flex: 3 1;
+    flex: 3 1;
+    margin-right: 12px;
+    align-items: center;
+    box-sizing: border-box;
+}
+.fu-balance-deposit-bank-card-deposit{
+    -webkit-flex: 1 1;
+    -moz-box-flex: 1;
+    -ms-flex: 1 1;
+    flex: 1 1;
+    padding-left: 8px;
+}
+.fu-balance-deposit-bank-card-deposit-label{
+    font-size: 12px;
+    color: rgba(0,0,0,.8);
+    line-height: 14px;
+    margin-bottom: 12px;
+}
+.fu-balance-deposit-bank-card-deposit-amount{
+    font-size: 14px;
+    color: rgba(0,0,0,.8);
+    line-height: 14px;
+    margin-bottom: 0;
+}
+.fu-balance-deposit-bank-line{
+    height: 100%;
+    margin-right: 16px;
+    margin: 0 8px;
+    display: inline-block;
+    position: relative;
+    border-right: 1px solid #ebebeb;
+    vertical-align: middle;
+}
+.fu-balance-deposit-bank-card-depositDetail{
+    width: 24px;
+    line-height: 38px;
+}
+.fu-balance-withdraw-list-new{
+    margin-bottom: 29px; 
+}
+.fu-balance-withdraw-list-new-title{
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 17px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.fu-balance-withdraw-list-new-title-tip-text{
+    color: rgba(0,0,0,.6);
+    border-bottom: 1px dotted rgba(0,0,0,.6);
+}
+.fu-balance-withdraw-list-new-title .fu-balance-withdraw-list-new-title-line{
+    height: 16px;
+    width: 2px;
+    display: inline-block;
+    margin-right: 8px;
+    background: rgb(17, 153, 238);
+}
+.fu-account-cart-title-hover{
+    font-size: 10px;
+}

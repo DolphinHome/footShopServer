@@ -1,0 +1,158 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+.lCaptchaFz {
+	position: relative;
+	margin: 15px 0;
+	text-align: center;
+}
+
+.lCaptchaBtn {
+	line-height: 40px;
+	background-color: rgba(45, 179, 249, 0.2);
+	color: #2DB3F9;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.lCaptchaBtn.success {
+	color: #2DB3F9;
+}
+
+.lCaptchaBtn.error {
+	color: #272727;
+}
+
+.lCaptcha {
+	display: none;
+	width: 320px;
+	/*padding-bottom: 17px;*/
+	background-color: #FFFFFF;
+	box-shadow: 0 0 5px #CCCCCC;
+	font-size: 14px;
+	position: absolute;
+	left: 50%;
+	margin-left: -160px;
+	bottom: 0;
+
+	-moz-user-select: none;
+	/*火狐*/
+	-webkit-user-select: none;
+	/*webkit浏览器*/
+	-ms-user-select: none;
+	/*IE10*/
+	-khtml-user-select: none;
+	/*早期浏览器*/
+	user-select: none;
+}
+
+.lCaptcha .title {
+	height: 50px;
+	line-height: 50px;
+	font-size: 16px;
+	padding: 0 15px;
+	color: #45494c;
+	border-bottom: 1px solid #e4e7eb;
+}
+
+.lCaptcha .close {
+	/*position: absolute;
+	right: 0;
+	top: 0;
+	height: 50px;
+	line-height: 50px;
+	width: 50px;
+	text-align: center;
+	color: #CCCCCC;
+	font-size: 22px;
+	cursor: pointer;*/
+}
+
+.lCaptcha .close:hover {
+	color: #45494c;
+}
+
+.lCaptcha .image {
+	margin: 17px;
+	position: relative;
+}
+
+.lCaptcha .image .bg {
+	width: 100%;
+}
+
+.lCaptcha .image .icon {
+	position: absolute;
+	width: 54px;
+	left: 0;
+	top: 0;
+}
+
+.lCaptcha .move {
+	margin: 0 17px;
+	border-radius: 40px;
+	position: relative;
+}
+
+.lCaptcha .move .bg {
+	line-height: 40px;
+	border: 1px solid #EEEEEE;
+	border-radius: 40px;
+	overflow: hidden;
+	background-color: #F7F9FA;
+	text-align: center;
+	color: #45494c;
+}
+
+.lCaptcha .move .icon {
+	position: absolute;
+	width: 56px;
+	text-align: center;
+	height: 56px;
+	left: 0;
+	top: -8px;
+	/*background-color: #FFFFFF;
+	border: 1px solid #EEEEEE;*/
+	cursor: pointer;
+	background: url(../sprite.1.2.4.png);
+	background-position: -5px -47px;
+}
+
+/*.lCaptcha .move .icon:hover {
+	background-color: #2DB3F9;
+	color: #FFFFFF;
+}*/
+
+.bot{
+	line-height: 50px;
+	border-top: 1px solid #eee;
+	margin-top: 20px;
+	color: #999;
+	text-align: right;
+	padding-right: 20px;
+}
+.bot span{
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background: url(../sprite.1.2.4.png);
+	text-align: left;
+	float: left;
+	cursor: pointer;
+}
+.bot .close{
+	background-position: 0px -188px;
+	margin: 15px 20px;
+}
+.bot .close:hover{
+	background-position: 0px -214px;
+}
+.bot .refresh{
+	background-position: 0px -341px;
+	margin: 15px 20px 0 0;
+}
+.bot .refresh:hover{
+	background-position: 0px -367px;
+}

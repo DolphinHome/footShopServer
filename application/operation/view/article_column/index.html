@@ -1,0 +1,583 @@
+{extend name="$admin_layout" /}
+
+{block name="style"}
+<link href="__PLUG__/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+<!-- 引入饿了么css -->
+<link rel="stylesheet" href="/static/plugins/element-ui/element-ui.css">
+{/block}
+
+{block name="content"}
+<style>
+    .classfiy-name {
+        width: 250px !important;
+        outline: none !important;
+    }
+
+    .classfiy-sort {
+        width: 70px !important;
+        outline: none !important;
+    }
+
+    .clssfiy-pic {
+        width: 30px;
+        height: 30px;
+    }
+
+    .operation {
+        color: #5a99f1;
+        cursor: pointer;
+    }
+
+    .cell {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    #classfiy {
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+    }
+
+    /* 图片上传 */
+    .avatar-uploader .el-upload {
+        width: 50px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .avatar-uploader {
+        border-color: #409EFF;
+    }
+
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 45px;
+        display: block;
+    }
+
+    .el-upload__input {
+        display: none !important;
+    }
+
+    .up-pic {
+        color: #5a99f1;
+    }
+
+    /* header头部 */
+    .header {
+        display: flex;
+        flex-wrap: nowrap;
+        padding: 10px;
+        width: 620px;
+    }
+
+    .search-frame {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 50%;
+        padding-left: 20px;
+    }
+
+    .title-btn {
+        height: 30px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box nav-tabs-custom" id="classfiy">
+            <div class="header">
+                <a class="btn btn-sm mr5 btn-primary title-btn" type="primary" @click="toSubmit">{:lang('保存分类')}</a>
+                <a class="btn btn-sm mr5 btn-primary title-btn" type="primary" @click="addClassfiy" plain><i
+                        class="fa fa-plus pr5"></i>{:lang('新增分类')}</a>
+                <div class="search-frame">
+                    <input class="form-control title-btn" placeholder="{:lang('请输入内容')}" prefix-icon="el-icon-search" v-model="search" />
+                    <a class="btn btn-sm mr5 btn-primary title-btn" type="success" @click="searchTree">{:lang('搜索')}</a>
+                </div>
+            </div>
+            <!-- 新分类 -->
+            <div>
+                <el-table :data="tableData" style="width: 100%;margin-bottom: 20px;"
+                          :tree-props="{children: 'children', hasChildren: 'hasChildren'}" :row-key="getRowKeys" ref="topicTable" border
+                          @row-click="clickRowHandle">
+
+                        <el-table-column prop="name" label="{:lang('ID')}" width="90">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.id || '无' }}</span>
+                            </template>
+                    
+                        </el-table-column>
+
+                    <el-table-column prop="name" label="{:lang('栏目名称')}" width="300">
+                        <template slot-scope="scope">
+                            <input type="text" v-model="scope.row.name" class="classfiy-name" @blur="blurSave(scope.row)" />
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="sort" label="{:lang('排序')}" sortable width="100">
+                        <template slot-scope="scope">
+                            <input type="text" v-model="scope.row.sort" class="classfiy-sort"  @blur="blurSave(scope.row)" />
+                        </template>
+                    </el-table-column>
+
+<!--                    <el-table-column label="{:lang('栏目图')}" width="100">-->
+<!--                        <template slot-scope="scope">-->
+<!--                            <el-upload class="avatar-uploader" action="/api/v1/5d5fa8984f0c2" :show-file-list="false"-->
+<!--                                       :on-success="handleAvatarSuccess">-->
+<!--                                <img @click="upPic(scope.row)" v-if="scope.row.thumb != ''" class="clssfiy-pic"-->
+<!--                                     :src="scope.row.thumb_img" />-->
+<!--                                <span @click="upPic(scope.row)" v-if="scope.row.thumb == ''" class="up-pic">{:lang('上传')}</span>-->
+<!--                            </el-upload>-->
+<!--                        </template>-->
+<!--                    </el-table-column>-->
+
+                    <el-table-column prop="create_time" label="{:lang('创建时间')}" width="180">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.create_time | transitionTime }}</span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="create_status" label="{:lang('状态')}" width="100">
+                        <template slot-scope="scope">
+                            <span class="label" :class="scope.row.status == 1 ? 'label-success' : 'label-warning'">{{ scope.row.status == 1 ? '正常' : '禁用' }}</span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="{:lang('操作')}">
+                        <template slot-scope="scope">
+							<span class="btn btn-xs mr5 btn-default" @click="howUse(scope.row)">
+								<i class="fa pr5" :class="scope.row.status == 1 ? 'fa-ban' : 'fa-check-circle'"></i>
+								{{ scope.row.status == 1 ? '禁用' : '启用' }}
+							</span>
+<!--                            <span class="btn btn-xs mr5 btn-default" @click="add(scope.row)">-->
+<!--								<i class="fa fa-plus pr5"></i>-->
+<!--								{:lang('新增子类')}-->
+<!--							</span>-->
+                            <span class="btn btn-xs mr5 btn-default" @click="del(scope.row)">
+								<i class="fa fa-times pr5"></i>
+								{:lang('删除')}
+							</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="icon_tab" style="display:none">
+    <div class="tab-content" style="padding: 10px">
+        <div class="tab-pane fade active in" id="fa"> {include file="../application/admin/view/menu/icon_view.html" /}
+        </div>
+        {volist name="_icons" id="icon"}
+        <div class="tab-pane fade" id="icon{$icon.id}"> {$icon.html|default='暂无图标'} </div>
+        {/volist}
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__PLUG__/jquery-nestable/jquery.nestable.js"></script>
+<script src="__PLUG__/vue/vue.min.js"></script>
+<script src="__PLUG__/vue/vue-resource.min.js"></script>
+<!-- 引入饿了么js -->
+<script src="/static/plugins/element-ui/element-ui.js"></script>
+<script>
+
+    const classfiy = new Vue({
+        el: '#classfiy',
+        data: {
+            tableData: [], // 展示的数据
+            tableDataEctype: [], // 请求回来的数据
+            openRow: [], // 树形展开
+            fileList: [], // 文件上传的列表
+            temp: '', // 临时保存当前选择的行，不可删除
+            isShow: false, // 利用此值限制用户添加子类行为，用以优化性能
+            search: '', // 搜索框内容
+        },
+        created() { this.getData() },
+        methods: {
+            // 获得数据
+            getData() {
+                const that = this
+                $.post("{:url('/operation/article_column/article_cate')}", function (res) {
+                    if (res.code == 1) {
+                        that.tableData = that.deepCopy(res.data)
+                    }
+                })
+            },
+            // 提交本次所作出的更改
+            toSubmit() {
+                setTimeout(() => {
+                    layer.msg('保存成功')
+            }, 500)
+                // const that = this
+                // const params = { "data" : that.tableData }
+                // $.post("{:url('goods/category/savecate')}", params,function(res) {
+                // 	console.log('xxxxx',res)
+                // })
+            },
+
+
+            // 新增子类,循环当前tableData，对比分类的id值，一致则在当前tableData下的children里push进newList。没有就创建一个children
+            add(val) {
+                if (this.isShow) {
+                    layer.msg("请先保存当前更改之后再新增子类")
+                    return
+                }
+                const nowTime = new Date();
+                let newList = {
+                    create_time: nowTime / 1000,
+                    id: '',
+                    is_hot: '',
+                    is_show: '',
+                    mobile_name: '',
+                    name: '',
+                    pid: val.id,
+                    sort: 0,
+                    status: '1',
+                    thumb: '',
+                    typeid: '',
+                }
+                console.log('新增子类', newList)
+                for (let i = 0; i < this.tableData.length; i++) {
+                    if (this.tableData[i].id == val.id) {
+                        if (this.tableData[i].children) {
+                            console.log('1111找到了')
+                            this.tableData[i].children.unshift(newList)
+                            setTimeout(() => {
+                                this.openNowTree(val)
+                                this.isShow = true
+                                return
+                            }, 100)
+                        } else {
+                            console.log('2222找到了')
+                            this.$set(this.tableData[i], "children", [])
+                            this.tableData[i].children.unshift(newList)
+                            setTimeout(() => {
+                                this.openNowTree(val)
+                                this.isShow = true
+                                return
+                            }, 100)
+                        }
+                    }
+                    if (this.tableData[i].children) {
+                        for (let j = 0; j < this.tableData[i].children.length; j++) {
+                            if (this.tableData[i].children[j].id == val.id) {
+                                if (this.tableData[i].children[j].children) {
+                                    console.log('333333找到了')
+                                    this.tableData[i].children[j].children.unshift(newList)
+                                    this.openNowTree(val)
+                                    this.isShow = true
+                                    return
+                                } else {
+                                    console.log('44444找到了')
+                                    Vue.set(this.tableData[i].children[j], "children", [])
+                                    this.tableData[i].children[j].children.unshift(newList)
+                                    setTimeout(() => {
+                                        this.openNowTree(val)
+                                    this.isShow = true
+                                    return
+                                }, 100)
+                                }
+                            }
+                        }
+                    }
+                }
+
+            },
+            // 删除
+            del(val) {
+                for (let i = 0; i < this.tableData.length; i++) {
+                    if (this.tableData[i].id == val.id) {
+                        if (val.name == '') {
+                            this.tableData.splice(i, 1)
+                            this.isShow = false
+                            layer.msg('删除成功')
+                            this.getData()
+                            return
+                        } else {
+                            $.post("{:url('/operation/article_column/delete')}", { "ids": val.id }, (res) => {
+                                if (res.code == 1) {
+                                    this.tableData.splice(i, 1)
+                                    this.isShow = false
+                                    layer.msg('删除成功')
+                                    this.getData()
+                                    return
+                                } else if (res.code == 0) {
+									layer.msg(res.msg)
+									return
+								}
+                        })
+                        }
+
+                    }
+                    if (this.tableData[i].children) {
+                        for (let j = 0; j < this.tableData[i].children.length; j++) {
+                            if (this.tableData[i].children[j].id == val.id) {
+                                if (val.name == '') {
+                                    this.tableData[i].children.splice(j, 1)
+                                    this.isShow = false
+                                    layer.msg('删除成功')
+                                    this.getData()
+                                    return
+                                } else {
+                                    $.post("{:url('/operation/article_column/delete')}", { "ids": val.id }, (res) => {
+                                        if (res.code == 1) {
+                                            this.tableData[i].children.splice(j, 1)
+                                            this.isShow = false
+                                            layer.msg('删除成功')
+                                            this.getData()
+                                            return
+                                        } else if (res.code == 0) {
+                                            layer.msg(res.msg)
+                                            return
+                                        }
+                                })
+                                }
+
+                            }
+                            if (this.tableData[i].children[j].children) {
+                                for (let k = 0; k < this.tableData[i].children[j].children.length; k++) {
+                                    if (this.tableData[i].children[j].children[k].id == val.id) {
+                                        if (val.name == '') {
+                                            this.tableData[i].children[j].children.splice(k, 1)
+                                            this.isShow = false
+                                            layer.msg('删除成功')
+                                            this.getData()
+                                            return
+                                        } else {
+                                            $.post("{:url('/operation/article_column/delete')}", { "ids": val.id }, (res) => {
+                                                if (res.code == 1) {
+                                                    this.tableData[i].children[j].children.splice(k, 1)
+                                                    this.isShow = false
+                                                    layer.msg('删除成功')
+                                                    this.getData()
+                                                    return
+                                                } else if (res.code == 0) {
+                                                    layer.msg(res.msg)
+                                                    return
+                                                }
+                                            })
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            // 新增分类
+            addClassfiy() {
+                if (this.isShow) {
+                    layer.msg('请先保存当前更改之后再新增子类')
+                    return
+                }
+                const nowTime = new Date();
+                let newList = {
+                    create_time: nowTime / 1000,
+                    id: '',
+                    is_hot: '',
+                    is_show: '',
+                    mobile_name: '',
+                    name: '',
+                    pid: '',
+                    sort: 0,
+                    status: '',
+                    thumb: '',
+                    typeid: '',
+                }
+                this.tableData.unshift(newList)
+                this.$forceUpdate()
+                this.isShow = true
+            },
+            // 启用分类or警用分类
+            howUse(row) {
+                console.log('sssssssdfasdfsadfsadf',row.id)
+
+                if(!row.id) {
+                    layer.msg('请保存成功后再次点击');
+                    return;
+                }
+                if(row.status == 1) {
+                    // 禁用
+                    let params = {
+                        type:"disable",
+                        ids:row.id
+                    }
+                    $.post("{:url('/operation/article_column/setstatus')}",params,(res) => {
+                        if(res.code == 1) {
+                        this.$set(row,'status',0)
+                    }
+                })
+                } else {
+                    // 启用
+                    let params = {
+                        type:"enable",
+                        ids:row.id
+                    }
+                    $.post("{:url('/operation/article_column/setstatus')}",params,(res) => {
+                        if(res.code == 1) {
+                        this.$set(row,'status',1)
+                    }
+                })
+                }
+            },
+            // 展开当前树形数据
+            openNowTree(row) {
+                console.warn('展开成功', row)
+                this.$refs.topicTable.toggleRowExpansion(row, true)
+            },
+            // 关闭当前树形数据
+            closeNowTree(row) {
+                this.$refs.topicTable.toggleRowExpansion(row, false)
+            },
+            // 点击行
+            clickRowHandle(row) {
+                // console.log(row)
+            },
+            // 获得row-id
+            getRowKeys(row) {
+                return row.id
+            },
+            // 获取当前上传图片的行数据
+            upPic(val) {
+                for (let i = 0; i < this.tableData.length; i++) {
+                    if (this.tableData[i].id == val.id) {
+                        this.temp = this.tableData[i]
+                        return
+                    }
+                    if (this.tableData[i].children) {
+                        for (let j = 0; j < this.tableData[i].children.length; j++) {
+                            if (this.tableData[i].children[j].id == val.id) {
+                                this.temp = this.tableData[i].children[j]
+                                return
+                            }
+                            if (this.tableData[i].children[j].children) {
+                                for (let k = 0; k < this.tableData[i].children[j].children.length; k++) {
+                                    if (this.tableData[i].children[j].children[k].id == val.id) {
+                                        this.temp = this.tableData[i].children[j].children[k]
+                                        return
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                console.log('保存当前行数据', this.temp)
+            },
+            // 深拷贝方法
+            deepCopy(obj) {
+                let result;
+                //引用类型分数组和对象分别递归
+                if (Object.prototype.toString.call(obj) == '[object Array]') {
+                    result = []
+                    for (let i = 0; i < obj.length; i++) {
+                        result[i] = this.deepCopy(obj[i])
+                    }
+                } else if (Object.prototype.toString.call(obj) == '[object Object]') {
+                    result = {}
+                    for (let attr in obj) {
+                        result[attr] = this.deepCopy(obj[attr])
+                    }
+                } else {
+                    return obj
+                }
+                return result
+            },
+            // 上传图片并预览
+            handleAvatarSuccess(res, file) {
+                const data = {
+                    "id": res.data[0].id,
+                    "path": res.data[0].path
+                }
+                console.log('上传成功', res)
+                this.$set(this.temp, "thumb", data.id)
+                this.$set(this.temp, "thumb_img", data.path)
+                this.blurSave(this.temp)
+            },
+            // 搜索
+            searchTree() {
+                $.post("{:url('/operation/article_column/article_cate')}", { "keyword": this.search }, (res) => {
+                    if (res.code == 1) {
+                    this.tableData = this.deepCopy(res.data)
+                }
+            })
+            },
+            // 失焦保存
+            blurSave(val) {
+                for (let i = 0; i < this.tableData.length; i++) {
+                    if (this.tableData[i].id == val.id) {
+                        if (val.name == '') {
+                            return
+                        } else {
+                            $.post("{:url('/operation/article_column/saveCate')}", { "data": val }, (res) => {
+                                // 此处应加上if(res==1)
+                                this.$set(this.tableData[i], 'id', res.data.id)
+                            this.isShow = false
+                            layer.msg('保存成功')
+                            return
+                        })
+                        }
+                    }
+                    if (this.tableData[i].children) {
+                        for (let j = 0; j < this.tableData[i].children.length; j++) {
+                            if (this.tableData[i].children[j].id == val.id) {
+                                if (val.name == '') {
+                                    return
+                                } else {
+                                    $.post("{:url('/operation/article_column/saveCate')}", { "data": val }, (res) => {
+                                        this.$set(this.tableData[i].children[j], 'id', res.data.id)
+                                    this.isShow = false
+                                    layer.msg('保存成功')
+                                    return
+                                })
+                                }
+                            }
+                            if (this.tableData[i].children[j].children) {
+                                for (let k = 0; k < this.tableData[i].children[j].children.length; k++) {
+                                    if (this.tableData[i].children[j].children[k].id == val.id) {
+                                        if (val.name == '') {
+                                            return
+                                        } else {
+                                            $.post("{:url('/operation/article_column/saveCate')}", { "data": val }, (res) => {
+                                                this.$set(this.tableData[i].children[j].children[k], 'id', res.data.id)
+                                            this.isShow = false
+                                            layer.msg('保存成功')
+                                        })
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        filters: {
+            // 过滤时间戳
+            transitionTime(val) {
+                const date = new Date(val * 1000);
+                const Y = date.getFullYear();
+                const M = date.getMonth() + 1;
+                const D = date.getDate();
+                const hh = date.getHours();
+                const mm = date.getMinutes();
+                const ss = date.getSeconds();
+                return `
+					${Y}-${M.toString().length > 1 ? M : `0${M}`}-${D.toString().length > 1 ? D : `0${D}`} ${hh.toString().length > 1 ? hh : `0${hh}`}:${mm.toString().length > 1 ? mm : `0${mm}`}:${ss.toString().length > 1 ? ss : `0${ss}`}`
+            }
+        }
+    })
+</script>
+{/block}
