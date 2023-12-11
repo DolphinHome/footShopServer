@@ -431,7 +431,7 @@ class Goods extends ThinkModel
      * @author 风轻云淡
      * @editor 似水星辰 [ 2630481389@qq.com ]
      */
-    public function goods_list($where = [], $order = ['id' => 'desc'], $pagesize = '16', $page = 1,$where1 = '')
+    public function goods_list($where = [], $order = ['id' => 'desc'], $pagesize = '16', $page = 1, $where1 = '')
     {
         $lists = Goods::alias("g")
             //->join("__UPLOAD__ u", "u.id=g.thumb")
@@ -665,9 +665,9 @@ class Goods extends ThinkModel
         return $comment ? $comment : [];
     }
 
-    /*获取推荐商品
-    zlf
-    */
+    /**
+     * 获取推荐商品
+     */
     public function goods_index($where, $page)
     {
         $recommend = \think\Db::name('goods')
@@ -685,9 +685,9 @@ class Goods extends ThinkModel
         return $recommend;
     }
 
-    /*获取推荐商品
-    zlf
-    */
+    /**
+     * 获取推荐商品
+     */
     public function goods_search($where, $page, $limit)
     {
         $recommend = Db::name('goods')

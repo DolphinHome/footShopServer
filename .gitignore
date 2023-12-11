@@ -13,3 +13,4 @@ runtime
 /addons/WeChat/sdk/cert/apiclient_cert.p12
 /addons/WeChat/sdk/cert/apiclient_cert.pem
 /addons/WeChat/sdk/cert/apiclient_key.pem
+/**/*log
