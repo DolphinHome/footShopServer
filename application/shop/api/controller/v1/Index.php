@@ -12,14 +12,14 @@ use service\ApiReturn;
 
 /**
  * 附近门店管理接口
- *@author chenchen
+ * @author chenchen
  */
 class Index extends Base
 {
 
-public function index($data= [],$user = [])
-{
+    public function index($data = [], $user = [])
+    {
 
-}
+    }
 
 }
