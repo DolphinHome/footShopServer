@@ -1820,9 +1820,9 @@ class User extends Base
         }else if($info['arch_foot_right_status']   > 0.3){
             $info['arch_right_text'] = '扁平（重）';
         }
-        $info['thumb_explain'] = '正常<(16-30)轻度拇外翻<重度拇外翻';
+        $info['thumb_explain'] = '正常<轻度（15-30）<中度（30-40）<重度（40-60）<变型';
         $info['heel_explain'] = '足后跟负立线夹角在4度以内为正常状态';
-        $info['arch_explain'] = '高弓足<(0.21-0.26)正常<扁平足，扁平程度 Ⅰ<0.3,Ⅲ≥0.30';
+        $info['arch_explain'] = '高足弓<正常（15%-45%）<扁平足';
         $info['goods_tag'] = '';
         //推送文章
         switch ($info['thumb_status']) {
