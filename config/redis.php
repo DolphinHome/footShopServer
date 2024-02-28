@@ -19,13 +19,13 @@ return [
     // 缓存前缀
     'prefix' => 'lbphp_',
     // redis主机
-    'host' => '192.168.0.109',
+    'host' => '172.30.165.74',
     // redis端口
-    'port' => '6379',
+    'port' => '7076',
     // 数据库编号
     'select' => 12, 
     // redis 密码
-    'password' => 'redis_password',
+    'password' => 'Ab@H&98ab%2024',
     // 缓存有效期 0表示永久缓存
     'expire' => 0,
 ];
